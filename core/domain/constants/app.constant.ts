@@ -1,9 +1,9 @@
 import { Icons } from "@/components/ui/icons";
 
-const kAppName = "Brandify";
+const kAppName = "Boutik";
 const kAppAbbr = "B";
 const kAppTagline = "Empowering developers one snippet at a time";
-const kAppDescription = `DevCode is the ultimate platform for developers to share, discover, and collaborate on code snippets. Explore snippets by programming language or framework, connect with other developers, and elevate your coding projects with ease.`;
+const kAppDescription = `Boutik is the ultimate platform for developers to share, discover, and collaborate on code snippets. Explore snippets by programming language or framework, connect with other developers, and elevate your coding projects with ease.`;
 
 export interface NavItem {
   title: string;
