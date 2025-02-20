@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { index, json, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { json, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const brandStatusEnum = pgEnum('brand_status', [
   'active',
