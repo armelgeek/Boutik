@@ -1,6 +1,6 @@
 const Heading = ({ text1, text2 , className,  children}: { text1: string; text2?: string, className?: string, children?: React.ReactNode }) => {
   return (
-     <div className={`${className ? className : 'text-center'} text-2xl`}>
+     <div className={`${className ? className : 'text-center'} text-3xl`}>
         <div className="inline-flex gap-2 uppercase  items-center mb-3">
         <p className="text-gray-500">
             {text1} <span className="text-gray-700 font-medium">{text2}</span>
