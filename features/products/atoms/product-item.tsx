@@ -9,7 +9,7 @@ const ProductItem = ({ id, images, name, price }: Product) => {
 
   return (
     <Link href={`/product/${id}`} className="text-gray-700 cursor-pointer">
-      <div className="overflow-hidden border p-4 shadow-sm  h-[300px]">
+      <div className="overflow-hidden border p-4 shadow-sm  h-[350px]">
        {images.length > 0 && (
         <Image
           src={images[0]}

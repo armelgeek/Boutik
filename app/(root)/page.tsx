@@ -1,3 +1,4 @@
+import OurPolicies from '@/features/home/atoms/our-policies';
 import BestSeller from '@/features/products/organisms/best-seller';
 import LatestCollection from '@/features/products/organisms/latest-collection';
 import Hero from '@/shared/components/atoms/hero';
@@ -15,6 +16,7 @@ export default function Home() {
       <Hero/>
       <LatestCollection/>
       <BestSeller/>
+      <OurPolicies/>
       <NewsLetter/>
     </>
   );
