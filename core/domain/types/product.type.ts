@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { ProductFormSchema, ProductSelectSchema } from '@/core/domain/schema/product.schema';
 import type { Pagination } from '@/shared/lib/types/pagination';
 
-export type Product = z.infer<typeof ProductSelectSchema>;
+export type Product = z.infer<typeof ProductSelectSchema> & { images: string[] };
 
 export type ProductPayload = z.infer<typeof ProductFormSchema>;
 

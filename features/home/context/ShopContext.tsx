@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from 'next/navigation';
 import { createContext, useState } from 'react';
 import { products } from '../../../assets/assets';
@@ -57,7 +58,7 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getCartAmount = (): number => {
     return Object.entries(cartItems).reduce((total, [itemId, sizes]) => {
-      const productInfo = products.find(product => product._id === itemId);
+      const productInfo = products.find(product => product.id === itemId);
       return total + Object.values(sizes).reduce((itemTotal, quantity) => {
         return itemTotal + (productInfo?.price || 0) * quantity;
       }, 0);
