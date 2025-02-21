@@ -8,6 +8,7 @@ export const products = pgTable(
             .primaryKey()
             .default(sql`gen_random_uuid()`),
         name: text('name'),
+        description: text('decription').default(''),
         price: integer('price'),
     }
 )

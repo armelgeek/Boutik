@@ -2,6 +2,7 @@
 import useBestSeller from '../hooks/use-best-seller';
 import Heading from '@/shared/components/atoms/heading';
 import Products from '../molecules/products';
+import ProductsSkeleton from '../molecules/products-skeleton';
 
 const BestSeller = () => {
   const { data,isLoading } = useBestSeller();
@@ -11,7 +12,7 @@ const BestSeller = () => {
            Our best-selling products that our customers can not get enough of.
            Shop the most popular items from our store.
         </Heading>
-      {isLoading && <p>Loading ...</p>}
+      {isLoading && <ProductsSkeleton count={4} />}
       <Products products={data}/>
     </div>
   );

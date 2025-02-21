@@ -12,6 +12,7 @@ const Products = ({ products }: { products: Product[] }) => {
             images={product.images}
             name={product.name}
             price={product.price}
+            description={product.description}
           />
         </div>
       ))}
