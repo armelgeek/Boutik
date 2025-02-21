@@ -1,10 +1,10 @@
 'use client';
-import { CartItem as CartItemType } from '@/core/domain/types/cart.type';
+import { DisplayCartItem } from '../hooks/use-sorted-cart';
 import CartItem from './cart-item';
 import EmptyCart from './empty-cart';
 
 interface CartListProps {
-  items: CartItemType[];
+  items: DisplayCartItem[];
 }
 
 const CartList = ({ items }: CartListProps) => {

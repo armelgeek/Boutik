@@ -90,6 +90,34 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 0);
   };
 
+  const removeFromCart = (itemId: string, size: string): void => {
+    const product = products.find(p => p.id === itemId);
+    if (!product) {
+      toast.error('Product not found');
+      return;
+    }
+
+    setCartItems(prevItems => {
+      const newItems = { ...prevItems };
+      if (newItems[itemId]) {
+        // Si c'est la seule taille pour ce produit, supprimer le produit entier
+        if (Object.keys(newItems[itemId].sizes).length === 1 && newItems[itemId].sizes[size]) {
+          delete newItems[itemId];
+        } else {
+          // Sinon, supprimer juste cette taille
+          const { [size]: _, ...otherSizes } = newItems[itemId].sizes;
+          newItems[itemId] = {
+            ...newItems[itemId],
+            sizes: otherSizes
+          };
+        }
+      }
+      return newItems;
+    });
+
+    toast.success(`${product.name} removed from cart`);
+  };
+
   const value = {
     products,
     currency,
@@ -99,15 +127,20 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
     showSearch,
     setShowSearch,
     cartItems,
+    orders,
     addToCart,
+    removeFromCart,
+    addOrder,
     getCartCount,
     updateQuantity,
     getCartAmount,
-    addOrder,
-    orders
   };
 
-  return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
+  return (
+    <ShopContext.Provider value={value}>
+      {children}
+    </ShopContext.Provider>
+  );
 };
 
 export default ShopContextProvider;

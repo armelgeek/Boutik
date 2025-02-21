@@ -3,18 +3,20 @@ import { CartItem } from "@/core/domain/types/cart.type";
 import { useState, useEffect, useMemo } from "react";
 import { StaticImageData } from "next/image";
 
-interface ExtendedCartItem {
-  sizes: Record<string, number>;
+export type DisplayCartItem = {
+  id: string;
+  size: string;
+  quantity: number;
   name: string;
   price: number;
   image: StaticImageData;
-}
+};
 
-const useSortedCart = (cartItems: Record<string, ExtendedCartItem>): CartItem[] => {
-  const [cartData, setCartData] = useState<CartItem[]>([]);
+const useSortedCart = (cartItems: Record<string, CartItem>): DisplayCartItem[] => {
+  const [cartData, setCartData] = useState<DisplayCartItem[]>([]);
 
   useEffect(() => {
-    const tempData: CartItem[] = Object.entries(cartItems).flatMap(([itemId, item]) =>
+    const tempData: DisplayCartItem[] = Object.entries(cartItems).flatMap(([itemId, item]) =>
       Object.entries(item.sizes)
         .filter(([, quantity]) => quantity > 0)
         .map(([size, quantity]) => ({
@@ -30,7 +32,13 @@ const useSortedCart = (cartItems: Record<string, ExtendedCartItem>): CartItem[] 
   }, [cartItems]);
 
   const sortedCartData = useMemo(() => 
-    [...cartData].sort((a, b) => a.size.localeCompare(b.size))
+    [...cartData].sort((a, b) => {
+      // D'abord trier par nom de produit
+      const nameCompare = a.name.localeCompare(b.name);
+      if (nameCompare !== 0) return nameCompare;
+      // Puis par taille
+      return a.size.localeCompare(b.size);
+    })
   , [cartData]);
 
   return sortedCartData;

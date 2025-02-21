@@ -7,9 +7,8 @@ export type CartItemSize = {
 
 export type CartItem = {
     id: string;
+    sizes: Record<string, number>;
     name: string;
     price: number;
     image: StaticImageData;
-    size: string;
-    quantity: number;
 };
