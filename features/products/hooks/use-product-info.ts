@@ -7,7 +7,7 @@ const useProductInfo = ({productId}: { productId: string }) => {
   const { products, currency, addToCart } = useShop();
   const [productsData, setProductsData] = useState<Product>({
     id: '',
-    name: null,
+    name: '',
     price: 0,
     images: [],
     description: '',

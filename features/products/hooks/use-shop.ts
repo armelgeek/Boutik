@@ -17,6 +17,7 @@ type ShopContextType = {
   getCartAmount: () => number;
   addOrder: () => void;
   orders: Array<{ _id: string; size: string; quantity: number }>;
+  removeFromCart: (itemId: string, size: string) => void;
 };
 
 export const useShop = () => {

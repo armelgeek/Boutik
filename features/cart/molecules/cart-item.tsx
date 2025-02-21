@@ -8,7 +8,7 @@ interface CartItemProps {
 }
 
 const CartItem = ({ item }: CartItemProps) => {
-  const { currency, updateQuantity, removeFromCart } = useShop();
+  const { currency, updateQuantity,removeFromCart } = useShop();
 
   return (
     <div className="flex items-center justify-between py-4 border-b">

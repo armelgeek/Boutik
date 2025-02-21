@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import {
   updateEmail,
   updateName
-} from './_actions';
+} from '../_actions';
 import { headers } from "next/headers";
 import { auth } from '@/auth';
 import { EditableLabelForm } from '@/shared/components/atoms/editable-label-form';

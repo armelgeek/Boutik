@@ -54,6 +54,9 @@ const AppProfileNav = () => {
             <NavItem href="/account" icon="user" active={pathname === '/account'}>
                 My profile
             </NavItem>
+            <NavItem href="/orders" icon="shopping-bag" active={pathname === '/orders'}>
+                Orders
+            </NavItem>
             <SignOutButton active={false}/>
         </ul>
     </div>);

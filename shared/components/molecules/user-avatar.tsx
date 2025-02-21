@@ -3,6 +3,7 @@
 import {
   BadgeCheck,
   LogOut,
+  ShoppingBag,
   User2Icon,
   UserIcon,
 } from "lucide-react";
@@ -101,6 +102,12 @@ export function UserAvatar({ isAnonymous, user }: Props) {
               <DropdownMenuItem>
                 <User2Icon />
                 My profile
+              </DropdownMenuItem>
+            </Link>
+            <Link href="/orders" passHref>
+              <DropdownMenuItem>
+                <ShoppingBag />
+                Orders
               </DropdownMenuItem>
             </Link>
           </DropdownMenuGroup>

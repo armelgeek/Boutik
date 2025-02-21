@@ -3,6 +3,7 @@ import { createContext, useState } from 'react';
 import { products } from '../../../assets/assets';
 import { toast } from 'sonner';
 import type { StaticImageData } from 'next/image';
+import { Order } from '@/core/domain/types/order.type';
 
 export const ShopContext = createContext<unknown>(null);
 
@@ -20,7 +21,7 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [search, setSearch] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<Record<string, CartItem>>({});
-  const [orders, setOrders] = useState<Array<{ _id: string; size: string; quantity: number }>>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const addToCart = (itemId: string, size: string): void => {
     if (!size) {
@@ -57,13 +58,28 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addOrder = (): void => {
     const newOrder = Object.entries(cartItems).flatMap(([itemId, item]) =>
       Object.entries(item.sizes).map(([size, quantity]) => ({
-        _id: itemId,
-        size,
-        quantity,
-      }))
-    );
+        id: Math.floor(Math.random() * 10000), 
+        amount: item.price * quantity,
+        status: 'pending', 
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        items: [{
+          id: itemId,
+          quantity,
+          size,
+          product: {
+            name: item.name,
+            price: item.price,
+            image: item.image
+          },
+        }],
+      }
+    )));
+    //TODO: typage
     setOrders(prevOrders => [...prevOrders, ...newOrder]);
-    //setCartItems({});
+    // Here you can handle the newOrder, e.g., save it to a database or API
+    console.log('New order created:', newOrder);
+    setCartItems({});
   };
 
   const getCartCount = (): number => {
@@ -98,11 +114,9 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCartItems(prevItems => {
       const newItems = { ...prevItems };
       if (newItems[itemId]) {
-        // Si c'est la seule taille pour ce produit, supprimer le produit entier
         if (Object.keys(newItems[itemId].sizes).length === 1 && newItems[itemId].sizes[size]) {
           delete newItems[itemId];
         } else {
-          // Sinon, supprimer juste cette taille
           const { [size]: _, ...otherSizes } = newItems[itemId].sizes;
           newItems[itemId] = {
             ...newItems[itemId],
