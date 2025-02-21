@@ -52,8 +52,6 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return newItems;
     });
-    console.log('cartItems', cartItems);
-    toast.success(`${product.name} added to cart`);
   };
 
   const addOrder = (): void => {
@@ -114,8 +112,6 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return newItems;
     });
-
-    toast.success(`${product.name} removed from cart`);
   };
 
   const value = {

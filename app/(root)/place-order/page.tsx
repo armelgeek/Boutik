@@ -1,3 +1,4 @@
+import PlaceOrder from '@/features/cart/organisms/place-orders';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-        
+        <PlaceOrder/>    
     </>
   );
 }
