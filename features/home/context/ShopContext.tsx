@@ -79,7 +79,7 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setOrders(prevOrders => [...prevOrders, ...newOrder]);
     // Here you can handle the newOrder, e.g., save it to a database or API
     console.log('New order created:', newOrder);
-    setCartItems({});
+   // setCartItems({});
   };
 
   const getCartCount = (): number => {

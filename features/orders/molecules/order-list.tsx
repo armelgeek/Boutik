@@ -44,15 +44,15 @@ function OrdersList() {
                         <Image
                           width={80}
                           height={80}
-                          src={order.product.image.url}
-                          alt={order.product.image.alt}
+                          src={order.product.images[0] ?? null}
+                          alt={order.product.name}
                           className="object-cover w-[80px] h-[80px]"
                         />
                       </div>
 
                       <div className="flex flex-col gap-2">
                         <Link
-                          href={`/product/${order.product.slug}`}
+                          href={`/product/${order.product.id}`}
                           className="text-blue-600"
                         >
                           {order.product.name} ( x {order.quantity})

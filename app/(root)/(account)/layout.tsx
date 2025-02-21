@@ -13,8 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: {
-      template: `%s - ${pageTitle} - ${kAppName}`,
-      default: `${pageTitle} - ${kAppName}`,
+      template: `${kAppName} | %s`,
+      default: `${pageTitle}`,
     },
   };
 }
