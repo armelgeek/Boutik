@@ -1,18 +1,17 @@
 import { BrandRepositoryImpl, type BrandRepository } from '@/core/application/repository/brand.repository';
-import type { Brand, BrandPayload } from '@/core/domain/types/brand.type';
+import type { Brand, BrandPayload, PaginatedBrand } from '@/core/domain/types/brand.type';
 import type { Filter } from '@/shared/lib/types/filter';
-import { BaseService, PaginatedResponse } from '@/core/application/services/base.service';
+import { BaseService } from '@/core/application/services/base.service';
 
 export interface BrandService {
-  list(filter: Filter): Promise<PaginatedResponse<Brand>>;
+  list(filter: Filter): Promise<PaginatedBrand>;
   detail(slug: string): Promise<Brand>;
   create(payload: BrandPayload): Promise<Brand>;
-  update(slug: string, payload: Partial<Brand>): Promise<Brand>;
-  delete(slug: string): Promise<{ message: string }>;
-  findById(id: string): Promise<Brand>;
+  update(slug: string, payload: BrandPayload): Promise<Brand>;
+  delete(slug: string): Promise<void>;
 }
 
-export class BrandServiceImpl extends BaseService<Brand, { message: string }> implements BrandService {
+export class BrandServiceImpl extends BaseService<Brand> implements BrandService {
   private readonly brandRepository: BrandRepository;
 
   constructor(
@@ -22,7 +21,7 @@ export class BrandServiceImpl extends BaseService<Brand, { message: string }> im
     this.brandRepository = brandRepository;
   }
 
-  async list(filter: Filter): Promise<PaginatedResponse<Brand>> {
+  async list(filter: Filter): Promise<PaginatedBrand> {
     return this.brandRepository.list(filter);
   }
 
@@ -34,15 +33,12 @@ export class BrandServiceImpl extends BaseService<Brand, { message: string }> im
     return this.brandRepository.create(payload);
   }
 
-  async update(slug: string, payload: Partial<Brand>): Promise<Brand> {
-    return this.brandRepository.update(slug, payload);
+  async update(slug: string, payload: BrandPayload): Promise<Brand> {
+    await this.brandRepository.update(slug, payload);
+    return this.detail(slug);
   }
 
-  async delete(slug: string): Promise<{ message: string }> {
-    return this.brandRepository.delete(slug);
-  }
-
-  async findById(id: string): Promise<Brand> {
-    return this.brandRepository.findById(id);
+  async delete(slug: string): Promise<void> {
+    await this.brandRepository.delete(slug);
   }
 }

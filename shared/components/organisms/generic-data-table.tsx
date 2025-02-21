@@ -21,9 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { DataTableToolbar } from './data-table-toolbar';
-
-interface DataTableProps<TData, TValue> {
+interface GenericDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   meta: {
@@ -44,9 +42,12 @@ interface DataTableProps<TData, TValue> {
   onFilterChange?: (filters: ColumnFiltersState) => void;
   isLoading: boolean;
   isError: boolean;
+  renderToolbar: (table: ReturnType<typeof useReactTable>) => React.ReactNode;
+  emptyMessage?: string;
+  loadingMessage?: string;
 }
 
-export function DataTable<TData, TValue>({
+export function GenericDataTable<TData, TValue>({
   columns,
   data,
   meta,
@@ -63,7 +64,10 @@ export function DataTable<TData, TValue>({
   onPageSizeChange,
   onFilterChange,
   isLoading,
-}: DataTableProps<TData, TValue>) {
+  renderToolbar,
+  emptyMessage = 'No results.',
+  loadingMessage = 'Loading...',
+}: GenericDataTableProps<TData, TValue>) {
   const sort: ColumnSort[] = sortBy && sortDir ? [{ id: sortBy, desc: sortDir === 'desc' }] : [];
 
   const table = useReactTable({
@@ -109,7 +113,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      {renderToolbar(table)}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -138,7 +142,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Loading...
+                  {loadingMessage}
                 </TableCell>
               </TableRow>
             ) : data.length === 0 ? (
@@ -147,7 +151,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No result.
+                  {emptyMessage}
                 </TableCell>
               </TableRow>
             ) : (

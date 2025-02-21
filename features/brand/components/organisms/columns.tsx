@@ -26,6 +26,20 @@ export const columns: ColumnDef<Brand>[] = [
     },
   },
   {
+    id: 'description',
+    meta: 'Description',
+    accessorFn: (row) => row.description,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Description"
+      />
+    ),
+    cell: ({ row }) => {
+      return <div className="flex w-full">{row.getValue('description')}</div>;
+    },
+  },
+  {
     id: 'status',
     meta: 'Status',
     maxSize: 150,

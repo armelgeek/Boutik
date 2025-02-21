@@ -15,9 +15,9 @@ export interface PaginatedResponse<T> {
 }
 
 export abstract class BaseService<T, D = void> {
+  abstract detail(slug: string): Promise<T>;
   abstract list(filter: Filter): Promise<PaginatedResponse<T>>;
   abstract create(data: Partial<T>): Promise<T>;
   abstract update(id: string, data: Partial<T>): Promise<T>;
   abstract delete(id: string): Promise<D>;
-  abstract findById(id: string): Promise<T>;
 }
