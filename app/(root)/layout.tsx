@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { AppLogo } from '@/shared/components/molecules/layout/app-logo';
 import AppFooter from '@/shared/components/molecules/layout/app-footer';
 import AppNav from '@/shared/components/molecules/layout/app-nav';
+import ThemeToggle from '@/components/ui/theme-toggle';
+import CartMenu from '@/features/cart/molecules/cart-menu';
 
 interface RootLayoutProps {
   readonly children: React.ReactNode;
@@ -24,7 +26,9 @@ export default async function BaseLayout({ children }: RootLayoutProps) {
           <AppLogo/>
         </div>
         <AppNav/>
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center space-x-3 sm:gap-2">
+           <ThemeToggle />
+           <CartMenu/>
           {session ? (
             <UserAvatar
               isAnonymous={session.user.isAnonymous ?? false}
@@ -40,6 +44,8 @@ export default async function BaseLayout({ children }: RootLayoutProps) {
             </Link>
           )}
         </div>
+       
+
       </header>
       <main>
         {children}

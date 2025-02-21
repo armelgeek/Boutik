@@ -17,7 +17,6 @@ type ShopContextType = {
   getCartAmount: () => number;
   addOrder: () => void;
   orders: Array<{ _id: string; size: string; quantity: number }>;
-  router: never;
 };
 
 export const useShop = () => {
