@@ -1,4 +1,3 @@
-
 import { Product } from '@/core/domain/types/product.type';
 import ProductItem from '../atoms/product-item';
 
@@ -19,4 +18,5 @@ const Products = ({ products }: { products: Product[] }) => {
     </div>
   );
 };
+
 export default Products;

@@ -8,15 +8,20 @@ import { Product } from '@/core/domain/types/product.type';
 export const useProductFilter = () => {
   const { products, showSearch } = useShop();
   
-  const [search] = useQueryState('q', { defaultValue: '' });
+  const [search, setSearch] = useQueryState('q', { defaultValue: '' });
   const [category, toggleCategory] = useQueryState('category', parseAsArrayOf(parseAsString));
   const [subCategory, toggleSubCategory] = useQueryState('subCategory', parseAsArrayOf(parseAsString));
-  const [sortType,setSortType] = useQueryState('sort', { defaultValue: 'relevent' });
+  const [sortType, setSortType] = useQueryState('sort', { defaultValue: 'relevent' });
   const [filterProducts, setFilterProducts] = useState<Product[]>([]);
+  const [isFiltering, setIsFiltering] = useState(false);
 
-  const applyFilter = () => {
+  const applyFilter = async () => {
     if (!products || products.length === 0) return;
     
+    setIsFiltering(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulating async operation
+
     let productsCopy: Product[] = products.slice();
 
     if (showSearch && search) {
@@ -38,11 +43,16 @@ export const useProductFilter = () => {
     }
 
     setFilterProducts(productsCopy);
+    setIsFiltering(false);
   };
 
-  const sortProducts = () => {
+  const sortProducts = async () => {
     if (filterProducts.length === 0) return;
     
+    setIsFiltering(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const filteredProdCopy = [...filterProducts];
     
     switch (sortType) {
@@ -53,11 +63,12 @@ export const useProductFilter = () => {
         filteredProdCopy.sort((a, b) => b.price - a.price);
         break;
       default:
-        applyFilter();
+        await applyFilter();
         return;
     }
     
     setFilterProducts(filteredProdCopy);
+    setIsFiltering(false);
   };
 
   useEffect(() => {
@@ -74,8 +85,10 @@ export const useProductFilter = () => {
     subCategory,
     sortType,
     search,
+    setSearch,
     toggleCategory,
     toggleSubCategory,
-    setSortType
+    setSortType,
+    isFiltering
   };
 };

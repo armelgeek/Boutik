@@ -6,9 +6,12 @@ import CategoryFilter from '../molecules/category-filter';
 import ProductListContainer from '../molecules/product-list-container';
 import SubCategoryFilter from '../molecules/sub-category-filter';
 import Products from '../molecules/products';
+import ProductsSkeleton from '../molecules/products-skeleton';
+import SearchBar from '../molecules/search-bar';
 
 const Collection = () => {
     const {
+        isFiltering,
         filterProducts,
         sortType,
         toggleCategory,
@@ -40,22 +43,25 @@ const Collection = () => {
     };
 
     return (
-        <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
-            <FilterOption showFilter={showFilter} setShowFilter={setShowFilter}>
-                <CategoryFilter
-                    showFilter={showFilter}
-                    toggleCategory={handleToggleCategory}
-                />
-                <SubCategoryFilter
-                    showFilter={showFilter}
-                    toggleSubCategory={handleToggleSubCategoryChange}
-                />
-            </FilterOption>
-            
-            <ProductListContainer sortType={sortType} setSortType={handleSortChange}>
-               <Products products={filterProducts} />
-            </ProductListContainer>
-        </div>
+        <>
+        <SearchBar />
+            <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
+                <FilterOption showFilter={showFilter} setShowFilter={setShowFilter}>
+                    <CategoryFilter
+                        showFilter={showFilter}
+                        toggleCategory={handleToggleCategory}
+                    />
+                    <SubCategoryFilter
+                        showFilter={showFilter}
+                        toggleSubCategory={handleToggleSubCategoryChange}
+                    />
+                </FilterOption>
+                
+                <ProductListContainer sortType={sortType} setSortType={handleSortChange}>
+                    {isFiltering ? <ProductsSkeleton count={8} /> : <Products products={filterProducts} />}
+                </ProductListContainer>
+            </div>
+        </>
     )
 }
 export default Collection;

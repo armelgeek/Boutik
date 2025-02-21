@@ -10,7 +10,12 @@ const RelatedProducts = ({ category, subCategory }:{ category: string, subCatego
     <div className="my-10">
       <Heading text1={'RELATED'} text2={'PRODUCTS'}/>
       {isLoading && <ProductsSkeleton count={4} />}
-      <Products products={data}/>
+      {data && <Products products={data}/>}
+      {(!data || data.length === 0) && (
+        <div className="text-center text-gray-500 mt-5">
+          Aucun produit disponible
+        </div>
+      )}
     </div>
   );
 };
