@@ -1,7 +1,6 @@
 import { sql } from "drizzle-orm";
 import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { categories } from "./categories";
-import { subCategories } from "./subCategories";
 export const products = pgTable(
     'products',
     {
@@ -10,8 +9,11 @@ export const products = pgTable(
         description: text('description').notNull(),
         price: integer('price').notNull(),
         category_id: uuid('category_id').notNull().references(() => categories.id),
-        sub_category_id: uuid('sub_category_id').notNull().references(() => subCategories.id),
+        sub_category_id: uuid('sub_category_id').notNull().references(() => categories.id),
         date: timestamp('date').notNull().defaultNow(),
         bestseller: boolean('bestseller').notNull().default(false),
     }
 );
+
+
+export type Product = typeof products.$inferSelect;

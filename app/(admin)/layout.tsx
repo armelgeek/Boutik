@@ -12,7 +12,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar session={session}/>
       <SidebarInset>
       <Header />

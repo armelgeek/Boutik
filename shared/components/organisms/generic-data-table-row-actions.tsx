@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Row } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 
@@ -10,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
 
 interface GenericDataTableRowActionsProps<TData> {
   row: Row<TData>;
