@@ -10,7 +10,9 @@ const useProductInfo = ({productId}: { productId: string }) => {
     name: null,
     price: 0,
     images: [],
-    description: ''
+    description: '',
+    sizes: [],
+    bestseller: false
   });
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
