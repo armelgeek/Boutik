@@ -1,8 +1,8 @@
 "use client";
 import { assets } from "@/assets/assets";
-import useProductInfo from "../hooks/use-product-info";
 import Image from "next/image";
 import RelatedProducts from "../organisms/related-products";
+import useProductInfo from "../../hooks/use-product-info";
 
 const ProductInfo = ({productId}: {
     productId: string

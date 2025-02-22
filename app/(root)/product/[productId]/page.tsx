@@ -1,4 +1,4 @@
-import ProductInfo from "@/features/products/molecules/product-info";
+import ProductInfo from "@/features/products/components/molecules/product-info";
 import { Metadata } from "next";
 import React from "react";
 

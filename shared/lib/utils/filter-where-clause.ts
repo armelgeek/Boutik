@@ -37,9 +37,9 @@ export function filterWhereClause(columns: string[], filter: Filter) {
       if (condition) conditions.push(condition);
     }
   });
-
-  conditions.push(sql`status NOT IN ('archived', 'deleted')`);
-
+  if(filter.status){
+    conditions.push(sql`status NOT IN ('archived', 'deleted')`);
+  }
   if (!conditions.length) return undefined;
 
   return conditions.length === 1 ? conditions[0] : sql.join(conditions, sql` AND `);

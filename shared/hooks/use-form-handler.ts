@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { SyntheticEvent, useEffect, useRef } from 'react';
 import { useForm, UseFormReturn, DefaultValues } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ZodSchema } from 'zod';
@@ -19,7 +19,7 @@ export const useFormHandler = <T extends object>({
                                                    resetAfterSubmit = false,
                                                  }: UseFormHandlerProps<T>): {
   form: UseFormReturn<T>;
-  handleSubmit: (e: T) => Promise<void>;
+  handleSubmit: (e: SyntheticEvent<HTMLFormElement, SubmitEvent>) => Promise<void>;
   isSubmitting: boolean;
 } => {
   const hasInitialized = useRef(false);
@@ -36,8 +36,8 @@ export const useFormHandler = <T extends object>({
     }
   }, [initialValues]);
 
-  const handleSubmit = async () => {
-
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+    e.preventDefault();
     try {
       await form.handleSubmit(async (values) => {
         await onSubmit(values);

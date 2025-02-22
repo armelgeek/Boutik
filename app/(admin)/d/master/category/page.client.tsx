@@ -1,15 +1,14 @@
 'use client';
 
-import { brandKeys } from '@/features/brand/config/brand.key';
-
-import { columns } from '@/features/brand/components/organisms/columns';
-import { DataTable } from '@/features/brand/components/organisms/data-table';
+import { categoryKeys } from '@/features/category/config/category.key';
+import { columns } from '@/features/category/components/organisms/columns';
+import { DataTable } from '@/features/category/components/organisms/data-table';
 import { useAdvancedTable } from '@/shared/hooks/use-advanced-table';
 import { SortDirection } from '@tanstack/react-table';
 import { useQueryStateParams } from '@/shared/hooks/use-query-state-params';
-import { brandService } from '@/features/brand/domain/brand.service';
+import { categoryService } from '@/features/category/domain/category.service';
 
-export function BrandClientPage() {
+export function CategoryClientPage() {
   const queryParams = useQueryStateParams();
 
   const {
@@ -29,8 +28,8 @@ export function BrandClientPage() {
     setSortDir,
     handleFilterChange,
   } = useAdvancedTable({
-    queryKey: brandKeys.list(queryParams),
-    queryFn: (params) => brandService.list(params),
+    queryKey: categoryKeys.list(queryParams),
+    queryFn: (params) => categoryService.list(params),
   });
   return (
     <DataTable

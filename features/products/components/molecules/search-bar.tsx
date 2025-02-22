@@ -1,8 +1,8 @@
 import { assets } from "@/assets/assets";
-import { useProductFilter } from '../hooks/use-filter';
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/components/ui/multiselect";
+import { useProductFilter } from "../../hooks/use-filter";
 
 const SearchBar = () => {
   const { search, setSearch } = useProductFilter();
