@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { headers } from "next/headers";
 import { ReactNode } from "react";
 import { auth } from '@/auth';
-import { kAppName } from '@/core/domain/constants/app.constant';
+import { kAppName } from '@/shared/lib/constants/app.constant';
 import AppProfile from "@/shared/components/molecules/layout/app-profile";
 
 type Props = { children: ReactNode };

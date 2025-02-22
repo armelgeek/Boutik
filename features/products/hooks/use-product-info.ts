@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useShop } from "./use-shop";
-import { Product } from "@/core/domain/types/product.type";
+import { Product } from "@/core/domain/product/product.type";
 
 const useProductInfo = ({productId}: { productId: string }) => {
   const { products, currency, addToCart } = useShop();

@@ -1,4 +1,4 @@
-import { Brand, BrandPayload } from '@/core/domain/types/brand.type';
+import { Brand, BrandPayload } from '@/core/domain/brand/brand.type';
 import { GenericForm } from '@/shared/components/molecules/generic-form';
 import { brandFormConfig } from '../../config/form.config';
 

@@ -1,4 +1,4 @@
-import { Product } from "@/core/domain/types/product.type";
+import { Product } from "@/core/domain/product/product.type";
 import { useShop } from "./use-shop";
 
 export const useProducts = () => {

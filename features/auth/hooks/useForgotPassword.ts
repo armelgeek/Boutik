@@ -1,5 +1,5 @@
 import { authClient } from "@/auth-client";
-import { ForgotPasswordPayload } from "@/core/domain/types/forgot-password.type";
+import { ForgotPasswordPayload } from "@/core/domain/auth/forgot-password.type";
 import { useState } from "react";
 import { toast } from 'sonner';
 

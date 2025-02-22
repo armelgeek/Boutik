@@ -1,4 +1,4 @@
 import { z } from "zod";
-import { forgotPasswordSchema } from "../schema/auth/forgot-password.schema";
+import { forgotPasswordSchema } from "./forgot-password.schema";
 
 export type ForgotPasswordPayload = z.infer<typeof forgotPasswordSchema>;

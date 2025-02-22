@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { authClient } from '@/auth-client';
-import { updatePasswordSchema } from '@/core/domain/schema/auth/update-password.schema';
+import { updatePasswordSchema } from '@/core/domain/auth/update-password.schema';
 import { UpdatePasswordPayload } from '@/core/domain/types/update-password.type';
 
 export function ChangePassword() {

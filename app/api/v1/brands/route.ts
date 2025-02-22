@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { createBrand } from '@/core/application/use-cases/brand/create-brand.use-case';
 import { getBrands } from '@/core/application/use-cases/brand/get-brands.use-case';
-import { loadSearchParams } from '@/core/domain/params/brand.param';
+import { loadSearchParams } from '@/core/domain/brand/brand.param';
 
 export async function GET(request: NextRequest) {
   const filter = loadSearchParams(request);

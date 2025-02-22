@@ -1,5 +1,5 @@
-import { BrandFormSchema } from '@/core/domain/schema/brand.schema';
-import { BrandPayload } from '@/core/domain/types/brand.type';
+import { BrandFormSchema } from '@/core/domain/brand/brand.schema';
+import { BrandPayload } from '@/core/domain/brand/brand.type';
 import { GenericFormConfig } from '@/shared/types/form.type';
 
 export const brandFormConfig: GenericFormConfig<BrandPayload> = {

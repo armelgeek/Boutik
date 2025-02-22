@@ -1,5 +1,5 @@
 import { BrandRepositoryImpl, type BrandRepository } from '@/core/application/repository/brand.repository';
-import type { Brand, BrandPayload, PaginatedBrand } from '@/core/domain/types/brand.type';
+import type { Brand, BrandPayload, PaginatedBrand } from '@/core/domain/brand/brand.type';
 import type { Filter } from '@/shared/lib/types/filter';
 
 export interface BrandService {

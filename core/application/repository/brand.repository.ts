@@ -1,5 +1,5 @@
-import { serializeSearchParams } from '@/core/domain/params/brand.param';
-import type { Brand, BrandPayload, PaginatedBrand } from '@/core/domain/types/brand.type';
+import { serializeSearchParams } from '@/core/domain/brand/brand.param';
+import type { Brand, BrandPayload, PaginatedBrand } from '@/core/domain/brand/brand.type';
 import { API_ENDPOINTS, API_URL } from '@/shared/lib/config/api';
 import type { Filter } from '@/shared/lib/types/filter';
 

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Product } from "@/core/domain/types/product.type";
+import { Product } from "@/core/domain/product/product.type";
 import { useProducts } from "./use-products";
 
 const useLatest = () => {

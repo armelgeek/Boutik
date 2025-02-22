@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Product } from '@/core/domain/types/product.type';
+import { Product } from '@/core/domain/product/product.type';
 import { ShopContext } from '@/features/home/context/ShopContext';
 
 type ShopContextType = {

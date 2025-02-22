@@ -3,7 +3,7 @@ import { useQueryState } from 'nuqs';
 import { parseAsArrayOf, parseAsString } from 'nuqs/server';
 import { useEffect, useState } from 'react';
 import { useShop } from './use-shop';
-import { Product } from '@/core/domain/types/product.type';
+import { Product } from '@/core/domain/product/product.type';
 
 export const useProductFilter = () => {
   const { products, showSearch } = useShop();

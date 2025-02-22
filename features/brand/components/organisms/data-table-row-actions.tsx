@@ -11,7 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { BrandSelectSchema } from '@/core/domain/schema/brand.schema';
+import { BrandSelectSchema } from '@/core/domain/brand/brand.schema';
 
 import { Delete } from './delete';
 import { Edit } from './edit';

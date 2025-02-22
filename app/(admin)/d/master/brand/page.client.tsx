@@ -1,6 +1,6 @@
 'use client';
 
-import { brandKeys } from '@/core/domain/keys/brand.key';
+import { brandKeys } from '@/core/domain/brand/brand.key';
 
 import { columns } from '@/features/brand/components/organisms/columns';
 import { DataTable } from '@/features/brand/components/organisms/data-table';

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Order } from '@/core/domain/types/order.type';
+import { Order } from '@/core/domain/product/order.type';
 import { assets } from '@/assets/assets';
-import { Product } from '@/core/domain/types/product.type';
+import { Product } from '@/core/domain/product/product.type';
 export const useOrdersList = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);

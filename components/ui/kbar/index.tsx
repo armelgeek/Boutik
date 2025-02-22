@@ -9,7 +9,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import RenderResults from './render-result';
-import { navItems } from '@/core/domain/constants/app.constant';
+import { navItems } from '@/shared/lib/constants/app.constant';
 
 export default function KBar({ children }: { children: React.ReactNode }) {
   const router = useRouter();

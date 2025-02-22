@@ -1,5 +1,5 @@
 
-import { Product } from '@/core/domain/types/product.type';
+import { Product } from '@/core/domain/product/product.type';
 import { useShop } from '../hooks/use-shop';
 import Link from 'next/link';
 import Image from 'next/image';

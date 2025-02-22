@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { brandKeys } from '@/core/domain/keys/brand.key';
+import { brandKeys } from '@/core/domain/brand/brand.key';
 
 import { BrandServiceImpl } from '../../../../core/application/services/brand/brand.service';
 

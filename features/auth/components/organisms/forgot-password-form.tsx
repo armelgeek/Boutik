@@ -15,8 +15,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ForgotPasswordPayload } from "@/core/domain/types/forgot-password.type";
-import { forgotPasswordSchema } from "@/core/domain/schema/auth/forgot-password.schema";
+import { ForgotPasswordPayload } from "@/core/domain/auth/forgot-password.type";
+import { forgotPasswordSchema } from "@/core/domain/auth/forgot-password.schema";
 import { useFormHandler } from "@/shared/hooks/use-form-handler";
 import { cn } from '@/shared/lib/utils';
 import useForgotPassword from '@/features/auth/hooks/useForgotPassword';
