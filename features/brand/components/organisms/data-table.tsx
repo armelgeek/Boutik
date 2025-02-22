@@ -21,7 +21,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-interface GenericDataTableProps<TData, TValue> {
+import { DataTableToolbar } from './data-table-toolbar';
+
+interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   meta: {
@@ -42,12 +44,9 @@ interface GenericDataTableProps<TData, TValue> {
   onFilterChange?: (filters: ColumnFiltersState) => void;
   isLoading: boolean;
   isError: boolean;
-  renderToolbar: (table: ReturnType<typeof useReactTable>) => React.ReactNode;
-  emptyMessage?: string;
-  loadingMessage?: string;
 }
 
-export function GenericDataTable<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
   meta,
@@ -64,10 +63,7 @@ export function GenericDataTable<TData, TValue>({
   onPageSizeChange,
   onFilterChange,
   isLoading,
-  renderToolbar,
-  emptyMessage = 'No results.',
-  loadingMessage = 'Loading...',
-}: GenericDataTableProps<TData, TValue>) {
+}: DataTableProps<TData, TValue>) {
   const sort: ColumnSort[] = sortBy && sortDir ? [{ id: sortBy, desc: sortDir === 'desc' }] : [];
 
   const table = useReactTable({
@@ -113,7 +109,7 @@ export function GenericDataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      {renderToolbar(table)}
+      <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -142,7 +138,7 @@ export function GenericDataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {loadingMessage}
+                  Loading...
                 </TableCell>
               </TableRow>
             ) : data.length === 0 ? (
@@ -151,7 +147,7 @@ export function GenericDataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {emptyMessage}
+                  No result.
                 </TableCell>
               </TableRow>
             ) : (

@@ -9,15 +9,10 @@ import { Brand } from '@/core/domain/types/brand.type';
 
 export function BrandClientPage() {
   const queryParams = useQueryStateParams();
-  const filter = {
-    value: queryParams.search || '',
-    field: 'name',
-    operator: 'contains' as const
-  };
   
   return (
     <GenericDataTablePage<Brand>
-      queryKey={[brandKeys.all[0], 'list', filter]}
+      queryKey={brandKeys.list(queryParams)}
       service={new BrandServiceImpl()}
       columns={columns}
     />
