@@ -16,8 +16,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { LoginFormSchema } from '@/core/domain/auth/auth.schema';
-import { LoginPayload } from '@/core/domain/auth/auth.type';
+import { LoginFormSchema } from '@/features/auth/config/auth.schema';
+import { LoginPayload } from '@/features/auth/config/auth.type';
 import { cn } from '@/shared/lib/utils';
 import useLogin from '../../hooks/useLogin';
 import FormWrapper from '@/shared/components/molecules/form/FormWrapper';

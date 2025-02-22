@@ -15,10 +15,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { brandKeys } from '@/core/domain/brand/brand.key';
-import { BrandPayload } from '@/core/domain/brand/brand.type';
+import { brandKeys } from '@/features/brand/config/brand.key';
+import { BrandPayload } from '@/features/brand/config/brand.type';
 
-import { BrandServiceImpl } from '../../../../core/application/services/brand/brand.service';
+import { BrandServiceImpl } from '../../domain/brand.service';
 
 export function Add() {
   const queryClient = useQueryClient();

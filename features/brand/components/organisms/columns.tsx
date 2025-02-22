@@ -4,8 +4,8 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { DataTableColumnHeader } from '@/shared/components/molecules/datatable/data-table-column-header';
 import { Badge } from '@/components/ui/badge';
-import { statuses } from '@/core/domain/brand/brand.constant';
-import type { Brand } from '@/core/domain/brand/brand.type';
+import { statuses } from '@/features/brand/config/brand.constant';
+import type { Brand } from '@/features/brand/config/brand.type';
 import { cn } from '@/shared/lib/utils';
 
 import { DataTableRowActions } from './data-table-row-actions';

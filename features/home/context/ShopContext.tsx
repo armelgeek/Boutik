@@ -3,7 +3,7 @@ import { createContext, useState } from 'react';
 import { products } from '../../../assets/assets';
 import { toast } from 'sonner';
 import type { StaticImageData } from 'next/image';
-import { Order } from '@/core/domain/product/order.type';
+import { Order } from '@/features/products/config/order.type';
 
 export const ShopContext = createContext<unknown>(null);
 

@@ -1,4 +1,4 @@
-import { Product } from '@/core/domain/product/product.type';
+import { Product } from '@/features/products/config/product.type';
 import ProductItem from '../atoms/product-item';
 
 const Products = ({ products }: { products: Product[] }) => {

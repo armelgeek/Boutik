@@ -1,5 +1,5 @@
 'use client';
-import { CartItem } from "@/core/domain/product/cart.type";
+import { CartItem } from "@/features/products/config/cart.type";
 import { useState, useEffect, useMemo } from "react";
 import { StaticImageData } from "next/image";
 

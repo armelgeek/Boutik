@@ -1,4 +1,4 @@
-import Collection from '@/features/products/organisms/collection';
+import Collection from '@/features/products/components/organisms/collection';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

@@ -3,7 +3,7 @@ import 'server-only';
 import { eq } from 'drizzle-orm';
 import slugify from 'slugify';
 
-import { BrandPayload } from '@/core/domain/brand/brand.type';
+import { BrandPayload } from '@/features/brand/config/brand.type';
 import { db } from '@/drizzle/db';
 import { brands } from '@/drizzle/schema/brands';
 

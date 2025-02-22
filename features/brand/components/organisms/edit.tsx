@@ -11,12 +11,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BrandForm } from '@/features/brand/components/molecules/brand-form';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { brandKeys } from '@/core/domain/brand/brand.key';
-import { Brand, BrandPayload } from '@/core/domain/brand/brand.type';
+import { brandKeys } from '@/features/brand/config/brand.key';
+import { Brand, BrandPayload } from '@/features/brand/config/brand.type';
 
 
 
-import { BrandServiceImpl } from '../../../../core/application/services/brand/brand.service';
+import { BrandServiceImpl } from '../../domain/brand.service';
 
 
 interface EditProps {

@@ -17,9 +17,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { brandKeys } from '@/core/domain/brand/brand.key';
+import { brandKeys } from '@/features/brand/config/brand.key';
 
-import { BrandServiceImpl } from '../../../../core/application/services/brand/brand.service';
+import { BrandServiceImpl } from '../../domain/brand.service';
 
 interface DeleteProps {
   slug: string;

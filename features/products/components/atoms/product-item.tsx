@@ -1,6 +1,6 @@
 
-import { Product } from '@/core/domain/product/product.type';
-import { useShop } from '../hooks/use-shop';
+import { Product } from '@/features/products/config/product.type';
+import { useShop } from '../../hooks/use-shop';
 import Link from 'next/link';
 import Image from 'next/image';
 

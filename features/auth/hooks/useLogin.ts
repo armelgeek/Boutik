@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoginPayload } from '@/core/domain/auth/auth.type';
+import { LoginPayload } from '@/features/auth/config/auth.type';
 import { authClient } from '@/auth-client';
 const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);

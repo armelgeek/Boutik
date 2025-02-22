@@ -8,7 +8,7 @@ import {
   deleteUserSchema,
   banUserSchema,
   tableStateSchema,
-} from '@/core/domain/auth/user.schema';
+} from '@/features/auth/config/user.schema';
 import { CreateUserInput,UpdateUserInput,DeleteUserInput,BanUserInput, TableState} from '@/core/domain/types/admin/user.type';
 
 interface UseAdminTableProps {

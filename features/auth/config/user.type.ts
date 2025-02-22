@@ -4,7 +4,7 @@ import {
   createUserSchema,
   deleteUserSchema, filterSchema, paginationSchema, searchSchema, sortSchema, tableStateSchema,
   updateUserSchema,
-} from '@/core/domain/auth/user.schema';
+} from '@/features/auth/config/user.schema';
 
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;

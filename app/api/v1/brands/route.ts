@@ -2,9 +2,9 @@ import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { auth } from '@/auth';
-import { createBrand } from '@/core/application/use-cases/brand/create-brand.use-case';
-import { getBrands } from '@/core/application/use-cases/brand/get-brands.use-case';
-import { loadSearchParams } from '@/core/domain/brand/brand.param';
+import { createBrand } from '@/features/brand/domain/use-cases/brand/create-brand.use-case';
+import { getBrands } from '@/features/brand/domain/use-cases/brand/get-brands.use-case';
+import { loadSearchParams } from '@/features/brand/config/brand.param';
 
 export async function GET(request: NextRequest) {
   const filter = loadSearchParams(request);

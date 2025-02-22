@@ -6,7 +6,7 @@ import { LoadingButton } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { resetPasswordSchema } from '@/core/domain/auth/reset-password.schema';
+import { resetPasswordSchema } from '@/features/auth/config/reset-password.schema';
 import { ResetPasswordPayload } from '@/core/domain/types/reset-password.type';
 import { useFormHandler } from '@/shared/hooks/use-form-handler';
 import useResetPassword from '@/features/auth/hooks/useResetPassword';

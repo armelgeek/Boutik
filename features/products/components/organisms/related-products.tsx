@@ -2,7 +2,7 @@
 import Heading from '@/shared/components/atoms/heading';
 import Products from '../molecules/products';
 import ProductsSkeleton from '../molecules/products-skeleton';
-import useRelatedProducts from '../hooks/use-related-products';
+import useRelatedProducts from '../../hooks/use-related-products';
 
 const RelatedProducts = ({ category, subCategory }:{ category: string, subCategory: string}) => {
   const { data,isLoading } = useRelatedProducts({ category, subCategory });
