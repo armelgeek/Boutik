@@ -10,8 +10,7 @@
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "tsx ./drizzle/migrate.ts",
     "db:studio": "npx drizzle-kit studio",
-    "generate:crud": "tsx ./scripts/generate-crud.ts",
-    "generate:domain": "tsx ./scripts/generate-domain.ts"
+    "generate:crud": "tsx ./scripts/generate-crud.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.4",
