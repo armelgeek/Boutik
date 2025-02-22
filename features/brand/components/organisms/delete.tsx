@@ -1,76 +1,49 @@
-// 'use client';
+'use client';
 
-import { useState } from 'react';
-
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { brandKeys } from '@/core/domain/keys/brand.key';
-
-import { BrandServiceImpl } from '../../../../core/application/services/brand/brand.service';
+import { useTransition } from 'react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
+import { deleteBrand } from '../../actions';
+import { toast } from 'sonner';
 
 interface DeleteProps {
   slug: string;
-  isOpenDropdown: boolean;
-  setIsOpenDropdown: (open: boolean) => void;
 }
 
-export function Delete({ slug, isOpenDropdown, setIsOpenDropdown }: DeleteProps) {
-  const queryClient = useQueryClient();
+export function Delete({ slug }: DeleteProps) {
+  const [isPending, startTransition] = useTransition();
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: (slug: string) => {
-      return new BrandServiceImpl().delete(slug);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: brandKeys.all });
-    },
-  });
-
-  const handleDelete = async (slug: string) => {
-    mutate(slug);
-    setIsOpen(false);
-    setIsOpenDropdown(false);
+  const onDelete = async () => {
+    startTransition(async () => {
+      try {
+        await deleteBrand(slug);
+        toast.success('Brand deleted successfully');
+      } catch (error) {
+        toast.error('Failed to delete brand');
+      }
+    });
   };
 
   return (
-    <AlertDialog
-      open={isOpen}
-      onOpenChange={(open) => setIsOpen(open)}
-    >
+    <AlertDialog>
       <AlertDialogTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>Delete</DropdownMenuItem>
+        <Button variant="ghost" size="icon">
+          <Trash2 className="size-4" />
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your account and remove your
-            data from our servers.
+            This action cannot be undone. This will permanently delete this
+            brand and remove the data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => handleDelete(slug)}
-            disabled={isPending}
-          >
-            {isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
-            Continue
+          <AlertDialogAction onClick={onDelete} disabled={isPending}>
+            Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

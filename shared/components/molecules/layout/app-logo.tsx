@@ -1,7 +1,5 @@
 "use client";
-
-import { cn } from "@/shared/lib/utils";
-import { kAppAbbr, kAppName } from "@/core/domain/constants/app.constant";
+import { kAppAbbr, kAppName } from "@/shared/constants/app.constant";
 import Link from 'next/link';
 
 export function AppLogo() {

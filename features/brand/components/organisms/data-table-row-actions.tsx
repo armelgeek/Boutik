@@ -11,10 +11,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { BrandSelectSchema } from '@/core/domain/schema/brand.schema';
 
 import { Delete } from './delete';
 import { Edit } from './edit';
+import { Brand } from '@/drizzle/schema/brands';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -23,7 +23,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const brand = BrandSelectSchema.parse(row.original);
+  const brand = row.original as Brand;
 
   return (
     <DropdownMenu
@@ -48,14 +48,10 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
         className="w-[160px]"
       >
         <Edit
-          slug={brand.slug}
-          isOpenDropdown={isOpen}
-          setIsOpenDropdown={setIsOpen}
+          brand={brand}
         />
         <Delete
           slug={brand.slug}
-          isOpenDropdown={isOpen}
-          setIsOpenDropdown={setIsOpen}
         />
       </DropdownMenuContent>
     </DropdownMenu>

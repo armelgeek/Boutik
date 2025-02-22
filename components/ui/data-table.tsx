@@ -21,7 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { DataTableToolbar } from './data-table-toolbar';
+import { DataTableToolbar } from '../../features/brand/components/organisms/data-table-toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -83,8 +83,8 @@ export function DataTable<TData, TValue>({
     manualFiltering: true,
     manualSorting: true,
     manualPagination: true,
-    pageCount: meta.totalPages,
-    rowCount: meta.total,
+    pageCount: 0,
+    rowCount: 0,
     onGlobalFilterChange: (updater) => {
       const value = typeof updater === 'function' ? updater(search || '') : updater;
       onSearchChange(value);

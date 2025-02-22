@@ -1,81 +1,54 @@
 'use client';
 
-import { useState } from 'react';
-
-
-
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-
-
-
-import { BrandForm } from '@/features/brand/components/molecules/brand-form';
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { brandKeys } from '@/core/domain/keys/brand.key';
-import { Brand, BrandPayload } from '@/core/domain/types/brand.type';
-
-
-
-import { BrandServiceImpl } from '../../../../core/application/services/brand/brand.service';
-
+import { useState, useTransition } from 'react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Pencil } from 'lucide-react';
+import { BrandForm } from '../molecules/brand-form';
+import { BrandFormData, updateBrand } from '../../actions';
+import { toast } from 'sonner';
+import { Brand } from '@/drizzle/schema/brands';
 
 interface EditProps {
-  slug: string;
-  isOpenDropdown: boolean;
-  setIsOpenDropdown: (open: boolean) => void;
+  brand: Brand;
 }
 
-export function Edit({ slug, setIsOpenDropdown }: EditProps) {
-  const queryClient = useQueryClient();
+export function Edit({ brand }: EditProps) {
+  const [isPending, startTransition] = useTransition();
+  const [open, setOpen] = useState(false);
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const { data, isPending } = useQuery({
-    queryKey: brandKeys.detail(slug),
-    queryFn: () => new BrandServiceImpl().detail(slug),
-  });
-
-  const { mutate, isPending: isPendingMutation } = useMutation({
-    mutationFn: (payload: BrandPayload) => {
-      return new BrandServiceImpl().update(slug, payload);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: brandKeys.all });
-    },
-  });
-
-  const handleSubmit = async (input: BrandPayload) => {
-    mutate(input);
-    setIsOpen(false);
-    setIsOpenDropdown(false);
+  const onSubmit = async (data: BrandFormData) => {
+    startTransition(async () => {
+      try {
+        await updateBrand(brand.slug, data);
+        toast.success('Brand updated successfully');
+        setOpen(false);
+      } catch (error) {
+        toast.error('Failed to update brand');
+      }
+    });
   };
 
   return (
-    <Sheet
-      open={isOpen}
-      onOpenChange={(open) => setIsOpen(open)}
-    >
-      <SheetTrigger asChild>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>Edit</DropdownMenuItem>
-      </SheetTrigger>
-      <SheetContent className="max-w w-full md:max-w-[500px]">
-        <SheetHeader>
-          <SheetTitle>Edit Brand</SheetTitle>
-          <SheetDescription>Click save when you&#39;re done.</SheetDescription>
-        </SheetHeader>
-
-        <div className="grid gap-4 py-4">
-          {isPending ? (
-            'Loading...'
-          ) : (
-            <BrandForm
-              initialData={data as Brand}
-              onSubmit={handleSubmit}
-              isLoading={isPendingMutation}
-            />
-          )}
-        </div>
-      </SheetContent>
-    </Sheet>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <Pencil className="size-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Brand</DialogTitle>
+          <DialogDescription>
+            Make changes to your brand here.
+          </DialogDescription>
+        </DialogHeader>
+        <BrandForm 
+          initialData={brand} 
+          onSubmit={onSubmit}
+          isSubmitting={isPending}
+        />
+      </DialogContent>
+    </Dialog>
   );
 }

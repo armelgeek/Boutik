@@ -30,7 +30,6 @@ import {
   SidebarRail
 } from '@/components/ui/sidebar';
 import {
-  BadgeCheck,
   ChevronRight,
   ChevronsUpDown,
   GalleryVerticalEnd,
@@ -40,7 +39,7 @@ import {
 import Link from 'next/link';
 import { usePathname,useRouter } from 'next/navigation';
 import * as React from 'react';
-import { navItems } from '@/core/domain/constants/app.constant';
+import { navItems } from '@/shared/constants/app.constant';
 import { Icons } from '@/components/ui/icons';
 import { authClient } from '@/auth-client';
 import { Session } from 'better-auth';

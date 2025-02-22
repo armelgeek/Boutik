@@ -1,17 +1,24 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
-import { Search } from 'lucide-react';
 
 import { DataTableFacetedFilter } from '@/shared/components/molecules/datatable/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/shared/components/molecules/datatable/data-table-view-options';
 import { DebouncedInput } from '@/components/ui/debounced-input';
-import { statuses } from '@/core/domain/constants/brand.constant';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
-
+export const statuses = [
+  {
+    value: 'active',
+    label: 'Active',
+  },
+  {
+    value: 'inactive',
+    label: 'Inactive',
+  },
+];
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   return (
     <div className="flex items-center justify-between">

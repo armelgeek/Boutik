@@ -3,7 +3,7 @@
 import { brandKeys } from '@/core/domain/keys/brand.key';
 
 import { columns } from '@/features/brand/components/organisms/columns';
-import { DataTable } from '@/features/brand/components/organisms/data-table';
+import { DataTable } from '@/components/ui/data-table';
 import { BrandServiceImpl } from '@/core/application/services/brand/brand.service';
 import { useAdvancedTable } from '@/shared/hooks/use-advanced-table';
 import { SortDirection } from '@tanstack/react-table';

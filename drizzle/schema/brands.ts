@@ -26,3 +26,6 @@ export const brands = pgTable(
     updatedAt: timestamp('updated_at', { mode: 'string' }).notNull().defaultNow(),
   },
 );
+
+export type Brand = typeof brands.$inferSelect;
+
