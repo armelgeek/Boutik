@@ -1,5 +1,3 @@
-"use client";
-
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
@@ -10,14 +8,14 @@ import { ControlledUpload } from '@/shared/components/molecules/form/ControlledU
 import { useFormHandler } from '@/shared/hooks/use-form-handler';
 import { Brand, BrandPayload } from '../../config/brand.type';
 import { BrandFormSchema } from '../../config/brand.schema';
-import { createBrand, updateBrand } from '../../actions/brand.action';
 
 interface BrandFormProps {
   initialData: Brand | null;
+  onSubmit: (input: BrandPayload) => Promise<void>;
   onSuccess?: () => void;
 }
 
-export const BrandForm = ({ initialData = null, onSuccess }: BrandFormProps) => {
+export const BrandForm = ({ initialData = null, onSubmit, onSuccess }: BrandFormProps) => {
   const { form, handleSubmit, isSubmitting } = useFormHandler<BrandPayload>({
     schema: BrandFormSchema,
     initialValues: initialData || { 
@@ -26,13 +24,7 @@ export const BrandForm = ({ initialData = null, onSuccess }: BrandFormProps) => 
       status: 'active', 
       image: null 
     },
-    onSubmit: async (data) => {
-      if (initialData) {
-        await updateBrand(initialData.slug, data);
-      } else {
-        await createBrand(data);
-      }
-    },
+    onSubmit,
     onSuccess,
     resetAfterSubmit: !initialData,
   });
