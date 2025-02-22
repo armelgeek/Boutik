@@ -6,12 +6,13 @@ interface Field {
     name: string;
     type: string;
     required: boolean;
-    length?: number;
 }
 
 interface CrudConfig {
     name: string;
     fields: Field[];
+    generateApi: boolean;
+    generatePage: boolean;
 }
 
 const rl = readline.createInterface({
@@ -26,35 +27,40 @@ const question = (query: string): Promise<string> => {
 };
 
 async function generateDrizzleSchema(config: CrudConfig) {
-    const schemaContent = `import { sql } from 'drizzle-orm';
-import { pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-
+    const schemaContent = `import { sql } from "drizzle-orm";
+import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const ${config.name.toLowerCase()} = pgTable(
     '${config.name.toLowerCase()}',
     {
-        ${config.name.toLowerCase()}Id: uuid('${config.name.toLowerCase()}_id')
-            .primaryKey()
-            .default(sql\`gen_random_uuid()\`),
-        slug: varchar('slug', { length: 255 }).notNull().unique(),
+        id: uuid('id').primaryKey().default(sql\`gen_random_uuid()\`),
 ${config.fields.map(field => {
         let fieldType = '';
         switch (field.type) {
             case 'string':
-                fieldType = `varchar('${field.name}', { length: ${field.length || 255} })`;
+                fieldType = 'varchar';
                 break;
             case 'text':
-                fieldType = `text('${field.name}')`;
+                fieldType = 'text';
+                break;
+            case 'number':
+                fieldType = 'integer';
+                break;
+            case 'boolean':
+                fieldType = 'boolean';
                 break;
             default:
-                fieldType = `varchar('${field.name}', { length: ${field.length || 255} })`;
+                fieldType = 'varchar';
         }
-        return `        ${field.name}: ${fieldType}${field.required ? '.notNull()' : ''},`;
+        return `        ${field.name}: ${fieldType}('${field.name}')${field.required ? '.notNull()' : ''},`;
     }).join('\n')}
-        createdAt: timestamp('created_at').notNull().defaultNow(),
-        updatedAt: timestamp('updated_at').notNull().defaultNow(),
+        created_at: timestamp('created_at').notNull().defaultNow(),
+        updated_at: timestamp('updated_at').notNull().defaultNow(),
     }
-);`;
+);
+
+export type ${config.name} = typeof ${config.name.toLowerCase()}.$inferSelect;
+export type Insert${config.name} = typeof ${config.name.toLowerCase()}.$inferInsert;`;
 
     await fs.writeFile(
         path.join('drizzle/schema', `${config.name.toLowerCase()}.ts`),
@@ -63,49 +69,34 @@ ${config.fields.map(field => {
     );
 }
 
-async function generateTypes(config: CrudConfig) {
-    const typeContent = `import { z } from 'zod';
-
-import { ${config.name}FormSchema, ${config.name}SelectSchema } from '@/core/domain/schema/${config.name.toLowerCase()}.schema';
-import type { Pagination } from '@/shared/lib/types/pagination';
-
-export type ${config.name} = z.infer<typeof ${config.name}SelectSchema>;
-
-export type ${config.name}Payload = z.infer<typeof ${config.name}FormSchema>;
-
-export interface Paginated${config.name} {
-    data: ${config.name}[];
-    meta: {
-        pagination?: Pagination;
-    };
-}`;
-
-    await fs.writeFile(
-        path.join('core/domain/types', `${config.name.toLowerCase()}.type.ts`),
-        typeContent,
-        'utf-8'
-    );
-}
-
 async function generateParams(config: CrudConfig) {
-    const paramContent = `import {
-    createLoader,
-    createSerializer,
-    parseAsArrayOf,
-    parseAsInteger,
-    parseAsString,
-} from 'nuqs/server';
+    const paramContent = `import { z } from 'zod';
 
-export const ${config.name.toLowerCase()}SearchParams = {
-    search: parseAsString.withDefault(''),
-    page: parseAsInteger.withDefault(1),
-    pageSize: parseAsInteger.withDefault(10),
-    sortBy: parseAsString.withDefault(''),
-    sortDir: parseAsString.withDefault('')
-};
+export const Create${config.name}Params = z.object({
+${config.fields.map(field => {
+        let zodType = '';
+        switch (field.type) {
+            case 'string':
+            case 'text':
+                zodType = 'string()';
+                break;
+            case 'number':
+                zodType = 'number()';
+                break;
+            case 'boolean':
+                zodType = 'boolean()';
+                break;
+            default:
+                zodType = 'string()';
+        }
+        return `    ${field.name}: z.${zodType}${field.required ? '' : '.optional()'},`;
+    }).join('\n')}
+});
 
-export const loadSearchParams = createLoader(${config.name.toLowerCase()}SearchParams);
-export const serializeSearchParams = createSerializer(${config.name.toLowerCase()}SearchParams);`;
+export const Update${config.name}Params = Create${config.name}Params.partial();
+
+export type Create${config.name}Params = z.infer<typeof Create${config.name}Params>;
+export type Update${config.name}Params = z.infer<typeof Update${config.name}Params>;`;
 
     await fs.writeFile(
         path.join('core/domain/params', `${config.name.toLowerCase()}.param.ts`),
@@ -114,220 +105,149 @@ export const serializeSearchParams = createSerializer(${config.name.toLowerCase(
     );
 }
 
-async function generateSchema(config: CrudConfig) {
-    const schemaContent = `import { z } from 'zod';
+async function generateApiEndpoint(config: CrudConfig) {
+    const apiContent = `import { db } from "@/drizzle/db";
+import { ${config.name.toLowerCase()} } from "@/drizzle/schema/${config.name.toLowerCase()}";
+import { Create${config.name}Params, Update${config.name}Params } from "@/core/domain/params/${config.name.toLowerCase()}.param";
+import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 
-export const ${config.name}SelectSchema = z.object({
-    ${config.name.toLowerCase()}Id: z.string().uuid(),
-    slug: z.string(),
-${config.fields.map(field => {
-        let zodType = 'string()';
-        if (!field.required) {
-            zodType += '.nullable()';
-        }
-        return `    ${field.name}: z.${zodType},`;
-    }).join('\n')}
-    createdAt: z.string(),
-    updatedAt: z.string(),
-});
+export async function GET() {
+    try {
+        const items = await db.select().from(${config.name.toLowerCase()});
+        return NextResponse.json(items);
+    } catch (error) {
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
 
-export const ${config.name}FormSchema = z.object({
-    slug: z.string(),
-${config.fields.map(field => {
-        let zodType = 'string()';
-        if (!field.required) {
-            zodType += '.nullable()';
-        }
-        return `    ${field.name}: z.${zodType},`;
-    }).join('\n')},
-});`;
+export async function POST(request: Request) {
+    try {
+        const body = await request.json();
+        const params = Create${config.name}Params.parse(body);
+        
+        const [item] = await db.insert(${config.name.toLowerCase()})
+            .values(params)
+            .returning();
+            
+        return NextResponse.json(item);
+    } catch (error) {
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
 
+export async function PUT(request: Request) {
+    try {
+        const body = await request.json();
+        const { id, ...params } = Update${config.name}Params.parse(body);
+        
+        const [updated] = await db.update(${config.name.toLowerCase()})
+            .set({ ...params, updated_at: new Date() })
+            .where(eq(${config.name.toLowerCase()}.id, id))
+            .returning();
+            
+        return NextResponse.json(updated);
+    } catch (error) {
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
+
+export async function DELETE(request: Request) {
+    try {
+        const { id } = await request.json();
+        
+        await db.delete(${config.name.toLowerCase()})
+            .where(eq(${config.name.toLowerCase()}.id, id));
+            
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}`;
+
+    const apiDir = path.join('app/api/v1', config.name.toLowerCase());
+    await fs.mkdir(apiDir, { recursive: true });
     await fs.writeFile(
-        path.join('core/domain/schema', `${config.name.toLowerCase()}.schema.ts`),
-        schemaContent,
+        path.join(apiDir, 'route.ts'),
+        apiContent,
         'utf-8'
     );
 }
 
-async function generateRepository(config: CrudConfig) {
-    const repositoryContent = `import { serializeSearchParams } from '@/core/domain/params/${config.name.toLowerCase()}.param';
-import type { ${config.name}, ${config.name}Payload, Paginated${config.name} } from '@/core/domain/types/${config.name.toLowerCase()}.type';
-import { API_ENDPOINTS, API_URL } from '@/shared/lib/config/api';
-import type { Filter } from '@/shared/lib/types/filter';
+async function generateAdminPage(config: CrudConfig) {
+    const pageContent = `'use client';
 
-export interface ${config.name}Repository {
-    list(filter: Filter): Promise<Paginated${config.name}>;
-    detail(slug: string): Promise<${config.name}>;
-    create(payload: ${config.name}Payload): Promise<${config.name}>;
-    update(slug: string, payload: ${config.name}Payload): Promise<{ message: string }>;
-    delete(slug: string): Promise<{ message: string }>;
-}
+import { Button } from "@/shared/components/atoms/button";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/shared/components/atoms/table";
+import { useQuery } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
-export class ${config.name}RepositoryImpl implements ${config.name}Repository {
-    async list(filter: Filter): Promise<Paginated${config.name}> {
-        const serialize = serializeSearchParams(filter);
-        const endpoint = API_ENDPOINTS.${config.name.toLowerCase()}.list(serialize);
-
-        try {
-            const response = await fetch(\`\${API_URL}\${endpoint}\`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
+export default function Page() {
+    const { data: items = [] } = useQuery({
+        queryKey: ['${config.name.toLowerCase()}'],
+        queryFn: async () => {
+            const response = await fetch('/api/v1/${config.name.toLowerCase()}');
             return response.json();
-        } catch (error) {
-            throw new Error('Failed to fetch ${config.name.toLowerCase()} list');
-        }
-    }
+        },
+    });
 
-    async detail(slug: string): Promise<${config.name}> {
-        const endpoint = API_ENDPOINTS.${config.name.toLowerCase()}.detail(slug);
+    return (
+        <div className="flex flex-col space-y-6">
+            <div className="flex items-center justify-between">
+                <h1 className="scroll-m-20 text-3xl font-bold tracking-tight">${config.name}</h1>
+                <Link href={\`/d/${config.name.toLowerCase()}/new\`}>
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add ${config.name}
+                    </Button>
+                </Link>
+            </div>
 
-        try {
-            const response = await fetch(\`\${API_URL}\${endpoint}\`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            return response.json();
-        } catch (error) {
-            throw new Error('Failed to fetch ${config.name.toLowerCase()} detail');
-        }
-    }
-
-    async create(payload: ${config.name}Payload): Promise<${config.name}> {
-        const endpoint = API_ENDPOINTS.${config.name.toLowerCase()}.create;
-
-        try {
-            const response = await fetch(\`\${API_URL}\${endpoint}\`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            return response.json();
-        } catch (error) {
-            throw new Error('Failed to create ${config.name.toLowerCase()}');
-        }
-    }
-
-    async update(slug: string, payload: ${config.name}Payload): Promise<{ message: string }> {
-        const endpoint = API_ENDPOINTS.${config.name.toLowerCase()}.update(slug);
-
-        try {
-            const response = await fetch(\`\${API_URL}\${endpoint}\`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            return response.json();
-        } catch (error) {
-            throw new Error('Failed to update ${config.name.toLowerCase()}');
-        }
-    }
-
-    async delete(slug: string): Promise<{ message: string }> {
-        const endpoint = API_ENDPOINTS.${config.name.toLowerCase()}.delete(slug);
-
-        try {
-            const response = await fetch(\`\${API_URL}\${endpoint}\`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            return response.json();
-        } catch (error) {
-            throw new Error('Failed to delete ${config.name.toLowerCase()}');
-        }
-    }
-}`;
-
-    await fs.writeFile(
-        path.join('core/application/repository', `${config.name.toLowerCase()}.repository.ts`),
-        repositoryContent,
-        'utf-8'
+            <div className="rounded-md border">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+${config.fields.map(field => 
+        `                            <TableHead>${field.name}</TableHead>`
+    ).join('\n')}
+                            <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {items.map((item) => (
+                            <TableRow key={item.id}>
+${config.fields.map(field => 
+        `                                <TableCell>{item.${field.name}}</TableCell>`
+    ).join('\n')}
+                                <TableCell className="text-right">
+                                    <Link href={\`/d/${config.name.toLowerCase()}/\${item.id}\`}>
+                                        <Button variant="outline" size="sm">
+                                            Edit
+                                        </Button>
+                                    </Link>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </div>
     );
-}
-
-async function generateUseCases(config: CrudConfig) {
-    const useCases = ['create', 'delete', 'get', 'update'];
-    const baseDir = path.join('core/application/use-cases', config.name.toLowerCase());
-    await fs.mkdir(baseDir, { recursive: true });
-
-    for (const useCase of useCases) {
-        const useCaseContent = `import type { ${config.name}Repository } from '@/core/application/repository/${config.name.toLowerCase()}.repository';
-import type { ${useCase === 'create' ? `${config.name}Payload` : useCase === 'get' ? `${config.name}` : '{ message: string }'} } from '@/core/domain/types/${config.name.toLowerCase()}.type';
-
-export class ${useCase.charAt(0).toUpperCase() + useCase.slice(1)}${config.name}UseCase {
-    constructor(private readonly repository: ${config.name}Repository) {}
-
-    async execute(${useCase === 'create' ? `payload: ${config.name}Payload` : 'slug: string' + (useCase === 'update' ? `, payload: ${config.name}Payload` : '')}): Promise<${useCase === 'create' ? `${config.name}` : useCase === 'get' ? `${config.name}` : '{ message: string }'}> {
-        return this.repository.${useCase}(${useCase === 'create' ? 'payload' : 'slug' + (useCase === 'update' ? ', payload' : '')});
-    }
 }`;
 
-        await fs.writeFile(
-            path.join(baseDir, `${useCase}-${config.name.toLowerCase()}.use-case.ts`),
-            useCaseContent,
-            'utf-8'
-        );
-    }
-}
-
-async function generateService(config: CrudConfig) {
-    const serviceContent = `import { ${config.name}RepositoryImpl } from '@/core/application/repository/${config.name.toLowerCase()}.repository';
-import { Create${config.name}UseCase } from '@/core/application/use-cases/${config.name.toLowerCase()}/create-${config.name.toLowerCase()}.use-case';
-import { Delete${config.name}UseCase } from '@/core/application/use-cases/${config.name.toLowerCase()}/delete-${config.name.toLowerCase()}.use-case';
-import { Get${config.name}UseCase } from '@/core/application/use-cases/${config.name.toLowerCase()}/get-${config.name.toLowerCase()}.use-case';
-import { Update${config.name}UseCase } from '@/core/application/use-cases/${config.name.toLowerCase()}/update-${config.name.toLowerCase()}.use-case';
-import type { ${config.name}, ${config.name}Payload } from '@/core/domain/types/${config.name.toLowerCase()}.type';
-
-export class ${config.name}Service {
-    private repository: ${config.name}RepositoryImpl;
-    private create${config.name}UseCase: Create${config.name}UseCase;
-    private delete${config.name}UseCase: Delete${config.name}UseCase;
-    private get${config.name}UseCase: Get${config.name}UseCase;
-    private update${config.name}UseCase: Update${config.name}UseCase;
-
-    constructor() {
-        this.repository = new ${config.name}RepositoryImpl();
-        this.create${config.name}UseCase = new Create${config.name}UseCase(this.repository);
-        this.delete${config.name}UseCase = new Delete${config.name}UseCase(this.repository);
-        this.get${config.name}UseCase = new Get${config.name}UseCase(this.repository);
-        this.update${config.name}UseCase = new Update${config.name}UseCase(this.repository);
-    }
-
-    async create(payload: ${config.name}Payload): Promise<${config.name}> {
-        return this.create${config.name}UseCase.execute(payload);
-    }
-
-    async delete(slug: string): Promise<{ message: string }> {
-        return this.delete${config.name}UseCase.execute(slug);
-    }
-
-    async get(slug: string): Promise<${config.name}> {
-        return this.get${config.name}UseCase.execute(slug);
-    }
-
-    async update(slug: string, payload: ${config.name}Payload): Promise<{ message: string }> {
-        return this.update${config.name}UseCase.execute(slug, payload);
-    }
-}`;
-
-    const serviceDir = path.join('core/application/services', config.name.toLowerCase());
-    await fs.mkdir(serviceDir, { recursive: true });
+    const pageDir = path.join('app/(admin)/d', config.name.toLowerCase());
+    await fs.mkdir(pageDir, { recursive: true });
     await fs.writeFile(
-        path.join(serviceDir, `${config.name.toLowerCase()}.service.ts`),
-        serviceContent,
+        path.join(pageDir, 'page.tsx'),
+        pageContent,
         'utf-8'
     );
 }
@@ -337,7 +257,7 @@ async function generateCrud() {
         console.log('🚀 CRUD Generator');
         console.log('----------------');
 
-        const name = await question('Enter model name (PascalCase, ex: Brand): ');
+        const name = await question('Enter model name (PascalCase, ex: Product): ');
         
         const fields: Field[] = [];
         let addMoreFields = true;
@@ -349,70 +269,56 @@ async function generateCrud() {
                 continue;
             }
 
-            const fieldType = await question('Enter field type (string/text): ');
+            const fieldType = await question('Enter field type (string/text/number/boolean): ');
             const isRequired = (await question('Is field required? (y/n): ')).toLowerCase() === 'y';
-            const length = fieldType === 'string' ? parseInt(await question('Enter field length (default: 255): ') || '255') : undefined;
 
             fields.push({
                 name: fieldName,
                 type: fieldType,
-                required: isRequired,
-                length
+                required: isRequired
             });
         }
 
+        const generateApi = (await question('Generate API endpoints? (y/n): ')).toLowerCase() === 'y';
+        const generatePage = (await question('Generate admin page? (y/n): ')).toLowerCase() === 'y';
+
         const config: CrudConfig = {
             name,
-            fields
+            fields,
+            generateApi,
+            generatePage
         };
 
         console.log('\nGenerating files...');
 
-        // Create necessary directories
-        const dirs = [
-            'core/domain/types',
-            'core/domain/params',
-            'core/domain/schema',
-            'core/application/repository',
-            'core/application/use-cases',
-            'core/application/services',
-            'features',
-            'drizzle/schema'
-        ];
-
-        for (const dir of dirs) {
-            await fs.mkdir(dir, { recursive: true });
-        }
-
-        // Generate all files
+        // Generate Drizzle schema
         await generateDrizzleSchema(config);
         console.log('✅ Generated Drizzle schema');
 
-        await generateTypes(config);
-        console.log('✅ Generated types');
-
+        // Generate params
         await generateParams(config);
         console.log('✅ Generated params');
 
-        await generateSchema(config);
-        console.log('✅ Generated schema');
+        if (generateApi) {
+            await generateApiEndpoint(config);
+            console.log('✅ Generated API endpoints');
+        }
 
-        await generateRepository(config);
-        console.log('✅ Generated repository');
-
-        await generateUseCases(config);
-        console.log('✅ Generated use cases');
-
-        await generateService(config);
-        console.log('✅ Generated service');
+        if (generatePage) {
+            await generateAdminPage(config);
+            console.log('✅ Generated admin page');
+        }
 
         console.log('\n🎉 CRUD generation complete!');
         console.log('\nNext steps:');
-        console.log('1. Add API endpoints to API_ENDPOINTS in shared/lib/config/api.ts');
-        console.log('2. Run "npm run db:generate" to generate migrations');
-        console.log('3. Run "npm run db:migrate" to apply migrations');
-        console.log('4. Create API routes in app/api/v1/' + name.toLowerCase());
-        console.log('5. Create admin pages in app/(admin)/d/' + name.toLowerCase());
+        console.log('1. Run "npm run db:generate" to generate migrations');
+        console.log('2. Run "npm run db:migrate" to apply migrations');
+        if (generateApi) {
+            console.log('3. API endpoints available at: /api/v1/' + name.toLowerCase());
+        }
+        if (generatePage) {
+            console.log('4. Admin page available at: /d/' + name.toLowerCase());
+        }
 
     } catch (error) {
         console.error('Error:', error);
