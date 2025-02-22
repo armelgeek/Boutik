@@ -13,8 +13,12 @@ export const API_ENDPOINTS = {
     update: (slug: string) => `/brands/${slug}`,
     delete: (slug: string) => `/brands/${slug}`,
   },
-  upload: {
-    base: '/upload',
-    r2: '/upload/r2',
-  },
+  category: {
+    base: '/categories',
+    list: (qs: string) => `/categories${qs}`,
+    create: '/categories',
+    detail: (slug: string) => `/categories/${slug}`,
+    update: (slug: string) => `/categories/${slug}`,
+    delete: (slug: string) => `/categories/${slug}`,
+  }
 } as const;

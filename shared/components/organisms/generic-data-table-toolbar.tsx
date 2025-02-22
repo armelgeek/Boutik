@@ -3,7 +3,6 @@
 import { Table } from '@tanstack/react-table';
 import { Search } from 'lucide-react';
 
-import { DataTableFacetedFilter } from '@/shared/components/molecules/datatable/data-table-faceted-filter';
 import { DataTableViewOptions } from '@/shared/components/molecules/datatable/data-table-view-options';
 import { DebouncedInput } from '@/components/ui/debounced-input';
 
@@ -38,13 +37,13 @@ export function GenericDataTableToolbar<TData>({
           />
         </div>
 
-        {filterColumn && filterTitle && filterOptions && table.getColumn(filterColumn) && (
+        {/**{filterColumn && filterTitle && filterOptions && table.getColumn(filterColumn) && (
           <DataTableFacetedFilter
             column={table.getColumn(filterColumn)}
             title={filterTitle}
             options={filterOptions}
           />
-        )}
+        )}**/}
       </div>
 
       <DataTableViewOptions table={table} />

@@ -74,7 +74,7 @@ export function DataTable<TData, TValue>({
       isError={isError}
       renderToolbar={renderToolbar}
       emptyMessage="No data found."
-      loadingMessage="Loadind..."
+      loadingMessage="Loading..."
     />
   );
 }

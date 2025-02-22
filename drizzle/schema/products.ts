@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
-import { categories } from "./categories";
+import { category } from "./category";
+
 export const products = pgTable(
     'products',
     {
@@ -8,8 +9,8 @@ export const products = pgTable(
         name: varchar('name', { length: 255 }).notNull(),
         description: text('description').notNull(),
         price: integer('price').notNull(),
-        category_id: uuid('category_id').notNull().references(() => categories.id),
-        sub_category_id: uuid('sub_category_id').notNull().references(() => categories.id),
+        category_id: uuid('category_id').notNull().references(() => category.categoryId),
+        sub_category_id: uuid('sub_category_id').notNull().references(() => category.categoryId),
         date: timestamp('date').notNull().defaultNow(),
         bestseller: boolean('bestseller').notNull().default(false),
     }

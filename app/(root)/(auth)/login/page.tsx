@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { LoginForm } from '@/features/auth/components/organisms/login-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import Heading from '@/shared/components/atoms/heading';
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -14,7 +15,7 @@ export default function LoginPage() {
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl"><Heading text1="Login" /></CardTitle>
           <CardDescription>Enter your email below to login to your account</CardDescription>
         </CardHeader>
         <CardContent>
