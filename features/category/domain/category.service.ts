@@ -1,4 +1,4 @@
-import { serializeSearchParams } from '@/features/brand/config/brand.param';
+import { serializeSearchParams } from '@/features/category/config/category.param';
 import type { Category, CategoryPayload, PaginatedCategory } from '@/features/category/config/category.type';
 import { API_ENDPOINTS, API_URL } from '@/shared/lib/config/api';
 import type { Filter } from '@/shared/lib/types/filter';
