@@ -4,8 +4,8 @@ import { createHash } from 'crypto';
 
 import { sql } from 'drizzle-orm';
 
-import { brandCacheKeys } from '@/core/domain/keys/brand.key';
-import { serializeSearchParams } from '@/core/domain/params/brand.param';
+import { brandCacheKeys } from '@/core/domain/brand/brand.key';
+import { serializeSearchParams } from '@/core/domain/brand/brand.param';
 import { db } from '@/drizzle/db';
 import { brands } from '@/drizzle/schema/brands';
 import { redis } from '@/shared/lib/config/redis';

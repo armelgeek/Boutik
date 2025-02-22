@@ -2,7 +2,7 @@ import 'server-only';
 
 import { eq, sql } from 'drizzle-orm';
 
-import { brandKeys } from '@/core/domain/keys/brand.key';
+import { brandKeys } from '@/core/domain/brand/brand.key';
 import { db } from '@/drizzle/db';
 import { brands } from '@/drizzle/schema/brands';
 import { redis } from '@/shared/lib/config/redis';

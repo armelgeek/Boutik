@@ -2,7 +2,7 @@ import { createHash } from 'crypto';
 
 import { eq } from 'drizzle-orm';
 
-import { brandCacheKeys } from '@/core/domain/keys/brand.key';
+import { brandCacheKeys } from '@/core/domain/brand/brand.key';
 import { db } from '@/drizzle/db';
 import { brands } from '@/drizzle/schema';
 import { redis } from '@/shared/lib/config/redis';
