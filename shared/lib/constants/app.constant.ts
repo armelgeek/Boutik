@@ -56,6 +56,14 @@ export const navItems: NavItem[] = [
     shortcut: ['p', 'p'],
     isActive: false,
     items: []
+  },
+  {
+    title: 'Products',
+    url: '/d/master/products',
+    icon: 'product',
+    shortcut: ['p', 'p'],
+    isActive: false,
+    items: []
   }
 ];
 

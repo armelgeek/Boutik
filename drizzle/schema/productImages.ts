@@ -11,3 +11,6 @@ export const product_images = pgTable(
     }
 );
 
+
+export type ProductImage = typeof product_images.$inferInsert;
+export type ProductImageOnProduct = typeof product_images.$inferSelect;

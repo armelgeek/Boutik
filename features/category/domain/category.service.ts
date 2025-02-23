@@ -9,6 +9,7 @@ export interface CategoryService {
   create(payload: CategoryPayload): Promise<Category>;
   update(slug: string, payload: CategoryPayload): Promise<{ message: string }>;
   remove(slug: string): Promise<{ message: string }>;
+  sub(categoryId: string):  Promise<PaginatedCategory>
 }
 
 export class CategoryServiceImpl implements CategoryService {
@@ -56,6 +57,18 @@ export class CategoryServiceImpl implements CategoryService {
     return this.fetchData<{ message: string }>(`${API_URL}${API_ENDPOINTS.categories.delete(slug)}`, {
       headers: { 'Content-Type': 'application/json' },
       method: 'DELETE',
+    });
+  }
+  async sub(categoryId: string):  Promise<PaginatedCategory> {
+    return this.fetchData<PaginatedCategory>(`${API_URL}${API_ENDPOINTS.categories.sub(categoryId)}`, {
+      headers: { 'Content-Type': 'application/json' },
+      method: 'GET',
+    });
+  }
+   async selectCategory():  Promise<PaginatedCategory> {
+    return this.fetchData<PaginatedCategory>(`${API_URL}${API_ENDPOINTS.categories.selectCategory()}`, {
+      headers: { 'Content-Type': 'application/json' },
+      method: 'GET',
     });
   }
 }

@@ -20,5 +20,15 @@ export const API_ENDPOINTS = {
     detail: (slug: string) => `/categories/${slug}`,
     update: (slug: string) => `/categories/${slug}`,
     delete: (slug: string) => `/categories/${slug}`,
+    sub: (categoryId: string) => `/subcategories/${categoryId}`,
+    selectCategory: () => `/selectCategories`,
+  },
+  products: {
+    base: '/products',
+    list: (qs: string) => `/products${qs}`,
+    create: '/products',
+    detail: (slug: string) => `/products/${slug}`,
+    update: (slug: string) => `/products/${slug}`,
+    delete: (slug: string) => `/products/${slug}`,
   },
 } as const;

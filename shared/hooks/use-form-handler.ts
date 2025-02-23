@@ -12,15 +12,16 @@ interface UseFormHandlerProps<T> {
 }
 
 export const useFormHandler = <T extends object>({
-                                                   schema,
-                                                   initialValues,
-                                                   onSubmit,
-                                                   onSuccess,
-                                                   resetAfterSubmit = false,
-                                                 }: UseFormHandlerProps<T>): {
+  schema,
+  initialValues,
+  onSubmit,
+  onSuccess,
+  resetAfterSubmit = false,
+}: UseFormHandlerProps<T>): {
   form: UseFormReturn<T>;
   handleSubmit: (e: SyntheticEvent<HTMLFormElement, SubmitEvent>) => Promise<void>;
   isSubmitting: boolean;
+  errors: UseFormReturn<T>['formState']['errors'];
 } => {
   const hasInitialized = useRef(false);
   const form = useForm<T>({
@@ -52,10 +53,11 @@ export const useFormHandler = <T extends object>({
       console.error('Form submission error:', error);
     }
   };
-
+  console.log('[!] Errors', form.formState.errors);
   return {
     form,
     handleSubmit,
     isSubmitting: form.formState.isSubmitting,
+    errors: form.formState.errors,
   };
 };

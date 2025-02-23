@@ -27,7 +27,7 @@ interface DeleteProps {
   setIsOpenDropdown: (open: boolean) => void;
 }
 
-export function Delete({ slug, isOpenDropdown, setIsOpenDropdown }: DeleteProps) {
+export function Delete({ slug, setIsOpenDropdown }: DeleteProps) {
   const queryClient = useQueryClient();
 
   const [isOpen, setIsOpen] = useState(false);
