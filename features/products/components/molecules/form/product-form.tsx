@@ -23,14 +23,14 @@ interface ProductFormProps {
 export const ProductForm = ({ initialData = null, onSubmit, categories, onSuccess }: ProductFormProps) => {
   const { form, handleSubmit, isSubmitting } = useFormHandler<ProductPayload>({
     schema: ProductFormSchema,
-    initialValues: initialData || {
-      name: '',
-      price: 0,
-      description: '',
-      category_id: null,
-      sub_category_id: null,
-      images: [],
-      sizes: [] as string[]
+    initialValues: {
+      name: initialData?.name || '',
+      price: initialData?.price || 0,
+      description: initialData?.description || '',
+      category_id: initialData?.category_id || undefined,
+      sub_category_id: initialData?.sub_category_id || undefined,
+      images: initialData?.images || [],
+      sizes: initialData?.sizes || []
     },
     onSubmit,
     onSuccess

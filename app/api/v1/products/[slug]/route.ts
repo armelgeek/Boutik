@@ -44,5 +44,5 @@ export async function DELETE(
   const slug = (await params).slug;
   await deleteProduct(slug);
 
-  return NextResponse.json({ message: 'Brand deleted successfully' });
+  return NextResponse.json({ message: 'Product deleted successfully' });
 }

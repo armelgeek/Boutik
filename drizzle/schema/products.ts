@@ -10,9 +10,11 @@ export const products = pgTable(
         slug: varchar('slug', { length: 255 }).notNull().unique(),
         description: text('description').notNull(),
         price: integer('price').notNull(),
+        sizes: text('sizes').array(),
         category_id: uuid('category_id').notNull().references(() => categories.id),
         sub_category_id: uuid('sub_category_id').references(() => subCategories.id),
         date: timestamp('date').notNull().defaultNow(),
         bestseller: boolean('bestseller').notNull().default(false),
+        images: text('images').array(),
     }
 );
