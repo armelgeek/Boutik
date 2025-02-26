@@ -2,6 +2,7 @@ import 'server-only';
 import { sql } from 'drizzle-orm';
 import { db } from '@/drizzle/db';
 import { products } from '@/drizzle/schema/products';
+import { categories } from '@/drizzle/schema/categories';
 import type { Filter } from '@/shared/lib/types/filter';
 import { calculatePagination } from '@/shared/lib/utils/calculate-pagination';
 import { createPagination } from '@/shared/lib/utils/create-pagination';
@@ -10,13 +11,13 @@ import { filterWhereClause } from '@/shared/lib/utils/filter-where-clause';
 
 export async function getProducts(filter: Filter) {
   const searchColumns = ['name'];
-  const sortColumns = ['name','date'];
+  const sortColumns = ['name', 'date'];
 
   const whereClause = {
     search: filter.search
   };
   const conditions = filterWhereClause(searchColumns, whereClause);
-  const sort = filterOrderByClause(sortColumns, filter.sortBy, filter.sortDir);
+  // const sort = filterOrderByClause(sortColumns, filter.sortBy, filter.sortDir);
 
   const [{ count }] = await db
     .select({
@@ -39,42 +40,33 @@ export async function getProducts(filter: Filter) {
         id: string;
         name: string;
         slug: string;
-        created_at: Date;
-        updated_at: Date;
       }>`json_build_object(
         'id', category.id,
         'name', category.name,
-        'slug', category.slug,
-        'created_at', category.created_at,
-        'updated_at', category.updated_at
+        'slug', category.slug
       )`,
       sub_category: sql<{
         id: string;
         name: string;
         slug: string;
-        created_at: Date;
-        updated_at: Date;
       }>`json_build_object(
         'id', sub_category.id,
         'name', sub_category.name,
-        'slug', sub_category.slug,
-        'created_at', sub_category.created_at,
-        'updated_at', sub_category.updated_at
+        'slug', sub_category.slug
       )`,
       created_at: products.date,
-
     })
     .from(products)
     .leftJoin(
-      sql`${products} AS category`,
+      sql`${categories} AS category`,
       sql`category.id = ${products.category_id}`
     )
     .leftJoin(
-      sql`${products} AS sub_category`,
+      sql`${categories} AS sub_category`,
       sql`sub_category.id = ${products.sub_category_id}`
     )
     .where(conditions)
-    .orderBy(sort)
+    //.orderBy(sort)
     .limit(itemsPerPage)
     .offset(offset);
 

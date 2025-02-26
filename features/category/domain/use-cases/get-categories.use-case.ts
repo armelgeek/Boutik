@@ -10,7 +10,7 @@ import { filterWhereClause } from '@/shared/lib/utils/filter-where-clause';
 
 export async function getCategories(filter: Filter) {
   const searchColumns = ['name'];
-  const sortColumns = ['name', 'updated_at'];
+  const sortColumns = ['name'];
 
   const whereClause = {
     search: filter.search

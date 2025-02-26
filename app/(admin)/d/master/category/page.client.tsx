@@ -2,11 +2,11 @@
 
 import { categoryKeys } from '@/features/category/config/category.key';
 import { columns } from '@/features/category/components/organisms/columns';
-import { DataTable } from '@/features/category/components/organisms/data-table';
 import { useAdvancedTable } from '@/shared/hooks/use-advanced-table';
 import { SortDirection } from '@tanstack/react-table';
 import { useQueryStateParams } from '@/shared/hooks/use-query-state-params';
 import { categoryService } from '@/features/category/domain/category.service';
+import { DataTable } from '@/shared/components/molecules/datatable/data-table';
 
 export function CategoryClientPage() {
   const queryParams = useQueryStateParams();

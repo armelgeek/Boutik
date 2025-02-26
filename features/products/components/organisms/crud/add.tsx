@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/sheet';
 import { SelectOption } from '@/shared/components/molecules/form/ControlledSelect';
 import { ProductPayload } from '@/features/products/config/product.type';
-import { ProductServiceImpl } from '@/features/products/domain/category.service';
+import { ProductServiceImpl } from '@/features/products/domain/product.service';
 import { productKeys } from '@/features/products/config/product.key';
 import { ProductForm } from '../../molecules/form/product-form';
 type Props = {

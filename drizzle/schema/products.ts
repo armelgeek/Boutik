@@ -18,3 +18,4 @@ export const products = pgTable(
         images: text('images').array(),
     }
 );
+export const ProductSelectSchema = typeof products.$inferSelect;

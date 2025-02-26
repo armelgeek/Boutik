@@ -14,8 +14,8 @@ import {
 
 import { Delete } from './delete';
 import { Edit } from './edit';
-import { useCategories } from '../../hooks/use-categories';
-import { Category } from '../../config/category.type';
+import { useCategories } from '@/features/category/hooks/use-categories';
+import { Product } from '@/features/products/config/product.type';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -23,8 +23,8 @@ interface DataTableRowActionsProps<TData> {
 
 export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
   const [isOpen, setIsOpen] = useState(false);
-  const  {categories} = useCategories();
-  const category = row.original as Category;
+  const { categories } = useCategories();
+  const product = row.original as Product;
 
   return (
     <DropdownMenu
@@ -49,13 +49,13 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
         className="w-[160px]"
       >
         <Edit
-          slug={category.slug}
+          slug={product.slug}
           isOpenDropdown={isOpen}
-          categories={categories}
           setIsOpenDropdown={setIsOpen}
+          categories={categories}
         />
         <Delete
-          slug={category.slug}
+          slug={product.slug}
           isOpenDropdown={isOpen}
           setIsOpenDropdown={setIsOpen}
         />

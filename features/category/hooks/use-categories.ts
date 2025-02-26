@@ -15,7 +15,6 @@ export const useCategories = () => {
       })) as SelectOption[];
     },
   });
-  console.log('res', categories);
 
   return {
     categories: categories || [],

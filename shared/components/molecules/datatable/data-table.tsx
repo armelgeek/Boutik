@@ -21,7 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { DataTableToolbar } from './data-table-toolbar';
+import { DataTableToolbar } from '../../../../features/products/components/organisms/crud/data-table-toolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
