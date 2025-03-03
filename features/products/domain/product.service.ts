@@ -58,5 +58,17 @@ export class ProductServiceImpl implements ProductService {
       method: 'DELETE',
     });
   }
+  async getBestSellerProducts() {
+    return this.fetchData<{data: Product[]}>(`${API_URL}${API_ENDPOINTS.products.bestseller()}`, {
+      headers: { 'Content-Type': 'application/json' },
+      method: 'GET',
+    });
+  }
+  async getLatestProducts() {
+    return this.fetchData<{data: Product[]}>(`${API_URL}${API_ENDPOINTS.products.latest()}`, {
+      headers: { 'Content-Type': 'application/json' },
+      method: 'GET',
+    });
+  }
 }
 export const productService = new ProductServiceImpl();

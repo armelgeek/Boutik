@@ -26,7 +26,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const body = await request.json();
   await updateProduct(slug, body);
 
-  return NextResponse.json({ message: 'Category updated successfully' });
+  return NextResponse.json({ message: 'Product updated successfully' });
 }
 
 export async function DELETE(

@@ -1,9 +1,10 @@
 "use client";
-import { createContext, useState } from 'react';
-import { products } from '../../../assets/assets';
+import { createContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import type { StaticImageData } from 'next/image';
 import { Order } from '@/features/products/config/order.type';
+import { Product } from '@/features/products/config/product.type';
+import { productService } from '@/features/products/domain/product.service';
 
 export const ShopContext = createContext<unknown>(null);
 
@@ -22,6 +23,26 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<Record<string, CartItem>>({});
   const [orders, setOrders] = useState<Order[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await productService.list({});
+        console.log(response);
+        setProducts(response.data);
+      } catch (error) {
+        toast.error('Failed to fetch products');
+        console.error('Error fetching products:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const addToCart = (itemId: string, size: string): void => {
     if (!size) {
@@ -42,7 +63,7 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
           sizes: { [size]: 1 },
           name: product.name,
           price: product.price,
-          image: product.images[0]
+          image: (product && product.images) ? product.images[0] : 'https://placehold.co/400'
         };
       } else {
         if (!newItems[itemId].sizes[size]) {
@@ -130,6 +151,7 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const value = {
     products,
+    isLoading,
     currency,
     delivery_fee,
     search,

@@ -1,23 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Product } from "@/features/products/config/product.type";
-import { useProducts } from "./use-products";
+import { productService } from "../domain/product.service";
 
 const useBestSeller = () => {
-  const { products }: { products: Product[] } = useProducts();
   const [bestSellerProducts, setBestSellerProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBestSellerProducts = async () => {
       setIsLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      setBestSellerProducts(products.slice(0, 4));
+      const bestseller =  await productService.getBestSellerProducts();
+      setBestSellerProducts(bestseller.data);
       setIsLoading(false);
     };
 
     fetchBestSellerProducts();
-  }, [products]);
+  }, []);
 
   return {
     data: bestSellerProducts,

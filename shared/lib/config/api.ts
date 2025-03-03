@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
     delete: (slug: string) => `/categories/${slug}`,
     sub: (categoryId: string) => `/subcategories/${categoryId}`,
     selectCategory: () => `/selectCategories`,
+    hasParentCategories: () => `/hasParentCategories`,
   },
   products: {
     base: '/products',
@@ -30,5 +31,8 @@ export const API_ENDPOINTS = {
     detail: (slug: string) => `/products/${slug}`,
     update: (slug: string) => `/products/${slug}`,
     delete: (slug: string) => `/products/${slug}`,
+    bestseller: () => `/bestsellers`,
+    latest: () => `/latests`,
+
   },
 } as const;

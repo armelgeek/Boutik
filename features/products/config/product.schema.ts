@@ -11,6 +11,7 @@ export const ProductFormSchema = createInsertSchema(products, {
   category_id: (s) => s.min(1, 'Category is required.'),
   sizes: z.array(z.string()).optional(),
   images: z.array(z.string()).optional(),
+  bestseller: z.boolean().optional(),
 }).pick({
   name: true,
   description: true,
@@ -19,4 +20,5 @@ export const ProductFormSchema = createInsertSchema(products, {
   images: true,
   sub_category_id: true,
   sizes: true,
+  bestseller: true
 });

@@ -6,12 +6,10 @@ import { categories } from '@/drizzle/schema/categories';
 import type { Filter } from '@/shared/lib/types/filter';
 import { calculatePagination } from '@/shared/lib/utils/calculate-pagination';
 import { createPagination } from '@/shared/lib/utils/create-pagination';
-import { filterOrderByClause } from '@/shared/lib/utils/filter-order-by-clause';
 import { filterWhereClause } from '@/shared/lib/utils/filter-where-clause';
 
 export async function getProducts(filter: Filter) {
   const searchColumns = ['name'];
-  const sortColumns = ['name', 'date'];
 
   const whereClause = {
     search: filter.search
@@ -35,6 +33,8 @@ export async function getProducts(filter: Filter) {
       name: products.name,
       slug: products.slug,
       price: products.price,
+      images: products.images,
+      sizes: products.sizes,
       description: products.description,
       category: sql<{
         id: string;
@@ -54,6 +54,7 @@ export async function getProducts(filter: Filter) {
         'name', sub_category.name,
         'slug', sub_category.slug
       )`,
+      bestseller: products.bestseller,
       created_at: products.date,
     })
     .from(products)

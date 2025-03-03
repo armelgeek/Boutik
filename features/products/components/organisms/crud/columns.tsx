@@ -80,6 +80,28 @@ export const columns: ColumnDef<Product & {category?: Category} & {subcategory?:
     },
   },
   {
+    id: 'bestseller',
+    meta: 'Bestseller',
+    accessorFn: (row) => row.bestseller,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Bestseller"
+      />
+    ),
+    cell: ({ row }) => {
+      const isBestseller = row.getValue('bestseller');
+      console.log('isBestSeller', isBestseller);
+      return (
+        <div className="flex w-full">
+          <span className={`px-2 py-1 text-xs font-semibold rounded-full ${isBestseller ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+            {isBestseller ? 'Yes' : 'No'}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
     id: 'actions',
     maxSize: 75,
     cell: ({ row }) => <DataTableRowActions row={row} />,

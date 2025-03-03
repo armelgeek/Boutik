@@ -10,9 +10,15 @@ const ProductItem = ({ id, images, name, price }: Product) => {
   return (
     <Link href={`/product/${id}`} className="text-gray-700 cursor-pointer">
       <div className="overflow-hidden border p-4 shadow-sm  h-[350px]">
-       {images.length > 0 && (
-        <Image
+       {images.length > 0 ? (
+        <img
           src={images[0]}
+          alt={name || '<no name>'}
+          className="w-full h-48 object-cover mb-2  hover:scale-110 transition ease-in-out duration-500"
+        />
+       ): (
+        <img
+          src={'https://placehold.co/400'}
           alt={name || '<no name>'}
           className="w-full h-48 object-cover mb-2  hover:scale-110 transition ease-in-out duration-500"
         />

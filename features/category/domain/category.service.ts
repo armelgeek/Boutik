@@ -71,5 +71,11 @@ export class CategoryServiceImpl implements CategoryService {
       method: 'GET',
     });
   }
+  async hasParentCategories():  Promise<PaginatedCategory> {
+    return this.fetchData<PaginatedCategory>(`${API_URL}${API_ENDPOINTS.categories.hasParentCategories()}`, {
+      headers: { 'Content-Type': 'application/json' },
+      method: 'GET',
+    });
+  }
 }
 export const categoryService = new CategoryServiceImpl();

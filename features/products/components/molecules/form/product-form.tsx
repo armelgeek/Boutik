@@ -12,6 +12,7 @@ import { ControlledMultipleUpload } from '@/shared/components/molecules/form/Con
 import { ControllerCustomSelect } from '@/shared/components/molecules/form/ControllerCustomSelect';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ControlledTextareaInput } from '@/shared/components/molecules/form/ControlledTextareaInput';
+import { ControlledSwitch } from '@/shared/components/molecules/form/ControlledSwitch';
 
 interface ProductFormProps {
   initialData: Product | null | undefined;
@@ -30,7 +31,8 @@ export const ProductForm = ({ initialData = null, onSubmit, categories, onSucces
       category_id: initialData?.category_id || undefined,
       sub_category_id: initialData?.sub_category_id || undefined,
       images: initialData?.images || [],
-      sizes: initialData?.sizes || []
+      sizes: initialData?.sizes || [],
+      bestseller: initialData?.bestseller || false
     },
     onSubmit,
     onSuccess
@@ -63,6 +65,13 @@ export const ProductForm = ({ initialData = null, onSubmit, categories, onSucces
       <form onSubmit={handleSubmit} className="space-y-4">
         <ScrollArea className="h-[550px] pr-4">
           <div className="space-y-4">
+            <ControlledSwitch
+              name="bestseller"
+              control={form.control}
+              label="Bestseller"
+              activeValue={true}
+              inactiveValue={false}
+            />
             <ControlledTextInput
               name="name"
               label="Name"
