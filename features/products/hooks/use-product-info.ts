@@ -8,11 +8,15 @@ const useProductInfo = ({productId}: { productId: string }) => {
   const [productsData, setProductsData] = useState<Product>({
     id: '',
     name: '',
+    slug: '',
     price: 0,
     images: [],
     description: '',
+    category_id: '',
+    sub_category_id: '',
     sizes: [],
-    bestseller: false
+    bestseller: false,
+    date: new Date()
   });
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
@@ -21,7 +25,9 @@ const useProductInfo = ({productId}: { productId: string }) => {
     products.map((product) => {
       if (product.id === productId) {
         setProductsData(product);
-        setImage(product.images[0]);
+        if(product && product?.images && product?.images.length > 0){
+          setImage(product?.images[0]);
+        }
         return null;
       }
     });

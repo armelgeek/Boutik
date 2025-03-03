@@ -18,7 +18,6 @@ interface CartItem {
 const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const currency = '$';
   const delivery_fee = 10;
-
   const [search, setSearch] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [cartItems, setCartItems] = useState<Record<string, CartItem>>({});
@@ -30,7 +29,9 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await productService.list({});
+        const response = await productService.list({
+          
+        });
         console.log(response);
         setProducts(response.data);
       } catch (error) {
@@ -158,6 +159,7 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setSearch,
     showSearch,
     setShowSearch,
+    setProducts, 
     cartItems,
     orders,
     addToCart,

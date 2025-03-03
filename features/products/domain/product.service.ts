@@ -22,6 +22,7 @@ export class ProductServiceImpl implements ProductService {
 
   async list(filter: Filter): Promise<PaginatedProduct> {
     const serialize = serializeSearchParams(filter);
+    console.log('serialize',serialize);
     const endpoint = API_ENDPOINTS.products.list(serialize);
     return this.fetchData<PaginatedProduct>(`${API_URL}${endpoint}`, {
       headers: { 'Content-Type': 'application/json' },
@@ -70,5 +71,6 @@ export class ProductServiceImpl implements ProductService {
       method: 'GET',
     });
   }
+
 }
 export const productService = new ProductServiceImpl();

@@ -10,6 +10,7 @@ type ShopContextType = {
   setSearch: (search: string) => void;
   showSearch: boolean;
   setShowSearch: (show: boolean) => void;
+  setProducts: (products: Product[]) => void;
   cartItems: Record<string, Record<string, number>>;
   addToCart: (itemId: string, size: string) => void;
   getCartCount: () => number;

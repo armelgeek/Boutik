@@ -7,15 +7,18 @@ import type { Filter } from '@/shared/lib/types/filter';
 import { calculatePagination } from '@/shared/lib/utils/calculate-pagination';
 import { createPagination } from '@/shared/lib/utils/create-pagination';
 import { filterWhereClause } from '@/shared/lib/utils/filter-where-clause';
+import { filterOrderByClause } from '@/shared/lib/utils/filter-order-by-clause';
 
 export async function getProducts(filter: Filter) {
   const searchColumns = ['name'];
+  const sortColumns = ['name', 'price'];
 
-  const whereClause = {
-    search: filter.search
+  const whereClause: Partial<Filter> = {
+    ...filter
   };
+  
   const conditions = filterWhereClause(searchColumns, whereClause);
-  // const sort = filterOrderByClause(sortColumns, filter.sortBy, filter.sortDir);
+  const sort = filterOrderByClause(sortColumns, filter.sortBy, filter.sortDir);
 
   const [{ count }] = await db
     .select({
@@ -67,7 +70,7 @@ export async function getProducts(filter: Filter) {
       sql`sub_category.id = ${products.sub_category_id}`
     )
     .where(conditions)
-    //.orderBy(sort)
+    .orderBy(sort)
     .limit(itemsPerPage)
     .offset(offset);
 

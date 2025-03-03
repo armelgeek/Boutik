@@ -15,12 +15,12 @@ export const filterOrderByClause = (
   sortBy: string | undefined,
   sortDir: string | undefined,
 ) => {
-  const normalizedSortBy = sortBy?.toLowerCase() || 'updated_at';
+  const normalizedSortBy = sortBy?.toLowerCase() || columns[0] || 'id';
   const normalizedSortDir = sortDir?.toLowerCase() || 'desc';
 
   if (isValidSortColumn(columns, normalizedSortBy) && isValidSortDirection(normalizedSortDir)) {
     return sql`${sql.identifier(normalizedSortBy)} ${sql.raw(normalizedSortDir)}`;
   }
 
-  return sql`updated_at desc`;
+  return sql`${sql.identifier(columns[0] || 'id')} desc`;
 };
