@@ -19,6 +19,7 @@ const Products = ({ products }: { products: Partial<Product>[] }) => {
         <div key={idx} className="p-2">
           <ProductItem
             id={product.id}
+            slug={product.slug}
             images={product.images}
             name={product.name}
             price={product.price}

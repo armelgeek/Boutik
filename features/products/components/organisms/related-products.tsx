@@ -1,21 +1,49 @@
 "use client";
-import Heading from '@/shared/components/atoms/heading';
-import Products from '../molecules/products';
-import ProductsSkeleton from '../molecules/products-skeleton';
-import useRelatedProducts from '../../hooks/use-related-products';
+import useRelatedProducts from "../../hooks/use-related-products";
+import ProductItem from "../atoms/product-item";
+import ProductItemSkeleton from "../atoms/product-item-skeleton";
+interface RelatedProductsProps {
+  category: string;
+  subCategory: string;
+}
 
-const RelatedProducts = ({ category, subCategory }:{ category: string, subCategory: string}) => {
-  const { data,isLoading } = useRelatedProducts({ category, subCategory });
+const RelatedProducts = ({ category, subCategory }: RelatedProductsProps) => {
+  const { data: products, isLoading, error } = useRelatedProducts({
+    category,
+    subCategory,
+  });
+
+  if (error) {
+    return null; // On cache la section si erreur
+  }
+
+  if (isLoading) {
+    return (
+      <div className="mt-16">
+        <h2 className="text-2xl font-bold mb-6">Related Products</h2>
+        <ProductItemSkeleton/>
+      </div>
+    );
+  }
+
+  if (!products || products.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="my-10">
-      <Heading text1={'RELATED'} text2={'PRODUCTS'}/>
-      {isLoading && <ProductsSkeleton count={4} />}
-      {data && <Products products={data}/>}
-      {(!data || data.length === 0) && (
-        <div className="text-center text-gray-500 mt-5">
-          Aucun produit disponible
-        </div>
-      )}
+    <div className="mt-16">
+      <h2 className="text-2xl font-bold mb-6">Related Products</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {products.map((product) => (
+          <ProductItem
+            key={product.id}
+            images={product.images}
+            slug={product.slug}
+            name={product.name}
+            price={product.price}
+          />
+        ))}
+      </div>
     </div>
   );
 };

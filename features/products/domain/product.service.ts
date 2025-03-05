@@ -6,6 +6,7 @@ import { PaginatedProduct, Product, ProductPayload } from '../config/product.typ
 export interface ProductService {
   list(filter: Filter): Promise<PaginatedProduct>;
   detail(slug: string): Promise<Product>;
+  related(categoryId: string, subCategoryId?: string): Promise<Product[]>;
   create(payload: ProductPayload): Promise<Product>;
   update(slug: string, payload: ProductPayload): Promise<{ message: string }>;
   remove(slug: string): Promise<{ message: string }>;
@@ -37,6 +38,16 @@ export class ProductServiceImpl implements ProductService {
     return this.fetchData<Product>(`${API_URL}${API_ENDPOINTS.products.detail(slug)}`, {
       headers: { 'Content-Type': 'application/json' },
       method: 'GET',
+      cache: 'no-store'  // Pour toujours avoir les données les plus récentes
+    });
+  }
+
+  async related(categoryId: string, subCategoryId?: string): Promise<Product[]> {
+    const endpoint = API_ENDPOINTS.products.related(categoryId, subCategoryId);
+    return this.fetchData<Product[]>(`${API_URL}${endpoint}`, {
+      headers: { 'Content-Type': 'application/json' },
+      method: 'GET',
+      cache: 'no-store' // Pour toujours avoir les produits connexes les plus récents
     });
   }
 

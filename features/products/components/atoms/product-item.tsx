@@ -3,11 +3,11 @@ import { Product } from '@/features/products/config/product.type';
 import { useShop } from '../../hooks/use-shop';
 import Link from 'next/link';
 
-const ProductItem = ({ id, images, name, price }: Partial<Product>) => {
+const ProductItem = ({ images,slug, name, price }: Partial<Product>) => {
   const { currency } = useShop();
 
   return (
-    <Link href={`/product/${id}`} className="text-gray-700 cursor-pointer">
+    <Link href={`/product/${slug}`} className="text-gray-700 cursor-pointer">
       <div className="overflow-hidden border p-4 shadow-sm  h-[350px]">
        {images && images.length > 0 ? (
         <img

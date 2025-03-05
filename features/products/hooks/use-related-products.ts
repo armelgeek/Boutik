@@ -1,37 +1,43 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Product } from "@/features/products/config/product.type";
-import { useProducts } from "./use-products";
+import { productService } from "../domain/product.service";
 
 const useRelatedProducts = ({ category, subCategory }: {
   category: string,
   subCategory: string
 }) => {
-  const { products }: { products: Product[] } = useProducts();
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRelatedProducts = async () => {
-      setIsLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 3000));
-       if (products.length > 0) {
-      let productsCopy = [...products];
-      productsCopy = productsCopy.filter(
-        (product) =>
-          product.category === category && product.subCategory === subCategory
-      );
-      setRelatedProducts(productsCopy.slice(0, 5));
-    }
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await productService.related(category, subCategory);
+        setRelatedProducts(response);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch related products');
+        setRelatedProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    fetchRelatedProducts();
-  }, [products]);
+    if (category) {
+      fetchRelatedProducts();
+    } else {
+      setRelatedProducts([]);
+      setIsLoading(false);
+    }
+  }, [category, subCategory]);
 
   return {
     data: relatedProducts,
-    isLoading
+    isLoading,
+    error
   };
 };
 

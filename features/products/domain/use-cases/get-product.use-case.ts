@@ -7,7 +7,6 @@ export async function getProduct(slug: string) {
 
   const data = await db.query.products.findFirst({
     where: eq(products.slug, slug)
-    
   });
 
   if (!data) {

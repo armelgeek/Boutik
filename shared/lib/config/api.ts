@@ -33,6 +33,7 @@ export const API_ENDPOINTS = {
     delete: (slug: string) => `/products/${slug}`,
     bestseller: () => `/bestsellers`,
     latest: () => `/latests`,
+    related: (categoryId: string, subCategoryId?: string) => `/products/related?category=${categoryId}&subcategory=${subCategoryId}`,
 
   },
 } as const;

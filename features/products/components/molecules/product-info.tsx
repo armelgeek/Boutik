@@ -23,8 +23,8 @@ const ProductInfo = ({productId}: {
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
       <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row ">
           <div className="flex sm:flex-col  overflow-x-auto sm:overflow-y-scroll justify-between  sm:justify-normal sm:w-[18.7%] w-full">
-            {productsData.images.map((item, index) => (
-              <Image
+            {productsData.images && productsData.images.map((item, index) => (
+              <img
                 key={index}
                 src={item}
                 alt="product"
@@ -35,8 +35,8 @@ const ProductInfo = ({productId}: {
           </div>
 
           <div className="w-full sm:w-[80%]">
-            <Image
-              src={image}
+            <img
+              src={image || 'https://placehold.co/400'}
               alt="product"
               className="w-full h-auto object-cover"
             />
@@ -58,14 +58,12 @@ const ProductInfo = ({productId}: {
             {currency}
             {productsData.price}
           </p>
-          <p className="mt-5 text-gray-500 md:w-4/5 ">
-            {productsData.description}
-          </p>
+        
 
           <div className="flex flex-col gap-4 my-8">
             <p className="">Select Size</p>
             <div className="flex gap-2">
-              {productsData.sizes.map((item, index) => (
+              {productsData.sizes && productsData.sizes.map((item, index) => (
                 <button
                   key={index}
                   onClick={() => {
@@ -100,31 +98,18 @@ const ProductInfo = ({productId}: {
       <div className="mt-10">
         <div className="flex">
           <b className="px-5 py-3 text-sm border">Description</b>
-          <p className="px-5 py-3 text-sm border">Reviews (122)</p>
         </div>
 
         <div className=" flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500 ">
           <p>
-            Ane-commerce website is an online platform that facilitates the
-            buying and selling of products or services over the internet. It
-            serves as a vietual marketplace where businesses and individuals.com
-            showcase ther produch, interact with customers, and conduct
-            fransactions without the need for a physical presence. E-commerce
-            websites have goned immense popularity due to their convenience,
-            accessibility, and the global reach they offer.
-          </p>
-          <p>
-            E-commerce websites typically display products or services along
-            with defailed descriptions, images, prices, and any ovalable
-            variations (eg, sizes colors). Each product uwaly has its ww
-            dedicated page with relevant infurroution
+             {productsData.description}
           </p>
         </div>
       </div>
 
       <RelatedProducts
-        category={productsData.category}
-        subCategory={productsData.subCategory}
+        category={productsData.category_id}
+        subCategory={productsData.sub_category_id || ''}
       />
     </div>
   ) : (
