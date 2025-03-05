@@ -34,6 +34,10 @@ export const API_ENDPOINTS = {
     bestseller: () => `/bestsellers`,
     latest: () => `/latests`,
     related: (categoryId: string, subCategoryId?: string) => `/products/related?category=${categoryId}&subcategory=${subCategoryId}`,
-
   },
+  orders: {
+    create: () => `/orders`,
+    list: () => `/orders`,
+    detail: (id: string) => `/orders/${id}`,
+  }
 } as const;

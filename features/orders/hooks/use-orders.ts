@@ -1,62 +1,75 @@
-import { useCallback, useEffect, useState } from 'react';
+'use client';
+
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { Order } from '@/features/products/config/order.type';
-import { assets } from '@/assets/assets';
-import { Product } from '@/features/products/config/product.type';
-export const useOrdersList = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+import { useCart } from '@/features/cart/hooks/use-cart';
+import { orderService } from '../domain/order.service';
 
-  const fetchOrders = useCallback(async () => {
-    const response = await new Promise<Order[]>((resolve) =>
-      setTimeout(() => resolve([{ 
-        id: 1, 
-        amount: 39.98, 
-        status: 'Ordered',
-        created_at: '2023-06-01T10:00:00Z', 
-        updated_at: '2023-06-01T10:00:00Z', 
-        items: [{ 
-          id: 1,
-          size: 'M',
-          quantity: 1,
-          product: { 
-            id: '1',
-            name: 'Product A',
-            price: 19.99, 
-            images:[
-                `/${assets.hero_img}`
-            ], 
-          } as Product, 
-        }], 
-        }, 
-        { 
-        id: 2, 
-        amount: 39.98, 
-        status: 'Ordered',
-        created_at: '2023-06-01T10:00:00Z', 
-        updated_at: '2023-06-01T10:00:00Z', 
-        items: [{ 
-          id: 1,
-          size: 'M',
-          quantity: 1,
-          product: { 
-            id: '1',
-            name: 'Product A',
-            price: 19.99, 
-            images:[
-                `/${assets.hero_img}`
-            ], 
-          } as Product, 
-        }],  
-      }]), 2000)
-    );
+interface OrderStore {
+  orders: Order[];
+  addOrder: () => Promise<void>;
+  setOrders: (orders: Order[]) => void;
+}
 
-    setOrders(response);
-    setIsLoading(false);
-  }, []);
+export const useOrders = create<OrderStore>()(
+  persist(
+    (set) => ({
+      orders: [],
+      setOrders: (orders) => set({ orders }),
+      addOrder: async () => {
+        const { items, getCartAmount, clearCart } = useCart.getState();
+        
+        try {
+          const newOrders = Object.entries(items).flatMap(([itemId, item]) =>
+            Object.entries(item.sizes).map(([size, quantity]) => ({
+              id: Math.floor(Math.random() * 10000),
+              amount: item.price * quantity,
+              status: 'pending',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              items: [{
+                id: itemId,
+                quantity,
+                size,
+                product: {
+                  name: item.name,
+                  price: item.price,
+                  image: item.image
+                },
+              }],
+            }))
+          );
 
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
+          // Sauvegarder la commande dans la base de données
+          await orderService.create({
+            items: Object.values(items).flatMap(item => 
+              Object.entries(item.sizes).map(([size, quantity]) => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                image: item.image,
+                size,
+                quantity
+              }))
+            ),
+            total: getCartAmount()
+          });
 
-  return { orders, isLoading };
-};
+          set((state) => ({
+            orders: [...state.orders, ...newOrders]
+          }));
+
+          // Vider le panier après une commande réussie
+          clearCart();
+        } catch (error) {
+          console.error('Failed to create order:', error);
+          throw error;
+        }
+      },
+    }),
+    {
+      name: 'orders-storage',
+    }
+  )
+);

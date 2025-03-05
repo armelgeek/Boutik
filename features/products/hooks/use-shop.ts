@@ -1,25 +1,33 @@
-import { useContext } from 'react';
-import { Product } from '@/features/products/config/product.type';
-import { ShopContext } from '@/features/home/context/ShopContext';
+'use client';
 
-type ShopContextType = {
+import { useContext } from 'react';
+import { ShopContext } from '@/features/home/context/ShopContext';
+import { Product } from '../config/product.type';
+import { Order } from '../config/order.type';
+
+export interface ShopContextType {
   products: Product[];
+  setProducts: (products: Product[]) => void;
   currency: string;
   delivery_fee: number;
   search: string;
   setSearch: (search: string) => void;
   showSearch: boolean;
   setShowSearch: (show: boolean) => void;
-  setProducts: (products: Product[]) => void;
-  cartItems: Record<string, Record<string, number>>;
+  cartItems: Record<string, {
+    sizes: Record<string, number>;
+    name: string;
+    price: number;
+    image: string;
+  }>;
+  orders: Order[];
   addToCart: (itemId: string, size: string) => void;
+  removeFromCart: (itemId: string, size: string) => void;
+  addOrder: () => void;
   getCartCount: () => number;
   updateQuantity: (itemId: string, size: string, quantity: number) => void;
   getCartAmount: () => number;
-  addOrder: () => void;
-  orders: Array<{ _id: string; size: string; quantity: number }>;
-  removeFromCart: (itemId: string, size: string) => void;
-};
+}
 
 export const useShop = () => {
   const context = useContext(ShopContext) as ShopContextType;
@@ -27,6 +35,6 @@ export const useShop = () => {
   if (!context) {
     throw new Error('useShop must be used within a ShopContextProvider');
   }
-  
+
   return context;
 };
