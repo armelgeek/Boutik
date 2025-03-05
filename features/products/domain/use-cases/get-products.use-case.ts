@@ -28,16 +28,49 @@ async function getAllSubcategoryIds(categoryId?: string): Promise<string[]> {
   ];
 }
 
+async function getCategoryWithParents(categoryId: string) {
+  const result = [];
+  let currentId = categoryId;
+
+  while (currentId) {
+    const category = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        slug: categories.slug,
+        parentId: categories.parent_id
+      })
+      .from(categories)
+      .where(sql`${categories.id} = ${currentId}`)
+      .limit(1);
+
+    if (category.length === 0) break;
+    
+    result.unshift(category[0]); // Ajoute au début pour avoir l'ordre parent -> enfant
+    currentId = category[0].parentId;
+  }
+
+  return result;
+}
+
 export async function getProducts(filter: Filter) {
   const conditions = [];
-  if (filter.search) {
+
+  // Vérifier si les filtres sont non vides
+  const hasSearch = filter.search && filter.search.trim() !== '';
+  const hasCategory = filter.category && Array.isArray(filter.category) && filter.category.length > 0;
+  const hasSubCategory = filter.subCategory && Array.isArray(filter.subCategory) && filter.subCategory.length > 0;
+  const hasMinPrice = filter.minPrice !== undefined && filter.minPrice !== null;
+  const hasMaxPrice = filter.maxPrice !== undefined && filter.maxPrice !== null;
+
+  if (hasSearch) {
     conditions.push(
       sql`LOWER(${products.name}) LIKE LOWER(${`%${filter.search}%`})`
     );
   }
-  console.log('filter', filter);
-  if (filter.category && Array.isArray(filter.category) && filter.category.length > 0) {
-    if (filter.subCategory && Array.isArray(filter.subCategory) && filter.subCategory.length > 0) {
+
+  if (hasCategory) {
+    if (hasSubCategory) {
       conditions.push(inArray(products.category_id, filter.subCategory));
     } else {
       const allCategoryPromises = filter.category.map(getAllSubcategoryIds);
@@ -50,12 +83,12 @@ export async function getProducts(filter: Filter) {
     }
   }
 
-  if (filter.minPrice !== undefined) {
+  if (hasMinPrice) {
     conditions.push(
       sql`${products.price} >= ${filter.minPrice}`
     );
   }
-  if (filter.maxPrice !== undefined) {
+  if (hasMaxPrice) {
     conditions.push(
       sql`${products.price} <= ${filter.maxPrice}`
     );
@@ -75,9 +108,15 @@ export async function getProducts(filter: Filter) {
     })
     .from(products)
     .where(conditions.length > 0 ? and(...conditions) : undefined);
-  const { currentPage, itemsPerPage, offset } = calculatePagination(filter.page, filter.pageSize);
+
+  const { currentPage, itemsPerPage, offset } = calculatePagination(
+    filter.page || 1,
+    filter.pageSize || 10
+  );
+  
   const pagination = createPagination(count, currentPage, itemsPerPage, offset);
-  const data = await db
+
+  const basicData = await db
     .select({
       id: products.id,
       name: products.name,
@@ -86,6 +125,7 @@ export async function getProducts(filter: Filter) {
       images: products.images,
       sizes: products.sizes,
       description: products.description,
+      categoryId: products.category_id,
       category: sql<{
         id: string;
         name: string;
@@ -104,6 +144,19 @@ export async function getProducts(filter: Filter) {
     .orderBy(orderBy)
     .limit(itemsPerPage)
     .offset(offset);
+
+  // Enrichir les données avec les catégories parentes
+  const data = await Promise.all(
+    basicData.map(async (product) => {
+      if (!product.categoryId) return product;
+
+      const categoryHierarchy = await getCategoryWithParents(product.categoryId);
+      return {
+        ...product,
+        subCategory: categoryHierarchy
+      };
+    })
+  );
 
   return {
     data,

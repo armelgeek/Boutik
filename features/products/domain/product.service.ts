@@ -21,7 +21,6 @@ export class ProductServiceImpl implements ProductService {
   }
 
   async list(filter: Filter): Promise<PaginatedProduct> {
-    // Remove null values from filter
     const cleanFilter = Object.fromEntries(
       Object.entries(filter).filter(([_, value]) => value !== null && value !== undefined)
     );
