@@ -25,25 +25,6 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setIsLoading(true);
-        const response = await productService.list({
-          
-        });
-        console.log(response);
-        setProducts(response.data);
-      } catch (error) {
-        toast.error('Failed to fetch products');
-        console.error('Error fetching products:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
 
   const addToCart = (itemId: string, size: string): void => {
     if (!size) {

@@ -6,7 +6,7 @@ export function filterSearchCondition(columns: string[], searchTerm?: string) {
   if (!searchTerm) return undefined;
 
   const searchConditions = columns.map(
-    (column) => sql`${sql.identifier(column)} @@@ paradedb.fuzzy_term(${column}, ${searchTerm})`,
+    (column) => sql`${sql.identifier(column)} ILIKE ${`%${searchTerm}%`}`,
   );
 
   return searchConditions.length === 1

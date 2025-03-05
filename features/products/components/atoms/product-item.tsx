@@ -2,15 +2,14 @@
 import { Product } from '@/features/products/config/product.type';
 import { useShop } from '../../hooks/use-shop';
 import Link from 'next/link';
-import Image from 'next/image';
 
-const ProductItem = ({ id, images, name, price }: Product) => {
+const ProductItem = ({ id, images, name, price }: Partial<Product>) => {
   const { currency } = useShop();
 
   return (
     <Link href={`/product/${id}`} className="text-gray-700 cursor-pointer">
       <div className="overflow-hidden border p-4 shadow-sm  h-[350px]">
-       {images.length > 0 ? (
+       {images && images.length > 0 ? (
         <img
           src={images[0]}
           alt={name || '<no name>'}

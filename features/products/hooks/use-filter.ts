@@ -1,6 +1,6 @@
 "use client";
 import { useQueryState } from 'nuqs';
-import { parseAsArrayOf, parseAsString } from 'nuqs/server';
+import { parseAsArrayOf, parseAsString, parseAsInteger } from 'nuqs/server';
 import { useEffect, useState } from 'react';
 import { useShop } from './use-shop';
 import { Product } from '@/features/products/config/product.type';
@@ -12,63 +12,60 @@ export const useProductFilter = () => {
   const [search, setSearch] = useQueryState('q', { defaultValue: '' });
   const [category, toggleCategory] = useQueryState('category', parseAsArrayOf(parseAsString));
   const [subCategory, toggleSubCategory] = useQueryState('subCategory', parseAsArrayOf(parseAsString));
-  const [sortType, setSortType] = useQueryState('sort', { defaultValue: 'relevent' });
+  const [sortBy, setSortBy] = useQueryState('sortBy', { defaultValue: 'name' });
+  const [sortDir, setSortDir] = useQueryState<'asc' | 'desc'>('sortDir', { defaultValue: 'asc' });
+  const [minPrice, setMinPrice] = useQueryState('minPrice', parseAsInteger.withDefault(null));
+  const [maxPrice, setMaxPrice] = useQueryState('maxPrice', parseAsInteger.withDefault(null));
   const [isFiltering, setIsFiltering] = useState(false);
 
   const applyFilter = async () => {
-    if (!products || products.length === 0) return;
-    
     setIsFiltering(true);
-    const response = await productService.list({
-          category,
-          subCategory,
-          search
-        });
-    setProducts(response.data);
-    setIsFiltering(false);
+    try {
+      const response = await productService.list({
+        category,
+        subCategory,
+        search,
+        sortBy,
+        sortDir,
+        minPrice,
+        maxPrice,
+        page: 1,
+        pageSize: 10
+      });
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Error applying filters:', error);
+    } finally {
+      setIsFiltering(false);
+    }
   };
 
-  const sortProducts = async () => {
-    if (products.length === 0) return;
-    
-    setIsFiltering(true);
-    
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    /**switch (sortType) {
-      case 'low-high':
-        filteredProdCopy.sort((a, b) => a.price - b.price);
-        break;
-      case 'high-low':
-        filteredProdCopy.sort((a, b) => b.price - a.price);
-        break;
-      default:
-        await applyFilter();
-        return;
-    }**/
-    
-   // setFilterProducts(filteredProdCopy);
-    setIsFiltering(false);
+  const handlePriceChange = (min: number | null, max: number | null) => {
+    setMinPrice(min);
+    setMaxPrice(max);
   };
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch]);
-
-  useEffect(() => {
-    sortProducts();
-  }, [sortType]);
+  }, [search, category, subCategory, sortBy, sortDir, minPrice, maxPrice]);
 
   return {
-    filterProducts: products,
-    category,
-    subCategory,
-    sortType,
+    isFiltering,
+    products,
     search,
     setSearch,
+    category,
+    subCategory,
+    sortBy,
+    sortDir,
+    minPrice,
+    maxPrice,
+    onSort: (sortBy: string, sortDir: 'asc' | 'desc') => {
+      setSortBy(sortBy);
+      setSortDir(sortDir);
+    },
+    onPriceChange: handlePriceChange,
     toggleCategory,
-    toggleSubCategory,
-    setSortType,
-    isFiltering
+    toggleSubCategory
   };
 };

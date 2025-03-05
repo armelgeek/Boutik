@@ -1,15 +1,30 @@
+import React from 'react';
 import ProductListHeader from "./product-list-header";
 
-const ProductListContainer = ({ sortType, setSortType, children }: {
-  sortType: string;
-  setSortType: (type: string) => void;
+interface ProductListContainerProps {
+  sortBy?: string;
+  sortDir?: 'asc' | 'desc';
+  onSort: (sortBy: string, sortDir: 'asc' | 'desc') => void;
   children: React.ReactNode;
+}
+
+const ProductListContainer: React.FC<ProductListContainerProps> = ({
+  sortBy,
+  sortDir,
+  onSort,
+  children
 }) => {
   return (
     <div className="flex-1">
-      <ProductListHeader sortType={sortType} setSortType={setSortType} />
-      {children}
+      <ProductListHeader 
+        sortBy={sortBy} 
+        sortDir={sortDir} 
+        onSort={onSort}
+      />
+        {children}
+  
     </div>
   );
 };
-export default ProductListContainer; 
+
+export default ProductListContainer;

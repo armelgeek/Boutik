@@ -1,19 +1,49 @@
 import React from "react";
 
-const ProductSort: React.FC<{
-  sortType: string;
-  setSortType: (value: string) => void;
-}> = ({ sortType, setSortType }) => {
+interface ProductSortProps {
+  sortBy?: string;
+  sortDir?: 'asc' | 'desc';
+  onSort: (sortBy: string, sortDir: 'asc' | 'desc') => void;
+}
+
+const ProductSort: React.FC<ProductSortProps> = ({ sortBy, sortDir, onSort }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    switch(value) {
+      case 'name_asc':
+        onSort('name', 'asc');
+        break;
+      case 'name_desc':
+        onSort('name', 'desc');
+        break;
+      case 'price_asc':
+        onSort('price', 'asc');
+        break;
+      case 'price_desc':
+        onSort('price', 'desc');
+        break;
+      default:
+        onSort('name', 'asc');
+    }
+  };
+
+  const getValue = () => {
+    if (!sortBy) return 'name_asc';
+    return `${sortBy}_${sortDir}`;
+  };
+
   return (
     <select
-      onChange={(e) => setSortType(e.target.value)}
-      value={sortType}
-      className="border border-gray-300 text-sm px-2"
+      onChange={handleChange}
+      value={getValue()}
+      className="border border-gray-300 text-sm px-2 py-1 rounded-md"
     >
-      <option value="relevant">Sort by: Relevant</option>
-      <option value="low-high">Sort by: Low to High</option>
-      <option value="high-low">Sort by: High to Low</option>
+      <option value="name_asc">Nom (A-Z)</option>
+      <option value="name_desc">Nom (Z-A)</option>
+      <option value="price_asc">Prix (croissant)</option>
+      <option value="price_desc">Prix (décroissant)</option>
     </select>
   );
 };
+
 export default ProductSort;

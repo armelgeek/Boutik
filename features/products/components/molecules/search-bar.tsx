@@ -7,7 +7,7 @@ import { useProductFilter } from "../../hooks/use-filter";
 const SearchBar = () => {
   const { search, setSearch } = useProductFilter();
   const [inputValue, setInputValue] = useState(search);
-  const debouncedValue = useDebounce(inputValue, 500);
+  const debouncedValue = useDebounce(inputValue, 1000);
 
   useEffect(() => {
     setSearch(debouncedValue);

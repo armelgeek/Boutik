@@ -8,15 +8,18 @@ import SubCategoryFilter from '../molecules/sub-category-filter';
 import Products from '../molecules/products';
 import ProductsSkeleton from '../molecules/products-skeleton';
 import SearchBar from '../molecules/search-bar';
+import PriceFilter from '../molecules/price-filter';
 
 const Collection = () => {
     const {
         isFiltering,
-        filterProducts,
-        sortType,
+        products,
+        sortBy,
+        sortDir,
+        onSort,
         toggleCategory,
         toggleSubCategory,
-        setSortType: setQuerySortType
+        onPriceChange
     } = useProductFilter();
     const [showFilter, setShowFilter] = useState(false);
 
@@ -38,13 +41,9 @@ const Collection = () => {
         });
     };
 
-    const handleSortChange = (value: string) => {
-        setQuerySortType(value);
-    };
-
     return (
         <>
-        <SearchBar />
+            <SearchBar />
             <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
                 <FilterOption showFilter={showFilter} setShowFilter={setShowFilter}>
                     <CategoryFilter
@@ -55,13 +54,22 @@ const Collection = () => {
                         showFilter={showFilter}
                         toggleSubCategory={handleToggleSubCategoryChange}
                     />
+                    <PriceFilter
+                        showFilter={showFilter}
+                        onPriceChange={onPriceChange}
+                    />
                 </FilterOption>
                 
-                <ProductListContainer sortType={sortType} setSortType={handleSortChange}>
-                    {isFiltering ? <ProductsSkeleton count={8} /> : <Products products={filterProducts} />}
+                <ProductListContainer 
+                    sortBy={sortBy} 
+                    sortDir={sortDir} 
+                    onSort={onSort}
+                >
+                    {isFiltering ? <ProductsSkeleton count={8} /> : <Products products={products} />}
                 </ProductListContainer>
             </div>
         </>
     )
 }
+
 export default Collection;

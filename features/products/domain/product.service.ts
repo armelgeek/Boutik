@@ -1,4 +1,4 @@
-import { serializeSearchParams } from '@/features/category/config/category.param';
+import { serializeSearchParams } from '../config/product.param';
 import { API_ENDPOINTS, API_URL } from '@/shared/lib/config/api';
 import type { Filter } from '@/shared/lib/types/filter';
 import { PaginatedProduct, Product, ProductPayload } from '../config/product.type';
@@ -21,8 +21,12 @@ export class ProductServiceImpl implements ProductService {
   }
 
   async list(filter: Filter): Promise<PaginatedProduct> {
-    const serialize = serializeSearchParams(filter);
-    console.log('serialize',serialize);
+    // Remove null values from filter
+    const cleanFilter = Object.fromEntries(
+      Object.entries(filter).filter(([_, value]) => value !== null && value !== undefined)
+    );
+    
+    const serialize = serializeSearchParams(cleanFilter);
     const endpoint = API_ENDPOINTS.products.list(serialize);
     return this.fetchData<PaginatedProduct>(`${API_URL}${endpoint}`, {
       headers: { 'Content-Type': 'application/json' },
