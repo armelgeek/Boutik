@@ -46,7 +46,7 @@ async function getCategoryWithParents(categoryId: string) {
 
     if (category.length === 0) break;
     
-    result.unshift(category[0]); // Ajoute au début pour avoir l'ordre parent -> enfant
+    result.unshift(category[0]);
     currentId = category[0].parentId;
   }
 
@@ -126,6 +126,7 @@ export async function getProducts(filter: Filter) {
       sizes: products.sizes,
       description: products.description,
       categoryId: products.category_id,
+      bestseller: products.bestseller,
       category: sql<{
         id: string;
         name: string;
@@ -153,7 +154,7 @@ export async function getProducts(filter: Filter) {
       const categoryHierarchy = await getCategoryWithParents(product.categoryId);
       return {
         ...product,
-        subCategory: categoryHierarchy
+        subcategory: categoryHierarchy
       };
     })
   );

@@ -6,8 +6,8 @@ const Products = ({ products }: { products: Partial<Product>[] }) => {
     return (
       <div className="flex items-center justify-center h-[400px] text-gray-500">
         <div className="text-center">
-          <p className="text-lg font-medium mb-2">Aucun produit trouvé</p>
-          <p className="text-sm">Essayez de modifier vos filtres de recherche</p>
+          <p className="text-lg font-medium mb-2">No products found</p>
+          <p className="text-sm">Try modifying your search filters</p>
         </div>
       </div>
     );
