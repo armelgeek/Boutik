@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Product } from '@/features/products/config/product.type';
 
 export type CartItem = {
+  id: string;
   sizes: Record<string, number>;
   name: string;
   price: number;
@@ -29,27 +30,32 @@ export const useCart = create<CartStore>()(
       
       addItem: (itemId, size, product) => {
         if (!size) {
-          toast.error('Please select a size');
-          return;
+          return toast.error('Please select a size');
         }
 
         set((state) => {
-          const newItems = { ...state.items };
-          if (!newItems[itemId]) {
-            newItems[itemId] = {
-              sizes: { [size]: 1 },
-              name: product.name,
-              price: product.price,
-              image: (product && product.images) ? product.images[0] : 'https://placehold.co/400'
+          const currentItems = { ...state.items };
+          
+          if (itemId in currentItems) {
+            const sizes = { ...currentItems[itemId].sizes };
+            sizes[size] = (sizes[size] || 0) + 1;
+            currentItems[itemId] = {
+              ...currentItems[itemId],
+              sizes,
+              id: itemId
             };
           } else {
-            if (!newItems[itemId].sizes[size]) {
-              newItems[itemId].sizes[size] = 1;
-            } else {
-              newItems[itemId].sizes[size] += 1;
-            }
+            currentItems[itemId] = {
+              id: itemId,
+              sizes: { [size]: 1 },
+              name: product.name || '',
+              price: product.price || 0,
+              image: product.image || ''
+            };
           }
-          return { items: newItems };
+          
+          toast.success('Item added to cart');
+          return { items: currentItems };
         });
       },
 

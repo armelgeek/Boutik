@@ -9,12 +9,11 @@ interface CartItemProps {
 
 const CartItem = ({ item }: CartItemProps) => {
   const { currency, updateQuantity,removeFromCart } = useShop();
-
   return (
     <div className="flex items-center justify-between py-4 border-b">
       <div className="flex items-center gap-4">
-        <Image
-          src={item.image}
+        <img
+          src={item.image || 'https://placehold.co/400'}
           width={60}
           height={60}
           alt={item.name}
@@ -24,10 +23,10 @@ const CartItem = ({ item }: CartItemProps) => {
           <p className="font-medium">{item.name}</p>
           <div className="text-sm text-gray-500">
             <p>Size: {item.size}</p>
-            <p>Price: {currency}{item.price}</p>
+            <p>Price: {currency}{Number(item.price).toFixed(2)}</p>
           </div>
           <p className="text-sm font-medium">
-            Total: {currency}{item.price * item.quantity}
+            Total: {currency}{(Number(item.price) * Number(item.quantity)).toFixed(2)}
           </p>
         </div>
       </div>

@@ -11,7 +11,6 @@ const CartList = ({ items }: CartListProps) => {
   if (!items || items.length === 0) {
     return <EmptyCart />;
   }
-
   return (
     <div className="space-y-2">
       {items.map((item, index) => (

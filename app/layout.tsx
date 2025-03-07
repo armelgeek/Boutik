@@ -23,7 +23,6 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <Provider>
               {children}
         </Provider>
-        <Toaster richColors />
       </body>
     </html>
   );
