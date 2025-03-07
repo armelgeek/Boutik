@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatPrice } from "@/shared/lib/utils/index";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { useOrdersList } from "@/features/orders/hooks/use-orders";
+import { useOrders } from "@/features/orders/hooks/use-orders";
 import Link from "next/link";
 
 function OrdersList() {
-  const { orders } = useOrdersList();
+  const { orders } = useOrders();
   if (orders.length === 0) return <div>There is no order.</div>;
   return (
     <div className="grid  gap-y-5">

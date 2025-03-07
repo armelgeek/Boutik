@@ -11,16 +11,16 @@ const CartItem = ({ item }: CartItemProps) => {
   const { currency, updateQuantity,removeFromCart } = useShop();
   return (
     <div className="flex items-center justify-between py-4 border-b">
-      <div className="flex items-center gap-4">
+      <div className="flex  gap-4">
         <img
           src={item.image || 'https://placehold.co/400'}
-          width={60}
-          height={60}
+          width={120}
+          height={120}
           alt={item.name}
           className="object-cover"
         />
-        <div>
-          <p className="font-medium">{item.name}</p>
+        <div className='flex flex-col gap-1'>
+          <p className="font-medium mb-2">{item.name}</p>
           <div className="text-sm text-gray-500">
             <p>Size: {item.size}</p>
             <p>Price: {currency}{Number(item.price).toFixed(2)}</p>
