@@ -11,6 +11,7 @@ export const users = pgTable('users', {
   image: text('image'),
   createdAt: timestamp('created_at').notNull(),
   updatedAt: timestamp('updated_at').notNull(),
+  stripeCustomerId: text('stripe_customer_id')
 });
 
 export const sessions = pgTable('sessions', {

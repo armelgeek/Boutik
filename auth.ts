@@ -1,4 +1,6 @@
 import { betterAuth } from 'better-auth';
+import { stripe } from "@better-auth/stripe"
+import Stripe from "stripe"
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 
 import { db } from '@/drizzle/db';
@@ -7,7 +9,7 @@ import { sendChangeEmailVerification, sendResetPasswordEmail, sendVerificationEm
 import { username } from 'better-auth/plugins/username';
 import { anonymous } from 'better-auth/plugins/anonymous';
 import { nextCookies } from 'better-auth/next-js';
-
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!)
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
@@ -95,5 +97,24 @@ export const auth = betterAuth({
 
     },
   },
-  plugins: [username(), anonymous(), nextCookies()],
+  plugins: [
+    username(), 
+    anonymous(), 
+    nextCookies(),
+    stripe({
+      stripeClient,
+      stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+      createCustomerOnSignUp: true,
+      checkout: {
+        enabled: true,
+        successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success`,
+        cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
+        allowPromotionCodes: true,
+        customerCreation: 'always',
+        billingAddressCollection: 'required',
+        mode: 'payment'
+      }
+    })
+  ],
+
 });
