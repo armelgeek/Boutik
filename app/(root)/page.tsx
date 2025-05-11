@@ -1,3 +1,4 @@
+import DealCountdown from '@/components/ui/deal';
 import OurPolicies from '@/features/home/atoms/our-policies';
 import BestSeller from '@/features/products/components/organisms/best-seller';
 import LatestCollection from '@/features/products/components/organisms/latest-collection';
@@ -10,6 +11,7 @@ export default function Home() {
       <Hero/>
       <LatestCollection/>
       <BestSeller/>
+      <DealCountdown/>
       <OurPolicies/>
       <NewsLetter/>
     </>
