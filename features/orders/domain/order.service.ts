@@ -20,7 +20,6 @@ export interface CreateOrderPayload {
 export interface OrderService {
   create(payload: CreateOrderPayload): Promise<any>;
   list(filter: any): Promise<PaginatedOrder>;
-  cancel(id: string): Promise<any>;
 }
 
 export class OrderServiceImpl implements OrderService {
@@ -45,15 +44,13 @@ export class OrderServiceImpl implements OrderService {
       );
       
       const serialize = serializeSearchParams(cleanFilter);
+
       const endpoint = API_ENDPOINTS.orders.list(serialize);
       return this.fetchData<PaginatedOrder>(`${API_URL}${endpoint}`, {
         headers: { 'Content-Type': 'application/json' },
         method: 'GET',
       });
     }
-  async cancel(id: string): Promise<any> {
-    
-  }
 }
 
 export const orderService = new OrderServiceImpl();

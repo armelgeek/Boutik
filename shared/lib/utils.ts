@@ -19,7 +19,7 @@ export const isClient = typeof window === 'object';
 
 
 export const shootFireworks = () => {
-  const duration = 15 * 1000;
+  const duration = 5 * 1000;
   const animationEnd = Date.now() + duration;
   const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 

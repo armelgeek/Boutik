@@ -35,10 +35,12 @@ import {
   ChevronsUpDown,
   GalleryVerticalEnd,
   LogOut,
+  ShoppingBag,
+  ShoppingBasket,
   User2Icon
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname,useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { navItems } from '@/shared/lib/constants/app.constant';
 import { Icons } from '@/components/ui/icons';
@@ -51,26 +53,26 @@ export const company = {
   plan: 'Enterprise'
 };
 
-export default function AppSidebar({session}: {session: Session} ) {
+export default function AppSidebar({ session }: { session: Session }) {
   const router = useRouter();
   const pathname = usePathname();
   //const { state, isMobile } = useSidebar();
 
   const handleSignOut = async () => {
-      await authClient.signOut({
-        fetchOptions: { onSuccess: () => router.push('/login') },
-      });
-    };
+    await authClient.signOut({
+      fetchOptions: { onSuccess: () => router.push('/login') },
+    });
+  };
   return (
     <Sidebar collapsible='icon'>
       <SidebarHeader>
         <div className='flex gap-2 py-2 text-sidebar-accent-foreground'>
-          <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
+          <div className='flex justify-center items-center bg-sidebar-primary rounded-lg size-8 aspect-square text-sidebar-primary-foreground'>
             <company.logo className='size-4' />
           </div>
-          <div className='grid flex-1 text-left text-sm leading-tight'>
-            <span className='truncate font-semibold'>{company.name}</span>
-            <span className='truncate text-xs'>{company.plan}</span>
+          <div className='flex-1 grid text-sm text-left leading-tight'>
+            <span className='font-semibold truncate'>{company.name}</span>
+            <span className='text-xs truncate'>{company.plan}</span>
           </div>
         </div>
       </SidebarHeader>
@@ -95,7 +97,7 @@ export default function AppSidebar({session}: {session: Session} ) {
                       >
                         {item.icon && <Icon />}
                         <span>{item.title}</span>
-                        <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+                        <ChevronRight className='ml-auto group-data-[state=open]/collapsible:rotate-90 transition-transform duration-200' />
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
@@ -132,6 +134,21 @@ export default function AppSidebar({session}: {session: Session} ) {
               );
             })}
           </SidebarMenu>
+          <SidebarGroupLabel>Orders</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                tooltip={'Orders'}
+                isActive={pathname === "/d/master/orders"}
+              >
+                <Link href={'/d/master/orders'}>
+                  <ShoppingBasket />
+                  <span>Command List</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
@@ -143,7 +160,7 @@ export default function AppSidebar({session}: {session: Session} ) {
                   size='lg'
                   className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                 >
-                  <Avatar className='h-8 w-8 rounded-lg'>
+                  <Avatar className='rounded-lg w-8 h-8'>
                     <AvatarImage
                       src={session?.user?.image || ''}
                       alt={session?.user?.name || ''}
@@ -152,11 +169,11 @@ export default function AppSidebar({session}: {session: Session} ) {
                       {session?.user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
                     </AvatarFallback>
                   </Avatar>
-                  <div className='grid flex-1 text-left text-sm leading-tight'>
-                    <span className='truncate font-semibold'>
+                  <div className='flex-1 grid text-sm text-left leading-tight'>
+                    <span className='font-semibold truncate'>
                       {session?.user?.name || ''}
                     </span>
-                    <span className='truncate text-xs'>
+                    <span className='text-xs truncate'>
                       {session?.user?.email || ''}
                     </span>
                   </div>
@@ -164,14 +181,14 @@ export default function AppSidebar({session}: {session: Session} ) {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+                className='rounded-lg w-[--radix-dropdown-menu-trigger-width] min-w-56'
                 side='bottom'
                 align='end'
                 sideOffset={4}
               >
                 <DropdownMenuLabel className='p-0 font-normal'>
-                  <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
-                    <Avatar className='h-8 w-8 rounded-lg'>
+                  <div className='flex items-center gap-2 px-1 py-1.5 text-sm text-left'>
+                    <Avatar className='rounded-lg w-8 h-8'>
                       <AvatarImage
                         src={session?.user?.image || ''}
                         alt={session?.user?.name || ''}
@@ -182,11 +199,11 @@ export default function AppSidebar({session}: {session: Session} ) {
                           'CN'}
                       </AvatarFallback>
                     </Avatar>
-                    <div className='grid flex-1 text-left text-sm leading-tight'>
-                      <span className='truncate font-semibold'>
+                    <div className='flex-1 grid text-sm text-left leading-tight'>
+                      <span className='font-semibold truncate'>
                         {session?.user?.name || ''}
                       </span>
-                      <span className='truncate text-xs'>
+                      <span className='text-xs truncate'>
                         {' '}
                         {session?.user?.email || ''}
                       </span>
@@ -198,7 +215,7 @@ export default function AppSidebar({session}: {session: Session} ) {
                 <DropdownMenuGroup>
                   <Link href="/account" passHref>
                     <DropdownMenuItem>
-                        <User2Icon/> My profile
+                      <User2Icon /> My profile
                     </DropdownMenuItem>
                   </Link>
                 </DropdownMenuGroup>

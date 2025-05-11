@@ -1,7 +1,7 @@
 import 'server-only';
 import { db } from '@/drizzle/db';
-import { sql, and, eq } from 'drizzle-orm';
-import { orders, orderItems } from '@/drizzle/schema';
+import { sql, and, eq, gte, lte } from 'drizzle-orm';
+import { orders, orderItems, users } from '@/drizzle/schema';
 import { products } from '@/drizzle/schema/products';
 import type { Filter } from '@/shared/lib/types/filter';
 import { calculatePagination } from '@/shared/lib/utils/calculate-pagination';
@@ -10,23 +10,17 @@ import { createPagination } from '@/shared/lib/utils/create-pagination';
 export async function getOrders(filter: Filter) {
     const conditions = [];
 
-    /**if (filter.search && filter.search.trim() !== '') {
-        conditions.push(
-            sql`LOWER(${orders.status}) LIKE LOWER(${`%${filter.search}%`})`
-        );
-    }**/
-
     if (filter.userId) {
         conditions.push(eq(orders.userId, filter.userId));
     }
 
-    /**if (filter.fromDate) {
-      conditions.push(gte(orders.createdAt, new Date(filter.fromDate)));
+    if (filter.startDate) {
+      conditions.push(gte(orders.createdAt, new Date(filter.startDate)));
     }
   
-    if (filter.toDate) {
-      conditions.push(lte(orders.createdAt, new Date(filter.toDate)));
-    }**/
+    if(filter.endDate) {
+      conditions.push(lte(orders.createdAt, new Date(filter.endDate)));
+    }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
@@ -49,10 +43,13 @@ export async function getOrders(filter: Filter) {
             order: orders,
             item: orderItems,
             product: products,
+            user: users,
+            updatedAt: orders.updatedAt,
         })
         .from(orders)
         .leftJoin(orderItems, eq(orderItems.orderId, orders.id))
         .leftJoin(products, eq(products.id, orderItems.productId))
+        .leftJoin(users, eq(users.id, orders.userId))
         .where(whereClause)
         .orderBy(orders.createdAt)
         .limit(itemsPerPage)
@@ -64,7 +61,9 @@ export async function getOrders(filter: Filter) {
         if (!acc[orderId]) {
             acc[orderId] = {
                 ...row.order,
+                updatedAt: row.updatedAt,
                 items: [],
+                user: row.user,
             };
         }
         

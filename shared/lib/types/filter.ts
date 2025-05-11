@@ -10,4 +10,6 @@ export interface Filter {
   sortDir?: string;
   minPrice?: number;
   maxPrice?: number;
+  startDate: string | null;
+  endDate: string | null;
 }

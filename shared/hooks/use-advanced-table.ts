@@ -54,7 +54,6 @@ export function useAdvancedTable<T>({ queryKey, queryFn }: UseTableStateProps<T>
   const [startDate, setStartDate] = useQueryState('startDate', parseAsString.withDefault(null));
   const [endDate, setEndDate] = useQueryState('endDate', parseAsString.withDefault(null));
 
-  // Only include non-empty params to avoid unnecessary query reruns
   const queryParams = {
     ...(search ? { search } : {}),
     ...(page !== 1 ? { page } : {}),
@@ -66,7 +65,6 @@ export function useAdvancedTable<T>({ queryKey, queryFn }: UseTableStateProps<T>
     ...(endDate ? { endDate } : {})
   };
 
-  // Use queryKey as it was originally used in the code
   const queryP = [...queryKey, queryParams];
   const { data, isPending, isError } = useQuery({
     queryKey: queryP,

@@ -22,6 +22,10 @@ import {
 } from '@/components/ui/table';
 
 import { DataTableToolbar } from '../../../../features/products/components/organisms/crud/data-table-toolbar';
+import { useState, useCallback } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import dayjs from 'dayjs';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,10 +44,10 @@ interface DataTableProps<TData, TValue> {
   onSortByChange: (sort: string | null) => void;
   onSortDirChange: (sort: SortDirection | null) => void;
   onPageChange: (page: number) => void;
-  onPageSizeChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
   onFilterChange?: (filters: ColumnFiltersState) => void;
+  onDateRangeChange?: (startDate: string | null, endDate: string | null) => void;
   isLoading: boolean;
-  isError: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -62,9 +66,28 @@ export function DataTable<TData, TValue>({
   onPageChange,
   onPageSizeChange,
   onFilterChange,
+  onDateRangeChange,
   isLoading,
 }: DataTableProps<TData, TValue>) {
   const sort: ColumnSort[] = sortBy && sortDir ? [{ id: sortBy, desc: sortDir === 'desc' }] : [];
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [endDate, setEndDate] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // Pour afficher les erreurs
+
+  const handleDateFilter = useCallback(() => {
+    if (startDate && endDate) {
+      if (dayjs(startDate).isAfter(dayjs(endDate))) {
+        setError('La date de début ne peut pas être après la date de fin');
+        return;
+      } else {
+        setError(null);
+      }
+
+      const formattedStartDate = dayjs(startDate).format('YYYY-MM-DD');
+      const formattedEndDate = dayjs(endDate).format('YYYY-MM-DD');
+      onDateRangeChange?.(formattedStartDate, formattedEndDate);
+    }
+  }, [startDate, endDate, onDateRangeChange]);
 
   const table = useReactTable({
     data,
@@ -109,53 +132,87 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
-      <div className="rounded-md border">
+      <div className="flex md:flex-row flex-col justify-between items-center gap-4">
+        {search != null ? <DataTableToolbar table={table} /> : (<div></div>)}
+        <div className="flex justify-center items-center gap-2">
+          {onDateRangeChange && (
+            <>
+              <div className="flex items-end gap-2">
+                <div className="flex flex-col">
+                  <label className="text-muted-foreground text-sm">Date de début</label>
+                  <Input
+                    type="date"
+                    value={startDate || ''}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    min={dayjs().format('YYYY-MM-DD')}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label className="text-muted-foreground text-sm">Date de fin</label>
+                  <Input
+                    type="date"
+                    value={endDate || ''}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    min={dayjs().format('YYYY-MM-DD')}
+                  />
+                </div>
+                <Button  variant="outline" onClick={handleDateFilter}>Filtrer par date</Button>
+              </div>
+              {error && <div className="mt-2 text-red-500 text-sm">{error}</div>}
+            </>
+          )}
+          <Button
+            variant="outline"
+            className='mt-4'
+            onClick={() => {
+              setStartDate(null);
+              setEndDate(null);
+              onDateRangeChange?.(null, null);
+              onSearchChange?.(null);
+              onFilterChange?.([]);
+            }}
+          >
+            Réinitialiser les filtres
+          </Button>
+        </div>
+
+      </div>
+
+      <div className="border rounded-md">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      style={{ width: header.getSize() }}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    style={{ width: header.getSize() }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   Loading...
                 </TableCell>
               </TableRow>
             ) : data.length === 0 ? (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   No result.
                 </TableCell>
               </TableRow>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -167,6 +224,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
       <DataTablePagination table={table} />
     </div>
   );

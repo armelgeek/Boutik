@@ -7,5 +7,5 @@ export function formatPrice(price: number | string) {
 }
 
 export function formatDate(date: Date) {
-  return dayjs(date).format("MMMM D, YYYY");
+  return dayjs(date).format("D MMMM YYYY");
 }

@@ -1,4 +1,4 @@
-import OrdersList from "@/features/orders/molecules/order-list";
+import OrdersList from "@/features/orders/components/molecules/order-list";
 import Heading from "@/shared/components/atoms/heading";
 import { Metadata } from "next";
 import React from "react";
