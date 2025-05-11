@@ -43,7 +43,7 @@ const Collection = () => {
     return (
         <>
             <div className="flex sm:flex-row flex-col gap-1 sm:gap-10 pt-10">
-                <FilterOption showFilter={showFilter} setShowFilter={setShowFilter}>
+                <FilterOption className='w-72' showFilter={showFilter} setShowFilter={setShowFilter}>
                     <CategoryFilter
                         showFilter={showFilter}
                         toggleCategory={handleToggleCategory}

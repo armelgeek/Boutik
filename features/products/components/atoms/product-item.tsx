@@ -24,7 +24,7 @@ const ProductItem = ({ id, images, slug, name, description, price }: Partial<Pro
       href={`/product/${slug || ''}`}
       className="group soverflow-hidden block relative bg-white shadow-sm hover:shadow-md p-2 border transition-shadow duration-300"
     >
-      <div className="relative w-full h-48 md:h-56 lg:h-64 overflow-hidden">
+      <div className="relative w-full h-32 md:h-48 lg:h-56 overflow-hidden">
         <Image
           src={imageSrc}
           alt={name || 'Product image'}
@@ -36,8 +36,8 @@ const ProductItem = ({ id, images, slug, name, description, price }: Partial<Pro
 
       <div className="flex justify-between items-center px-1">
         <div>
-          <p className="text-gray-700 text-md truncate">{name || 'Unnamed product'}</p>
-          <p className="mt-1 font-semibold text-black text-base text-3xl">
+          <p className="mt-2 text-gray-700 text-lg truncate">{name || 'Unnamed product'}</p>
+          <p className="mt-1 font-semibold text-black text-xl">
             {currency}
             {price}
           </p>
@@ -45,10 +45,7 @@ const ProductItem = ({ id, images, slug, name, description, price }: Partial<Pro
 
       </div>
 
-      <div className=''>
-        <div className='py-2'>
-          <Rating value={3.5} />
-        </div>
+      <div className='px-1 pt-2'>
         <Button
           onClick={() => addToCart(id, size)}
           variant='default'

@@ -44,7 +44,7 @@ const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
       />
       <Label
         htmlFor={id}
-        className="font-normal text-sm leading-none cursor-pointer"
+        className="text-md cursor-pointer"
       >
         {label}
       </Label>

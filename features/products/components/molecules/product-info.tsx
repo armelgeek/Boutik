@@ -63,7 +63,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <div className="border-t-2 border-b-2 border-black rounded-full w-12 h-12 animate-spin"></div>
+        <div className="border-black rounded-full w-12 h-12 animate-spin"></div>
       </div>
     );
   }

@@ -12,11 +12,11 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar session={session}/>
       <SidebarInset>
       <Header />
-      <div className='flex flex-1 flex-col space-y-4 px-4 py-4'>
+      <div className='flex flex-col flex-1 space-y-4 px-4 py-4'>
         {children}
       </div>
       </SidebarInset>

@@ -1,18 +1,29 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useDebounce } from '@/shared/lib/hooks/use-debounce';
+import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 
 interface PriceFilterProps {
   showFilter: boolean;
   onPriceChange: (minPrice: number | null, maxPrice: number | null) => void;
+  minPossiblePrice?: number;
+  maxPossiblePrice?: number;
 }
 
-const PriceFilter: React.FC<PriceFilterProps> = ({ showFilter, onPriceChange }) => {
-  const [minPrice, setMinPrice] = useState<string>('');
-  const [maxPrice, setMaxPrice] = useState<string>('');
+const PriceFilter: React.FC<PriceFilterProps> = ({ 
+  showFilter, 
+  onPriceChange,
+  minPossiblePrice = 0,
+  maxPossiblePrice = 1000
+}) => {
+  const [minPrice, setMinPrice] = useState<string>(minPossiblePrice.toString());
+  const [maxPrice, setMaxPrice] = useState<string>(maxPossiblePrice.toString());
+  const [sliderValue, setSliderValue] = useState<number[]>([minPossiblePrice, maxPossiblePrice]);
   
   const debouncedMinPrice = useDebounce(minPrice, 500);
   const debouncedMaxPrice = useDebounce(maxPrice, 500);
+  const debouncedSliderValue = useDebounce(sliderValue, 300);
 
   useEffect(() => {
     const min = debouncedMinPrice ? parseInt(debouncedMinPrice) : null;
@@ -20,10 +31,21 @@ const PriceFilter: React.FC<PriceFilterProps> = ({ showFilter, onPriceChange }) 
     onPriceChange(min, max);
   }, [debouncedMinPrice, debouncedMaxPrice, onPriceChange]);
 
+  // Update inputs when slider changes
+  useEffect(() => {
+    setMinPrice(debouncedSliderValue[0].toString());
+    setMaxPrice(debouncedSliderValue[1].toString());
+  }, [debouncedSliderValue]);
+
   const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (value === '' || /^\d+$/.test(value)) {
       setMinPrice(value);
+      
+      const numValue = value === '' ? minPossiblePrice : parseInt(value);
+      if (numValue <= parseInt(maxPrice)) {
+        setSliderValue([numValue, parseInt(maxPrice)]);
+      }
     }
   };
 
@@ -31,38 +53,77 @@ const PriceFilter: React.FC<PriceFilterProps> = ({ showFilter, onPriceChange }) 
     const value = e.target.value;
     if (value === '' || /^\d+$/.test(value)) {
       setMaxPrice(value);
+      
+      const numValue = value === '' ? maxPossiblePrice : parseInt(value);
+      if (numValue >= parseInt(minPrice)) {
+        setSliderValue([parseInt(minPrice), numValue]);
+      }
     }
   };
 
+  const handleSliderChange = (value: number[]) => {
+    setSliderValue(value);
+  };
+
   return (
-    <div className={`border border-gray-300 bg-white px-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
-      <p className="mb-3 font-medium text-sm">PRICE RANGE</p>
-      <div className="flex flex-col gap-3">
-        <div>
-          <label htmlFor="minPrice" className="block mb-1 text-gray-600 text-sm">
-            Min Price
+    <div className={`border rounded-lg bg-white px-5 py-4 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
+      <p className="mb-4 font-medium text-sm">PRICE RANGE</p>
+      
+      <div className="mb-6 px-1">
+        <Slider
+          value={sliderValue}
+          min={minPossiblePrice}
+          max={maxPossiblePrice}
+          step={1}
+          onValueChange={handleSliderChange}
+          className="my-6"
+        />
+      </div>
+      
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
+          <label htmlFor="minPrice" className="block mb-2 font-medium text-gray-600 text-xs">
+            Min
           </label>
-          <input
-            type="text"
-            id="minPrice"
-            value={minPrice}
-            onChange={handleMinPriceChange}
-            placeholder="0"
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
-          />
+          <div className="relative">
+            <span className="top-1/2 left-3 absolute text-gray-500 -translate-y-1/2">$</span>
+            <Input
+              type="text"
+              id="minPrice"
+              value={minPrice}
+              onChange={handleMinPriceChange}
+              placeholder="0"
+              className="pl-7"
+            />
+          </div>
         </div>
-        <div>
-          <label htmlFor="maxPrice" className="block mb-1 text-gray-600 text-sm">
-            Max Price
+        
+        <div className="flex flex-none justify-center items-center">
+          <div className="bg-gray-300 w-4 h-px"></div>
+        </div>
+        
+        <div className="flex-1">
+          <label htmlFor="maxPrice" className="block mb-2 font-medium text-gray-600 text-xs">
+            Max
           </label>
-          <input
-            type="text"
-            id="maxPrice"
-            value={maxPrice}
-            onChange={handleMaxPriceChange}
-            placeholder="Max"
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
-          />
+          <div className="relative">
+            <span className="top-1/2 left-3 absolute text-gray-500 -translate-y-1/2">$</span>
+            <Input
+              type="text"
+              id="maxPrice"
+              value={maxPrice}
+              onChange={handleMaxPriceChange}
+              placeholder="Max"
+              className="pl-7"
+            />
+          </div>
+        </div>
+      </div>
+      
+      <div className="mt-4 pt-3 border-gray-100 border-t">
+        <div className="flex justify-between items-center text-gray-500 text-xs">
+          <span>Min: ${minPossiblePrice}</span>
+          <span>Max: ${maxPossiblePrice}</span>
         </div>
       </div>
     </div>

@@ -144,7 +144,7 @@ export default function AppSidebar({ session }: { session: Session }) {
               >
                 <Link href={'/d/master/orders'}>
                   <ShoppingBasket />
-                  <span>Command List</span>
+                  <span>Orders</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

@@ -9,7 +9,7 @@ const CategoryFilter: React.FC<{
 
   if (isLoading) {
     return (
-      <div className={`border border-gray-300 pl-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
+      <div className={`border border-gray-300 pl-5 py-3 mt-3 ${showFilter ? '' : 'hidden'} sm:block`}>
         <p className="mb-3 font-medium text-sm">CATEGORIES</p>
         <div className="animate-pulse">
           <div className="bg-gray-200 mb-2 rounded w-3/4 h-4"></div>
@@ -21,7 +21,7 @@ const CategoryFilter: React.FC<{
   }
 
   return (
-    <div className={`border border-gray-300 bg-white pl-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
+    <div className={`border border-gray-300 bg-white pl-5 py-3 mt-3 ${showFilter ? '' : 'hidden'} sm:block`}>
       <p className="mb-3 font-medium text-sm">CATEGORIES</p>
       <div className="flex flex-col gap-2 font-light text-gray-700 text-sm">
         {categories.map((category) => (
