@@ -36,6 +36,8 @@ export async function getOrders(filter: Filter) {
         filter.pageSize || 10
     );
 
+     const orderBy = sql`${orders.createdAt} DESC`;
+
     const pagination = createPagination(count, currentPage, itemsPerPage, offset);
 
     const rawOrders = await db
@@ -51,7 +53,7 @@ export async function getOrders(filter: Filter) {
         .leftJoin(products, eq(products.id, orderItems.productId))
         .leftJoin(users, eq(users.id, orders.userId))
         .where(whereClause)
-        .orderBy(orders.createdAt)
+        .orderBy(orderBy)
         .limit(itemsPerPage)
         .offset(offset);
 
