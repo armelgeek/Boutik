@@ -9,11 +9,16 @@ export default function CategoryPage() {
 
   return (
     <div className="flex flex-col space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="scroll-m-20 text-3xl font-bold tracking-tight">Category</h1>
-        <Add categories={categories} />
+      <div className="flex flex-col space-y-2">
+        <div className="flex justify-between items-center">
+          <h1 className="font-bold text-3xl tracking-tight scroll-m-20">Categories</h1>
+          <Add categories={categories} />
+        </div>
+        <p className="text-muted-foreground text-sm md:text-base">
+          Organize your products with customizable categories. Create, edit and manage your product taxonomy structure.
+        </p>
       </div>
-      <CategoryClientPage/>
+      <CategoryClientPage />
     </div>
   );
 }

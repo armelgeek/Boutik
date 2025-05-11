@@ -1,4 +1,5 @@
 'use client';
+import { Button } from '@/components/ui/button';
 import React from 'react';
 const NewsLetter = () => {
   const onSubmitHandler = (e) => {
@@ -7,30 +8,28 @@ const NewsLetter = () => {
   };
 
   return (
-    <div className="text-center my-10">
-      <p className="text-2xl font-medium text-gray-800">
+    <div className="my-10 text-center">
+      <p className="font-medium text-gray-800 text-2xl">
         Subscribe now
       </p>
-      <p className="text-gray-500 mt-3">
+      <p className="mt-3 text-gray-500">
         Be the first to know about new arrivals, sales & promos!
       </p>
 
       <form
         onSubmit={onSubmitHandler}
-        className="w-full sm:w-1/2 flex items-center gap-3 mx-auto my-6 border pl-3"
+        className="flex items-center gap-3 mx-auto my-6 pl-3 border w-full sm:w-1/2"
       >
         <input
           type="email"
           placeholder="Enter your email"
-          className="w-full sm:flex-1 outline-none "
+          className="sm:flex-1 outline-none w-full"
           required
         />
-        <button
-          type="submit"
-          className="bg-black text-white text-xs px-10 py-4 "
+        <Button
         >
           Subscribe
-        </button>
+        </Button>
       </form>
     </div>
   );

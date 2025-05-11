@@ -7,7 +7,6 @@ import ProductListContainer from '../molecules/product-list-container';
 import SubCategoryFilter from '../molecules/sub-category-filter';
 import Products from '../molecules/products';
 import ProductsSkeleton from '../molecules/products-skeleton';
-import SearchBar from '../molecules/search-bar';
 import PriceFilter from '../molecules/price-filter';
 
 const Collection = () => {
@@ -43,8 +42,7 @@ const Collection = () => {
 
     return (
         <>
-            <SearchBar />
-            <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
+            <div className="flex sm:flex-row flex-col gap-1 sm:gap-10 pt-10">
                 <FilterOption showFilter={showFilter} setShowFilter={setShowFilter}>
                     <CategoryFilter
                         showFilter={showFilter}
@@ -65,7 +63,7 @@ const Collection = () => {
                     sortDir={sortDir} 
                     onSort={onSort}
                 >
-                    {isFiltering ? <ProductsSkeleton count={8} /> : <Products products={products} />}
+                    {isFiltering ? <ProductsSkeleton count={8} withSidebar /> : <Products products={products} withSidebar />}
                 </ProductListContainer>
             </div>
         </>

@@ -66,6 +66,7 @@
     "drizzle-orm": "^0.39.0",
     "drizzle-zod": "^0.7.0",
     "embla-carousel-react": "^8.5.2",
+    "framer-motion": "^12.10.5",
     "input-otp": "^1.4.2",
     "kbar": "^0.1.0-beta.45",
     "lucide-react": "^0.474.0",

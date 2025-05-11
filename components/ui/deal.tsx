@@ -64,7 +64,7 @@ const DealCountdown = () => {
         time.seconds === 0
     ) {
         return (
-            <section className='grid grid-cols-1 md:grid-cols-2 my-20'>
+            <section className='grid grid-cols-1 md:grid-cols-2 py-28'>
                 <div className='flex flex-col justify-center gap-2'>
                     <Heading text1={'Deal Has Ended'} text2={""} />
                     <p>
@@ -73,7 +73,7 @@ const DealCountdown = () => {
 
                     <div className='text-center'>
                         <Button asChild>
-                            <Link href='/search'>View Products</Link>
+                            <Link href='/collection'>View Products</Link>
                         </Button>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ const DealCountdown = () => {
     }
 
     return (
-        <section className='grid grid-cols-1 md:grid-cols-2 my-20'>
+        <section className='grid grid-cols-1 md:grid-cols-2 py-28'>
             <div className='flex flex-col justify-center gap-2'>
                 <Heading text1={'Deal Of The Month'} text2={""} className={"text-left"}  />
                 <p>
@@ -106,8 +106,8 @@ const DealCountdown = () => {
                     <StatBox label='Seconds' value={time.seconds} />
                 </ul>
                 <div className='text-center'>
-                    <Button asChild>
-                        <Link href='/search'>View Products</Link>
+                    <Button className='text-white'>
+                        <Link href='/collection'>View Products</Link>
                     </Button>
                 </div>
             </div>

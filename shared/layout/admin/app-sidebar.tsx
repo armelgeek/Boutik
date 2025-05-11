@@ -48,7 +48,7 @@ import { authClient } from '@/auth-client';
 import { Session } from 'better-auth';
 
 export const company = {
-  name: 'Acme Inc',
+  name: 'Bootik',
   logo: GalleryVerticalEnd,
   plan: 'Enterprise'
 };

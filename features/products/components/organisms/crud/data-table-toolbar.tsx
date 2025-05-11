@@ -10,7 +10,7 @@ interface DataTableToolbarProps<TData> {
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center gap-2">
       <div className="flex flex-1 items-center space-x-2">
         <div className="relative">
           <DebouncedInput

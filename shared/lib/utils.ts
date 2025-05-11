@@ -13,7 +13,7 @@ export const formatCurrency = (amount = 0, currency = 'USD') =>
     style: 'currency',
     currency,
     minimumIntegerDigits: 2,
-  }).format(amount / 100);
+  }).format(amount);
 
 export const isClient = typeof window === 'object';
 

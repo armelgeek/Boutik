@@ -11,21 +11,21 @@ const SubCategoryFilter: React.FC<SubCategoryFilterProps> = ({ showFilter, toggl
 
   if (isLoading) {
     return (
-      <div className={`border border-gray-300 pl-5 py-3 my-5 ${showFilter ? '' : 'hidden'} sm:block`}>
-        <p className="mb-3 text-sm font-medium">TYPES</p>
+      <div className={`border border-gray-300 bg-white pl-5 py-3 my-5 ${showFilter ? '' : 'hidden'} sm:block`}>
+        <p className="mb-3 font-medium text-sm">TYPES</p>
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="bg-gray-200 mb-2 rounded w-3/4 h-4"></div>
+          <div className="bg-gray-200 mb-2 rounded w-2/3 h-4"></div>
+          <div className="bg-gray-200 rounded w-1/2 h-4"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`border border-gray-300 pl-5 py-3 my-5 ${showFilter ? '' : 'hidden'} sm:block`}>
-      <p className="mb-3 text-sm font-medium">TYPES</p>
-      <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
+    <div className={`border border-gray-300 bg-white pl-5 py-3 my-5 ${showFilter ? '' : 'hidden'} sm:block`}>
+      <p className="mb-3 font-medium text-sm">TYPES</p>
+      <div className="flex flex-col gap-2 font-light text-gray-700 text-sm">
         {subCategories.map((type) => (
           <FilterCheckbox
             key={type.value}

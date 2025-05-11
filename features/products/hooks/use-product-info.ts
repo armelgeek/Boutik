@@ -4,7 +4,7 @@ import { useShop } from "./use-shop";
 import { Product } from "@/features/products/config/product.type";
 import { productService } from "../domain/product.service";
 
-const useProductInfo = ({ productId }: { productId: string }) => {
+const useProductInfo = ({ productId }: { productId: string | undefined }) => {
   const { currency, addToCart } = useShop();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

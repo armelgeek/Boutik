@@ -1,10 +1,13 @@
+"use client";
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/components/ui/multiselect";
 import { useProductFilter } from "../../hooks/use-filter";
+import { useRouter } from "next/navigation";
 
-const SearchBar = () => {
+const SearchBar = ({ isOnSearchPage = false }) => {
+  const router = useRouter();
   const { search, setSearch } = useProductFilter();
   const [inputValue, setInputValue] = useState(search);
   const debouncedValue = useDebounce(inputValue, 1000);
@@ -13,18 +16,28 @@ const SearchBar = () => {
     setSearch(debouncedValue);
   }, [debouncedValue, setSearch]);
 
+  const handleSubmit = (e:any) => {
+    e.preventDefault();
+    
+    if (!isOnSearchPage) {
+      router.push(`/collection?q=${encodeURIComponent(inputValue)}`);
+    }
+  };
+
   return (
-    <div className="border-t border-b bg-gray-50 text-center">
-      <div className="w-[450px] inline-flex items-center justify-center border border-gray-400 px-5 py-2 my-8 rounded-full">
+    <div className="bg-gray-50 border-t border-b text-center">
+      <form onSubmit={handleSubmit} className="inline-flex justify-center items-center px-5 py-2 border border-gray-400">
         <input
           type="text"
           placeholder="Search..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="flex-1 outline-none bg-inherit text-sm"
+          className="flex-1 bg-inherit outline-none text-sm"
         />
-        <Image src={assets.search_icon} alt="Search icon" className="w-4" />
-      </div>
+        <button type="submit" className="bg-transparent p-0 border-0 cursor-pointer">
+          <Image src={assets.search_icon} alt="Search icon" className="w-4" />
+        </button>
+      </form>
     </div>
   );
 };

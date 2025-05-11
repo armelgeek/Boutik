@@ -1,24 +1,42 @@
-import Image from 'next/image';
-import { assets } from "@/assets/assets";
+import { Card, CardContent } from '@/components/ui/card';
+import { DollarSign, Headset, ShoppingBag, WalletCards } from 'lucide-react';
+
 
 const OurPolicies = () => {
   return (
-    <div className="flex flex-col sm:flex-row justify-around gap-12 sm:gap-2 text-center py-20 text-xs sm:text-sm md:text-base text-gray-700">
-      <div className="">
-        <Image src={assets.exchange_icon} alt="Exchange Icon" width={48} height={48} className="m-auto mb-5" />
-        <p className="font-semibold">Easy Exchange Policy</p>
-        <p className="text-gray-400">We offer hassle free exchange policy</p>
-      </div>
-      <div className="">
-        <Image src={assets.quality_icon} alt="Quality Icon" width={48} height={48} className="m-auto mb-5" />
-        <p className="font-semibold">7-day return policy</p>
-        <p className="text-gray-400">We provide 7-day return policy</p>
-      </div>
-      <div className="">
-        <Image src={assets.support_img} alt="Support Icon" width={48} height={48} className="m-auto mb-5" />
-        <p className="font-semibold">Best customer support</p>
-        <p className="text-gray-400">We provide 24/7 customer support</p>
-      </div>
+    <div>
+      <Card>
+        <CardContent className='gap-4 grid md:grid-cols-4 p-4'>
+          <div className='space-y-2'>
+            <ShoppingBag />
+            <div className='font-bold text-sm'>Free Shipping</div>
+            <div className='text-muted-foreground text-sm'>
+              Free shipping on orders above $100
+            </div>
+          </div>
+          <div className='space-y-2'>
+            <DollarSign />
+            <div className='font-bold text-sm'>Money Back Guarantee</div>
+            <div className='text-muted-foreground text-sm'>
+              Within 30 days of purchase
+            </div>
+          </div>
+          <div className='space-y-2'>
+            <WalletCards />
+            <div className='font-bold text-sm'>Flexible Payment</div>
+            <div className='text-muted-foreground text-sm'>
+              Pay with credit card, PayPal or COD
+            </div>
+          </div>
+          <div className='space-y-2'>
+            <Headset />
+            <div className='font-bold text-sm'>24/7 Support</div>
+            <div className='text-muted-foreground text-sm'>
+              Get support at any time
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

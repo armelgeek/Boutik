@@ -5,13 +5,13 @@ import NewsLetter from '../atoms/newsletter';
 const About = () => {
   return (
     <div>
-      <div className="text-2xl text-center pt-8 border-t">
+      <div className="pt-8 border-t text-2xl text-center">
         <Heading text1={'ABOUT'} text2={'US'} />
       </div>
 
-      <div className="flex flex-col md:flex-row gap-16 my-10">
+      <div className="flex md:flex-row flex-col gap-16 my-10">
         <div
-          className="w-full md:max-w-[450px] bg-gray-400">
+          className="bg-gray-400 w-full md:max-w-[450px]">
 
           </div>
 
@@ -34,22 +34,22 @@ const About = () => {
         <Heading text1={'WHY'} text2={'CHOOSE US'} />
       </div>
 
-      <div className="flex flex-col md:flex-row mb-20 text-sm gap-4">
-        <div className="border px-10 md:px-16 py-8 sm:py-20 flex flex-col gap-5">
+      <div className="flex md:flex-row flex-col gap-4 mb-20 text-sm">
+        <div className="flex flex-col gap-5 px-10 md:px-16 py-8 sm:py-20 border">
           <b>Quality Assurance</b>
           <p className="text-gray-600">
             We take pride in offering only the highest quality products that
             meet our stringent standards for durability, performance, and value.{' '}
           </p>
         </div>
-        <div className="border px-10 md:px-16 py-8 sm:py-20 flex flex-col gap-5">
+        <div className="flex flex-col gap-5 px-10 md:px-16 py-8 sm:py-20 border">
           <b>Convenience</b>
           <p className="text-gray-600">
             Our user-friendly website and mobile app make it easy to browse,
             compare, and purchase products on the go.{' '}
           </p>
         </div>
-        <div className="border px-10 md:px-16 py-8 sm:py-20 flex flex-col gap-5">
+        <div className="flex flex-col gap-5 px-10 md:px-16 py-8 sm:py-20 border">
           <b>Exceptional Customer Services</b>
           <p className="text-gray-600">
             Our dedicated team of customer service representatives is available
@@ -58,8 +58,6 @@ const About = () => {
           </p>
         </div>
       </div>
-
-      <NewsLetter />
     </div>
   );
 };

@@ -15,20 +15,20 @@ const AppProfile = async ({children}: {children: ReactNode}) => {
   
 
   return (
-    <div className="px-4 pt-9 sm:px-[2vw] md:px-[4vw] lg:px-[6vw] border-t">
-      <div className="flex flex-col xl:flex-row gap-6">
+    <div className="px-4 pt-9 border-t">
+      <div className="flex xl:flex-row flex-col gap-6">
         <div className="xl:w-1/4">
           <div className="flex-col p-3 xl:p-0">
             <div className="h-full" tabIndex={-1}>
-              <div className="border rounded-lg p-3 w-full">
-                <div className="text-center border-b p-4">
-                  <div className="relative mb-2 inline-block">
+              <div className="p-3 border rounded-lg w-full">
+                <div className="p-4 border-b text-center">
+                  <div className="inline-block relative mb-2">
                     <EditableProfilePhotoForm
                       photoUrl={session?.user?.image ?? undefined}
                     />
                   </div>
                   <h6 className="mb-0 font-medium">{session?.user.name}</h6>
-                  <Link href="/account" className="text-sm text-gray-600 hover:text-primary-600">{session?.user.email}</Link>
+                  <Link href="/account" className="text-gray-600 hover:text-primary-600 text-sm">{session?.user.email}</Link>
                 </div>
                 <div className="mt-4">
                   <AppProfileNav/>

@@ -21,7 +21,7 @@ export interface ShopContextType {
     image: string[];
   }>;
   orders: Order[];
-  addToCart: (itemId: string, size: string) => void;
+  addToCart: (itemId: string | undefined, size: string) => void;
   removeFromCart: (itemId: string, size: string) => void;
   addOrder: () => void;
   getCartCount: () => number;

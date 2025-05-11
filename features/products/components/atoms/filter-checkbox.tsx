@@ -1,19 +1,55 @@
+"use client";
+
 import React from "react";
-const FilterCheckbox: React.FC<{
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+
+interface FilterCheckboxProps {
   value: string;
   label: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}> = ({ value, label, onChange }) => {
+  checked?: boolean;
+}
+
+const FilterCheckbox: React.FC<FilterCheckboxProps> = ({
+  value,
+  label,
+  onChange,
+  checked
+}) => {
+  const id = `checkbox-${value.replace(/\s+/g, '-').toLowerCase()}`;
+
+  const handleCheckedChange = (checkedState: boolean | "indeterminate") => {
+    const syntheticEvent = {
+      target: {
+        type: "checkbox",
+        checked: checkedState === true,
+        value
+      },
+      preventDefault: () => { },
+      stopPropagation: () => { }
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+    onChange(syntheticEvent);
+  };
+
   return (
-    <p className="flex gap-2">
-      <input
-        type="checkbox"
-        className="w-3"
+    <div className="flex items-center space-x-2 py-1">
+      <Checkbox
+        id={id}
         value={value}
-        onChange={onChange}
+        checked={checked}
+        className="text-white"
+        onCheckedChange={handleCheckedChange}
       />
-      {label}
-    </p>
+      <Label
+        htmlFor={id}
+        className="font-normal text-sm leading-none cursor-pointer"
+      >
+        {label}
+      </Label>
+    </div>
   );
 };
+
 export default FilterCheckbox;

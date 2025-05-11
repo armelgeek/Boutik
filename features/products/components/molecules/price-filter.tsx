@@ -35,11 +35,11 @@ const PriceFilter: React.FC<PriceFilterProps> = ({ showFilter, onPriceChange }) 
   };
 
   return (
-    <div className={`border border-gray-300 px-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
-      <p className="mb-3 text-sm font-medium">PRICE RANGE</p>
+    <div className={`border border-gray-300 bg-white px-5 py-3 mt-6 ${showFilter ? '' : 'hidden'} sm:block`}>
+      <p className="mb-3 font-medium text-sm">PRICE RANGE</p>
       <div className="flex flex-col gap-3">
         <div>
-          <label htmlFor="minPrice" className="block text-sm text-gray-600 mb-1">
+          <label htmlFor="minPrice" className="block mb-1 text-gray-600 text-sm">
             Min Price
           </label>
           <input
@@ -48,11 +48,11 @@ const PriceFilter: React.FC<PriceFilterProps> = ({ showFilter, onPriceChange }) 
             value={minPrice}
             onChange={handleMinPriceChange}
             placeholder="0"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
           />
         </div>
         <div>
-          <label htmlFor="maxPrice" className="block text-sm text-gray-600 mb-1">
+          <label htmlFor="maxPrice" className="block mb-1 text-gray-600 text-sm">
             Max Price
           </label>
           <input
@@ -61,7 +61,7 @@ const PriceFilter: React.FC<PriceFilterProps> = ({ showFilter, onPriceChange }) 
             value={maxPrice}
             onChange={handleMaxPriceChange}
             placeholder="Max"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
           />
         </div>
       </div>
