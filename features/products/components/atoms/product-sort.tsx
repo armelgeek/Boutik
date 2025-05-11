@@ -36,7 +36,7 @@ const ProductSort: React.FC<ProductSortProps> = ({ sortBy, sortDir, onSort }) =>
     <select
       onChange={handleChange}
       value={getValue()}
-      className="border border-gray-300 text-sm px-2 py-1 rounded-md"
+      className="bg-white px-2 py-1 border border-gray-300 rounded-md text-sm"
     >
       <option value="name_asc">Nom (A-Z)</option>
       <option value="name_desc">Nom (Z-A)</option>

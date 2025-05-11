@@ -37,6 +37,8 @@ import {
   LogOut,
   ShoppingBag,
   ShoppingBasket,
+  ShoppingCart,
+  Store,
   User2Icon
 } from 'lucide-react';
 import Link from 'next/link';
@@ -77,8 +79,25 @@ export default function AppSidebar({ session }: { session: Session }) {
         </div>
       </SidebarHeader>
       <SidebarContent className='overflow-x-hidden'>
+        
         <SidebarGroup>
-          <SidebarGroupLabel>Overview</SidebarGroupLabel>
+        <SidebarGroupLabel>Boutique</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                tooltip={'Aller à la boutique'}
+                isActive={pathname === "/collection"}
+              >
+                <Link href={'/collection'}>
+                  <Store className="text-blue-500" />
+                  <span>Aller à la boutique</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+          
+          <SidebarGroupLabel>Aperçu</SidebarGroupLabel>
           <SidebarMenu>
             {navItems.map((item) => {
               const Icon = item.icon ? Icons[item.icon] : Icons.logo;
@@ -89,6 +108,7 @@ export default function AppSidebar({ session }: { session: Session }) {
                   defaultOpen={item.isActive}
                   className='group/collapsible'
                 >
+                  
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton
@@ -134,17 +154,19 @@ export default function AppSidebar({ session }: { session: Session }) {
               );
             })}
           </SidebarMenu>
-          <SidebarGroupLabel>Orders</SidebarGroupLabel>
+          
+          
+          <SidebarGroupLabel>Commandes</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                tooltip={'Orders'}
+                tooltip={'Commandes'}
                 isActive={pathname === "/d/master/orders"}
               >
                 <Link href={'/d/master/orders'}>
                   <ShoppingBasket />
-                  <span>Orders</span>
+                  <span>Commandes</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -213,16 +235,16 @@ export default function AppSidebar({ session }: { session: Session }) {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuGroup>
-                  <Link href="/account" passHref>
+                  <Link href="/compte" passHref>
                     <DropdownMenuItem>
-                      <User2Icon /> My profile
+                      <User2Icon /> Mon profil
                     </DropdownMenuItem>
                   </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut />
-                  Log out
+                  Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
