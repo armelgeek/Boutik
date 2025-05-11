@@ -18,7 +18,7 @@ export interface ShopContextType {
     sizes: Record<string, number>;
     name: string;
     price: number;
-    image: string;
+    image: string[];
   }>;
   orders: Order[];
   addToCart: (itemId: string, size: string) => void;

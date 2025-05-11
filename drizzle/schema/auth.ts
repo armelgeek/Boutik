@@ -2,7 +2,7 @@ import { sql } from 'drizzle-orm';
 import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
-  id: uuid('id')
+  id: text('id')
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   name: text('name').notNull(),
@@ -15,7 +15,7 @@ export const users = pgTable('users', {
 });
 
 export const sessions = pgTable('sessions', {
-  id: uuid('id')
+  id: text('id')
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   expiresAt: timestamp('expires_at').notNull(),
@@ -24,18 +24,18 @@ export const sessions = pgTable('sessions', {
   updatedAt: timestamp('updated_at').notNull(),
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
-  userId: uuid('user_id')
+  userId: text('user_id')
     .notNull()
     .references(() => users.id),
 });
 
 export const accounts = pgTable('accounts', {
-  id: uuid('id')
+  id: text('id')
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   accountId: text('account_id').notNull(),
   providerId: text('provider_id').notNull(),
-  userId: uuid('user_id')
+  userId: text('user_id')
     .notNull()
     .references(() => users.id),
   accessToken: text('access_token'),
@@ -50,7 +50,7 @@ export const accounts = pgTable('accounts', {
 });
 
 export const verifications = pgTable('verifications', {
-  id: uuid('id')
+  id: text('id')
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   identifier: text('identifier').notNull(),

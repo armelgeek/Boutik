@@ -9,7 +9,7 @@ export type DisplayCartItem = {
   quantity: number;
   name: string;
   price: number;
-  image: StaticImageData;
+  image: string;
 };
 
 const useSortedCart = (cartItems: Record<string, CartItem>): DisplayCartItem[] => {

@@ -1,75 +1,32 @@
-'use client';
-
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Order } from '@/features/products/config/order.type';
-import { useCart } from '@/features/cart/hooks/use-cart';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { orderService } from '../domain/order.service';
 
-interface OrderStore {
-  orders: Order[];
-  addOrder: () => Promise<void>;
-  setOrders: (orders: Order[]) => void;
-}
+export const ORDER_KEYS = {
+  all: ['orders'] as const,
+  lists: () => [...ORDER_KEYS.all, 'list'] as const,
+  list: (filters: any) => [...ORDER_KEYS.lists(), { filters }] as const,
+  details: () => [...ORDER_KEYS.all, 'detail'] as const,
+  detail: (slug: string) => [...ORDER_KEYS.details(), slug] as const,
+};
 
-export const useOrders = create<OrderStore>()(
-  persist(
-    (set) => ({
-      orders: [],
-      setOrders: (orders) => set({ orders }),
-      addOrder: async () => {
-        const { items, getCartAmount, clearCart } = useCart.getState();
-        
-        try {
-          const newOrders = Object.entries(items).flatMap(([itemId, item]) =>
-            Object.entries(item.sizes).map(([size, quantity]) => ({
-              id: Math.floor(Math.random() * 10000),
-              amount: item.price * quantity,
-              status: 'pending',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              items: [{
-                id: itemId,
-                quantity,
-                size,
-                product: {
-                  name: item.name,
-                  price: item.price,
-                  image: item.image
-                },
-              }],
-            }))
-          );
+export const useOrders = (filters: any) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ORDER_KEYS.list(filters),
+    queryFn: () => orderService.list(filters),
+    placeholderData: keepPreviousData,
+  });
 
-          // Sauvegarder la commande dans la base de données
-          await orderService.create({
-            items: Object.values(items).flatMap(item => 
-              Object.entries(item.sizes).map(([size, quantity]) => ({
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                image: item.image,
-                size,
-                quantity
-              }))
-            ),
-            total: getCartAmount()
-          });
-
-          set((state) => ({
-            orders: [...state.orders, ...newOrders]
-          }));
-
-          // Vider le panier après une commande réussie
-          clearCart();
-        } catch (error) {
-          console.error('Failed to create order:', error);
-          throw error;
-        }
-      },
-    }),
-    {
-      name: 'orders-storage',
-    }
-  )
-);
+  const pageSize = filters.pageSize || 10;
+  const total = data?.total ?? 0;
+  const totalPages = Math.ceil(total / pageSize);
+  return {
+    data: data?.data ?? [],
+    meta: {
+      total,
+      totalPages,
+      pageSize,
+      page: filters.page || 1
+    },
+    isLoading,
+  };
+};

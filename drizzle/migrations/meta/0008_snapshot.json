@@ -1,6 +1,6 @@
 {
-  "id": "c6231b6f-a118-48ed-b926-39dc8bc6e72b",
-  "prevId": "8a67f07d-f7fe-4118-abbd-f7a8a19f7d43",
+  "id": "ec210d5f-a19a-4293-919a-359ed8515a99",
+  "prevId": "647c3587-751a-47de-8c73-31d41fa8a452",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -240,6 +240,12 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
+        },
+        "stripe_customer_id": {
+          "name": "stripe_customer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -466,10 +472,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "varchar(255)",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -503,13 +508,13 @@
         },
         "category_id": {
           "name": "category_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "sub_category_id": {
           "name": "sub_category_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -532,6 +537,12 @@
           "type": "text[]",
           "primaryKey": false,
           "notNull": false
+        },
+        "stripe_product_id": {
+          "name": "stripe_product_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -565,6 +576,13 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+        "products_id_unique": {
+          "name": "products_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id"
+          ]
+        },
         "products_slug_unique": {
           "name": "products_slug_unique",
           "nullsNotDistinct": false,

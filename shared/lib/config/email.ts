@@ -6,6 +6,7 @@ import {
   VerificationEmailTemplate,
 
 } from '@/features/auth/components/organisms/email-templates';
+import InvoiceStripeTemplate from '@/features/auth/components/organisms/email-templates/invoice-stripe';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -88,6 +89,5 @@ export const sendChangeEmailVerification = async ({ email, verificationUrl }: {
     throw error;
   }
 };
-const sendDeleteAccountVerification = async() => {
 
-}
+

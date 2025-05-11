@@ -10,14 +10,14 @@ interface DataTableToolbarProps<TData> {
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex justify-between items-center">
       <div className="flex flex-1 items-center space-x-2">
         <div className="relative">
           <DebouncedInput
-            placeholder="Search product ..."
+            placeholder="Search ..."
             value={table.getState().globalFilter ?? ''}
             onChange={(value) => table.setGlobalFilter(value)}
-            className="h-8 w-[150px] ps-9 lg:w-[250px]"
+            className="w-[150px] lg:w-[250px] h-8"
           />
         
         </div>

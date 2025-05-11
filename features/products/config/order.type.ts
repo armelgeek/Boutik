@@ -2,8 +2,9 @@ import { Product } from "./product.type";
 
 export type Order = {
     id: number;
-    amount: number;
+    total: number;
     status: string;
+    invoiceUrl: string;
     created_at: string;
     updated_at: string;
     items: Array<{

@@ -10,7 +10,7 @@ export type CartItem = {
   sizes: Record<string, number>;
   name: string;
   price: number;
-  image: string;
+  image: string[];
 }
 
 interface CartStore {
@@ -50,7 +50,7 @@ export const useCart = create<CartStore>()(
               sizes: { [size]: 1 },
               name: product.name || '',
               price: product.price || 0,
-              image: product.image || ''
+              image: product.images || ''
             };
           }
           

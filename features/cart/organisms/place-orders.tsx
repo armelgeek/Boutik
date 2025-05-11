@@ -1,12 +1,15 @@
 "use client";
+import axios from 'axios';
 import Heading from '@/shared/components/atoms/heading';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useState, FormEvent } from 'react';
 import CartTotal from '../molecules/cart-total';
 import Image from 'next/image';
 import { assets } from '@/assets/assets';
 import { useCart } from '../hooks/use-cart';
 import { useToast } from '@/shared/hooks/use-toast';
+import { useShop } from '@/features/products/hooks/use-shop';
+import useSortedCart from '../hooks/use-sorted-cart';
 
 interface FormData {
   firstName: string;
@@ -29,7 +32,8 @@ interface CheckoutStep {
 
 const PlaceOrder = () => {
   const router = useRouter();
-  const { items, clearCart } = useCart();
+  const { cartItems } = useShop();
+  const items = useSortedCart(cartItems);
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -66,12 +70,12 @@ const PlaceOrder = () => {
     switch (step) {
       case 1:
         return Object.keys(items).length > 0;
-      
+
       case 2:
         if (currentStep === 2) {
           const requiredFields = ['firstName', 'lastName', 'email', 'street', 'city', 'state', 'zipcode', 'country', 'phone'];
           const hasEmptyFields = requiredFields.some(field => !formData[field as keyof FormData]);
-          
+
           if (hasEmptyFields) {
             toast({
               title: 'Erreur',
@@ -83,7 +87,7 @@ const PlaceOrder = () => {
           return true;
         }
         return true;
-      
+
       case 3:
         if (currentStep === 3) {
           if (!acceptTerms) {
@@ -97,7 +101,7 @@ const PlaceOrder = () => {
           return true;
         }
         return true;
-      
+
       default:
         return false;
     }
@@ -122,15 +126,18 @@ const PlaceOrder = () => {
 
     setLoading(true);
     try {
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      clearCart();
-      toast({
-        title: 'Succès',
-        description: 'Votre commande a été passée avec succès!',
+
+
+      const {
+        data: { url },
+      } = await axios.post('/api/stripe/checkout_sessions', {
+        items: cartItems,
       });
-      router.push('/orders');
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error('URL de paiement non reçue');
+      }
     } catch (error) {
       toast({
         title: 'Erreur',
@@ -147,20 +154,18 @@ const PlaceOrder = () => {
       {steps.map((step, index) => (
         <div key={step.id} className="flex items-center">
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              step.isCompleted || currentStep === step.id
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-200'
-            }`}
+            className={`w-8 h-8 rounded-full flex items-center justify-center ${step.isCompleted || currentStep === step.id
+              ? 'bg-green-500 text-white'
+              : 'bg-gray-200'
+              }`}
           >
             {step.isCompleted ? '✓' : step.id}
           </div>
           {index < steps.length - 1 && (
-            <div className="w-20 h-1 bg-gray-200 mx-2">
+            <div className="bg-gray-200 mx-2 w-20 h-1">
               <div
-                className={`h-full ${
-                  step.isCompleted ? 'bg-green-500' : 'bg-gray-200'
-                }`}
+                className={`h-full ${step.isCompleted ? 'bg-green-500' : 'bg-gray-200'
+                  }`}
               />
             </div>
           )}
@@ -170,15 +175,15 @@ const PlaceOrder = () => {
   );
 
   const renderDeliveryForm = () => (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg p-6">
+    <div className="mx-auto max-w-2xl">
+      <div className="bg-white p-6 rounded-lg">
         {/* Contact */}
         <div className="mb-8">
-          <h4 className="text-lg font-medium mb-4">Contact</h4>
+          <h4 className="mb-4 font-medium text-lg">Contact</h4>
           <div className="space-y-4">
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 font-medium text-gray-700 text-sm">
                   Prénom
                 </label>
                 <input
@@ -186,11 +191,11 @@ const PlaceOrder = () => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 font-medium text-gray-700 text-sm">
                   Nom
                 </label>
                 <input
@@ -198,12 +203,12 @@ const PlaceOrder = () => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 font-medium text-gray-700 text-sm">
                 Email
               </label>
               <input
@@ -211,11 +216,11 @@ const PlaceOrder = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 font-medium text-gray-700 text-sm">
                 Téléphone
               </label>
               <input
@@ -223,7 +228,7 @@ const PlaceOrder = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
               />
             </div>
           </div>
@@ -231,10 +236,10 @@ const PlaceOrder = () => {
 
         {/* Adresse de livraison */}
         <div className="mb-8">
-          <h4 className="text-lg font-medium mb-4">Adresse de livraison</h4>
+          <h4 className="mb-4 font-medium text-lg">Adresse de livraison</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 font-medium text-gray-700 text-sm">
                 Adresse
               </label>
               <input
@@ -242,12 +247,12 @@ const PlaceOrder = () => {
                 name="street"
                 value={formData.street}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="gap-4 grid grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 font-medium text-gray-700 text-sm">
                   Ville
                 </label>
                 <input
@@ -255,11 +260,11 @@ const PlaceOrder = () => {
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 font-medium text-gray-700 text-sm">
                   Code postal
                 </label>
                 <input
@@ -267,13 +272,13 @@ const PlaceOrder = () => {
                   name="zipcode"
                   value={formData.zipcode}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="gap-4 grid grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 font-medium text-gray-700 text-sm">
                   Région
                 </label>
                 <input
@@ -281,11 +286,11 @@ const PlaceOrder = () => {
                   name="state"
                   value={formData.state}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 font-medium text-gray-700 text-sm">
                   Pays
                 </label>
                 <input
@@ -293,7 +298,7 @@ const PlaceOrder = () => {
                   name="country"
                   value={formData.country}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent"
+                  className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full"
                 />
               </div>
             </div>
@@ -301,13 +306,13 @@ const PlaceOrder = () => {
         </div>
 
         <div>
-          <h4 className="text-lg font-medium mb-4">Notes de commande (optionnel)</h4>
+          <h4 className="mb-4 font-medium text-lg">Notes de commande (optionnel)</h4>
           <textarea
             name="orderNotes"
             value={formData.orderNotes}
             onChange={handleInputChange}
             rows={4}
-            className="w-full px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-black focus:border-transparent resize-none"
+            className="px-4 py-2.5 border focus:border-transparent rounded-lg focus:ring-2 focus:ring-black w-full resize-none"
             placeholder="Instructions spéciales pour la livraison..."
           />
         </div>
@@ -317,14 +322,14 @@ const PlaceOrder = () => {
 
   const renderOrderSummary = () => (
     <div className="space-y-4">
-      <div className="border rounded p-4">
-        <h3 className="font-semibold mb-4">Résumé de la commande</h3>
-        
+      <div className="p-4 border rounded">
+        <h3 className="mb-4 font-semibold">Résumé de la commande</h3>
+
         <CartTotal showTitle={false} className="mb-6" />
 
-        <div className="space-y-2 mb-6 border-t pt-4">
+        <div className="space-y-2 mb-6 pt-4 border-t">
           <h4 className="font-medium">Informations de livraison</h4>
-          <div className="text-sm text-gray-600">
+          <div className="text-gray-600 text-sm">
             <p>{formData.firstName} {formData.lastName}</p>
             <p>{formData.street}</p>
             <p>{formData.city}, {formData.state} {formData.zipcode}</p>
@@ -335,8 +340,8 @@ const PlaceOrder = () => {
         </div>
       </div>
 
-      <div className="border rounded p-4">
-        <h4 className="font-medium mb-3">Méthode de paiement</h4>
+      <div className="p-4 border rounded">
+        <h4 className="mb-3 font-medium">Méthode de paiement</h4>
         <div className="flex items-center gap-3">
           <Image className="h-8" src={assets.stripe_logo} alt="Stripe" />
           <span className="text-sm">Paiement sécurisé par Stripe</span>
@@ -344,9 +349,9 @@ const PlaceOrder = () => {
       </div>
 
       {formData.orderNotes && (
-        <div className="border rounded p-4">
-          <h4 className="font-medium mb-2">Notes de commande</h4>
-          <p className="text-sm text-gray-600">{formData.orderNotes}</p>
+        <div className="p-4 border rounded">
+          <h4 className="mb-2 font-medium">Notes de commande</h4>
+          <p className="text-gray-600 text-sm">{formData.orderNotes}</p>
         </div>
       )}
 
@@ -356,7 +361,7 @@ const PlaceOrder = () => {
           id="terms"
           checked={acceptTerms}
           onChange={(e) => setAcceptTerms(e.target.checked)}
-          className="h-4 w-4"
+          className="w-4 h-4"
         />
         <label htmlFor="terms" className="text-sm">
           J'accepte les conditions générales de vente *
@@ -379,13 +384,13 @@ const PlaceOrder = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto px-4 py-8">
+    <form onSubmit={handleSubmit} className="mx-auto px-4 py-8 max-w-4xl">
       {renderStepIndicator()}
-      
+
       <div className="mb-8">
-        <Heading 
-          text1={steps[currentStep - 1].title} 
-          text2="" 
+        <Heading
+          text1={steps[currentStep - 1].title}
+          text2=""
         />
       </div>
 
@@ -403,12 +408,12 @@ const PlaceOrder = () => {
             Retour
           </button>
         )}
-        
+
         {currentStep < steps.length ? (
           <button
             type="button"
             onClick={handleNextStep}
-            className="ml-auto px-6 py-2 bg-black text-white rounded"
+            className="bg-black ml-auto px-6 py-2 rounded text-white"
           >
             Continuer
           </button>
@@ -416,7 +421,7 @@ const PlaceOrder = () => {
           <button
             type="submit"
             disabled={loading || !acceptTerms}
-            className="ml-auto px-6 py-2 bg-black text-white rounded disabled:opacity-50"
+            className="bg-black disabled:opacity-50 ml-auto px-6 py-2 rounded text-white"
           >
             {loading ? 'Traitement en cours...' : 'Payer maintenant'}
           </button>

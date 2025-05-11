@@ -11,7 +11,7 @@ export const brandStatusEnum = pgEnum('brand_status', [
 export const brands = pgTable(
   'brands',
   {
-    brandId: uuid('brand_id')
+    brandId: text('brand_id')
       .primaryKey()
       .default(sql`gen_random_uuid()`),
     slug: varchar('slug', { length: 255 }).notNull().unique(),

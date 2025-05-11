@@ -12,25 +12,22 @@ const CartTotal = ({ showTitle = false, className = '' }: CartTotalProps) => {
   return (
     <div className={`flex flex-col ${className}`}>
       {showTitle && (
-        <div className="text-2xl mb-4">
+        <div className="mb-4 text-2xl">
           <Heading text1={'CART'} text2={'TOTAL'} className='text-left' />
         </div>
       )}
 
 
-      <div className="flex flex-col gap-2 text-sm border-t pt-3">
+      <div className="flex flex-col gap-2 pt-3 border-t text-sm">
         <div className="flex justify-between gap-3">
           <p>Sous-total</p>
           <p>{currency} {getCartAmount().toLocaleString()}.00</p>
         </div>
-        <div className="flex justify-between gap-3">
-          <p>Frais de livraison</p>
-          <p>{currency} {delivery_fee.toLocaleString()}.00</p>
-        </div>
-        <div className="flex justify-between font-medium text-sm mt-2 pt-2 border-t">
+      
+        <div className="flex justify-between mt-2 pt-2 border-t font-medium text-sm">
           <p>Total</p>
           <p>
-            {currency} {(getCartAmount() === 0 ? 0 : getCartAmount() + delivery_fee).toLocaleString()}.00
+            {currency} {(getCartAmount() === 0 ? 0 : getCartAmount()).toLocaleString()}.00
           </p>
         </div>
       </div>
