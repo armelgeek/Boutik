@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { ColumnFiltersState } from '@tanstack/react-table';
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
@@ -8,7 +7,6 @@ interface UseTableStateProps<T> {
   queryFn: (params: QueryParams) => Promise<T>;
 }
 
-
 interface QueryParams {
   search?: string;
   page?: number;
@@ -16,6 +14,8 @@ interface QueryParams {
   sortBy?: string;
   sortDir?: string;
   status?: string[];
+  startDate?: string | null;
+  endDate?: string | null;
 }
 
 interface UseTableStateReturn<T> {
@@ -26,8 +26,8 @@ interface UseTableStateReturn<T> {
   sortBy: string;
   sortDir: string;
   status: string[] | null;
-  filter: ColumnFiltersState;
-
+  startDate: string | null;
+  endDate: string | null;
   data: T | undefined | null;
   isPending: boolean;
   isError: boolean;
@@ -39,39 +39,34 @@ interface UseTableStateReturn<T> {
   setSortDir: (value: string | null) => void;
   setStatus: (value: string[] | null) => void;
   handleFilterChange: (filters: ColumnFiltersState) => void;
+  setStartDate: (value: string | null) => void;
+  setEndDate: (value: string | null) => void;
+  handleDateRangeChange: (startDate: string | null, endDate: string | null) => void;
 }
 
 export function useAdvancedTable<T>({ queryKey, queryFn }: UseTableStateProps<T>): UseTableStateReturn<T> {
-
   const [search, setSearch] = useQueryState('q', { defaultValue: '' });
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
   const [pageSize, setPageSize] = useQueryState('pageSize', parseAsInteger.withDefault(10));
   const [sortBy, setSortBy] = useQueryState('sortBy', { defaultValue: '' });
   const [sortDir, setSortDir] = useQueryState('sortDir', { defaultValue: '' });
   const [status, setStatus] = useQueryState('status', parseAsArrayOf(parseAsString));
+  const [startDate, setStartDate] = useQueryState('startDate', parseAsString.withDefault(null));
+  const [endDate, setEndDate] = useQueryState('endDate', parseAsString.withDefault(null));
 
-  const [filter, setFilter] = useState<ColumnFiltersState>([]);
-
-  useEffect(() => {
-    const newFilters: ColumnFiltersState = [];
-
-    if (status) {
-      newFilters.push({ id: 'status', value: status });
-    }
-
-    setFilter(newFilters);
-  }, [status]);
-
+  // Only include non-empty params to avoid unnecessary query reruns
   const queryParams = {
-    ...(search && { search }),
-    ...(page && { page }),
-    ...(pageSize && { pageSize }),
-    ...(sortBy && { sortBy }),
-    ...(sortDir && { sortDir }),
-    ...(status && { status }),
+    ...(search ? { search } : {}),
+    ...(page !== 1 ? { page } : {}),
+    ...(pageSize !== 10 ? { pageSize } : {}),
+    ...(sortBy ? { sortBy } : {}),
+    ...(sortDir ? { sortDir } : {}),
+    ...(status && status.length > 0 ? { status } : {}),
+    ...(startDate ? { startDate } : {}),
+    ...(endDate ? { endDate } : {})
   };
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+
+  // Use queryKey as it was originally used in the code
   const queryP = [...queryKey, queryParams];
   const { data, isPending, isError } = useQuery({
     queryKey: queryP,
@@ -80,10 +75,13 @@ export function useAdvancedTable<T>({ queryKey, queryFn }: UseTableStateProps<T>
   });
 
   const handleFilterChange = (filters: ColumnFiltersState) => {
-    setFilter(filters);
-
     const statusFilter = filters.find((f) => f.id === 'status')?.value as string[] | undefined;
     setStatus(statusFilter || null);
+  };
+  
+  const handleDateRangeChange = (startDate: string | null, endDate: string | null) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
   };
 
   return {
@@ -93,8 +91,9 @@ export function useAdvancedTable<T>({ queryKey, queryFn }: UseTableStateProps<T>
     sortBy,
     sortDir,
     status,
-    filter,
     data,
+    startDate,
+    endDate,
     isPending,
     isError,
     setSearch,
@@ -103,6 +102,9 @@ export function useAdvancedTable<T>({ queryKey, queryFn }: UseTableStateProps<T>
     setSortBy,
     setSortDir,
     setStatus,
+    setStartDate,
+    setEndDate,
     handleFilterChange,
+    handleDateRangeChange
   };
 }
