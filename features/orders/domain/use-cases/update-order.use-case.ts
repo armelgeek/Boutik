@@ -1,8 +1,8 @@
 import { db } from "@/drizzle/db";
 import { orders } from "@/drizzle/schema/orders";
 import { eq } from "drizzle-orm";
-import { sendOrderStatusUpdateEmail } from "@/shared/lib/config/email";
 import { getOrderWithDetails } from "./get-order-details.use-case";
+import { emitEmailEvent } from "@/shared/lib/events/email-events";
 
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'payment_failed';
 
@@ -29,11 +29,11 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus): P
                 size: item.size
             }));
 
-            // Envoyer l'email de notification
-            await sendOrderStatusUpdateEmail({
+            // Utiliser le système d'événements pour envoyer l'email
+            await emitEmailEvent('order.status_updated', {
+                orderId: orderDetails.id,
                 customerName: orderDetails.user.name,
                 customerEmail: orderDetails.user.email,
-                orderId: orderDetails.id,
                 status: status,
                 orderItems: orderItems,
                 total: orderDetails.total

@@ -4,7 +4,9 @@ import {
   ChangeEmailVerificationTemplate,
   ResetPasswordEmailTemplate,
   VerificationEmailTemplate,
-
+  WelcomeEmailTemplate,
+  EmailChangeVerificationImprovedTemplate,
+  PasswordResetImprovedTemplate
 } from '@/features/auth/components/organisms/email-templates';
 import { OrderStatusUpdateEmail, OrderConfirmationEmail } from '@/features/orders/components/organisms/email-templates';
 
@@ -172,6 +174,93 @@ export const sendOrderConfirmationEmail = async (orderData: OrderEmailData & {
     return info;
   } catch (error) {
     console.error('Error sending order confirmation email:', error);
+    throw error;
+  }
+};
+
+// Fonctions d'email améliorées pour Better Auth
+
+export const sendWelcomeEmail = async ({ email, userName, verificationUrl }: {
+  email: string;
+  userName: string;
+  verificationUrl: string;
+}) => {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Welcome to Boutik - Verify your email to get started!",
+    html: await render(
+      WelcomeEmailTemplate({ 
+        userName, 
+        verificationUrl 
+      })
+    ),
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Welcome email sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending welcome email:', error);
+    throw error;
+  }
+};
+
+export const sendImprovedResetPasswordEmail = async ({
+  email,
+  verificationUrl,
+  userName,
+}: {
+  email: string;
+  verificationUrl: string;
+  userName?: string;
+}) => {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Reset your Boutik password",
+    html: await render(
+      PasswordResetImprovedTemplate({ 
+        verificationUrl, 
+        userName 
+      })
+    ),
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Improved reset password email sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending improved reset password email:', error);
+    throw error;
+  }
+};
+
+export const sendImprovedChangeEmailVerification = async ({ email, verificationUrl, newEmail }: {
+  email: string;
+  verificationUrl: string;
+  newEmail: string;
+}) => {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: email,
+    subject: "Verify your new email address for Boutik",
+    html: await render(
+      EmailChangeVerificationImprovedTemplate({ 
+        verificationUrl, 
+        newEmail 
+      })
+    ),
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Improved email change verification sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending improved email change verification:', error);
     throw error;
   }
 };

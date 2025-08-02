@@ -3,7 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 
 import { db } from '@/drizzle/db';
 import { redis } from '@/shared/lib/config/redis';
-import { sendChangeEmailVerification, sendResetPasswordEmail, sendVerificationEmail } from '@/shared/lib/config/email';
+import { sendImprovedChangeEmailVerification, sendImprovedResetPasswordEmail, sendWelcomeEmail } from '@/shared/lib/config/email';
 import { username } from 'better-auth/plugins/username';
 import { anonymous } from 'better-auth/plugins/anonymous';
 import { nextCookies } from 'better-auth/next-js';
@@ -43,15 +43,16 @@ export const auth = betterAuth({
     changeEmail: {
       enabled: true,
       sendChangeEmailVerification: async ({ newEmail, url }) => {
-        await sendChangeEmailVerification({
+        await sendImprovedChangeEmailVerification({
           email: newEmail,
           verificationUrl: url,
+          newEmail: newEmail,
         });
       },
     },
     deleteUser: {
       enabled: true,
-      sendDeleteAccountVerification: async (session, request) => {
+      sendDeleteAccountVerification: async (_session, _request) => {
         /**await sendDeleteAccountVerification({
           email: session.user.email,
           verificationUrl: request.url,
@@ -74,9 +75,10 @@ export const auth = betterAuth({
     requireEmailVerification: false,
     autoSignIn: false,
     sendResetPassword: async ({ user, url }) => {
-      await sendResetPasswordEmail({
+      await sendImprovedResetPasswordEmail({
         email: user.email,
         verificationUrl: url,
+        userName: user.name,
       });
 
     },
@@ -87,8 +89,9 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, token }) => {
       const verificationUrl = `${process.env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${process.env.EMAIL_VERIFICATION_CALLBACK_URL}`;
-      await sendVerificationEmail({
+      await sendWelcomeEmail({
         email: user.email,
+        userName: user.name || 'New User',
         verificationUrl: verificationUrl,
       });
 
