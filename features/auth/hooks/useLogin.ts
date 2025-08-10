@@ -20,7 +20,7 @@ const useLogin = () => {
             setIsLoading(true);
           },
           onSuccess: () => {
-            router.push('/d');
+            router.push('/');
           },
           onError: () => {
             setIsLoading(false);

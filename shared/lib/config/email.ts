@@ -121,11 +121,11 @@ export const sendOrderStatusUpdateEmail = async (orderData: OrderEmailData) => {
   const mailOptions = {
     from: process.env.EMAIL_FROM,
     to: orderData.customerEmail,
-    subject: `${subject} - Order #${orderData.orderId}`,
+    subject: `${subject} - Order #${String(orderData.orderId).slice(-8)}`,
     html: await render(
       OrderStatusUpdateEmail({
         customerName: orderData.customerName,
-        orderId: orderData.orderId,
+        orderId: String(orderData.orderId).slice(-8),
         status: orderData.status,
         trackingUrl: orderData.trackingUrl,
         orderItems: orderData.orderItems,
@@ -156,11 +156,11 @@ export const sendOrderConfirmationEmail = async (orderData: OrderEmailData & {
   const mailOptions = {
     from: process.env.EMAIL_FROM,
     to: orderData.customerEmail,
-    subject: `Order Confirmation - Thank you for your purchase! #${orderData.orderId}`,
+    subject: `Order Confirmation - Thank you for your purchase! #${String(orderData.orderId).slice(-8)}`,
     html: await render(
       OrderConfirmationEmail({
         customerName: orderData.customerName,
-        orderId: orderData.orderId,
+        orderId: String(orderData.orderId).slice(-8),
         orderItems: orderData.orderItems,
         total: orderData.total,
         shippingAddress: orderData.shippingAddress
