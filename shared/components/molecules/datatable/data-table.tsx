@@ -139,7 +139,7 @@ export function DataTable<TData, TValue>({
             <>
               <div className="flex items-end gap-2">
                 <div className="flex flex-col">
-                  <label className="text-muted-foreground text-sm">Date de début</label>
+                  <label className="text-muted-foreground text-sm">Start date</label>
                   <Input
                     type="date"
                     value={startDate || ''}
@@ -148,7 +148,7 @@ export function DataTable<TData, TValue>({
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-muted-foreground text-sm">Date de fin</label>
+                  <label className="text-muted-foreground text-sm">End date</label>
                   <Input
                     type="date"
                     value={endDate || ''}
@@ -156,7 +156,7 @@ export function DataTable<TData, TValue>({
                     min={dayjs().format('YYYY-MM-DD')}
                   />
                 </div>
-                <Button  variant="outline" onClick={handleDateFilter}>Filtrer par date</Button>
+                <Button  variant="outline" onClick={handleDateFilter}>Filter by date</Button>
               </div>
               {error && <div className="mt-2 text-red-500 text-sm">{error}</div>}
             </>
@@ -172,7 +172,7 @@ export function DataTable<TData, TValue>({
               onFilterChange?.([]);
             }}
           >
-            Réinitialiser les filtres
+            Reset filters
           </Button>
         </div>
 

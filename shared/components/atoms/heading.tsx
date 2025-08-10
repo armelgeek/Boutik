@@ -2,7 +2,7 @@ import React from "react";
 
 const Heading = ({ text1, text2, className, children }: { text1: string; text2?: string; className?: string; children?: React.ReactNode }) => {
   return (
-    <div className={`text-3xl font-bold mb-6 ${className ? className : 'text-center'} `}> 
+    <div className={`text-3xl font-bold ${className ? className : 'text-center'} `}> 
       <div className="inline-flex flex-col items-center gap-2 mb-3">
         <div className="flex items-center gap-3">
           <span className="text-orange-500 uppercase tracking-wide drop-shadow-sm">

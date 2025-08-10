@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 const Page = ({ params }: { params: { productId: string } }) => {
   const { productId } = React.use(params);
 
+ 
   return (
     <>
      <ProductInfo productId={productId}/>

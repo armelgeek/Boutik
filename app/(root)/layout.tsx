@@ -28,7 +28,7 @@ export default async function BaseLayout({ children }: RootLayoutProps) {
       </div>
       
       <div className="flex-1 bg-gray-50 w-full min-h-screen">
-        <header className="z-30 relative bg-white py-3lg:px-52 xl:px-52 py-3 border-b">
+        <header className="z-30 relative bg-white lg:px-52 xl:px-52 py-3 border-b">
           <div className="mx-auto">
             <div className="flex justify-between items-center">
               <div className="flex items-center">

@@ -16,10 +16,10 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="ID Commande"
+  title="Order ID"
       />
     ),
-    cell: ({ row }) => <div className="w-full truncate">{row.getValue('id')}</div>,
+    cell: ({ row }) => <div className="w-full truncate">#{String(row.getValue('id')).slice(-8)}</div>,
   },
   {
     id: 'user',
@@ -29,7 +29,7 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Utilisateur"
+  title="User"
       />
     ),
     cell: ({ row }) => {
@@ -49,7 +49,7 @@ export const columns: ColumnDef<any>[] = [
           </div>
         </div>
       ) : (
-        <span className="text-muted-foreground">Utilisateur non trouvé</span>
+  <span className="text-muted-foreground">User not found</span>
       );
     },
   },
@@ -61,7 +61,7 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Total"
+  title="Total"
       />
     ),
     cell: ({ row }) => <div className="w-full">{row.getValue('total')}€</div>,
@@ -74,7 +74,7 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Articles"
+  title="Items"
       />
     ),
     cell: ({ row }) => {
@@ -95,9 +95,9 @@ export const columns: ColumnDef<any>[] = [
                 />
                 <div className="flex flex-col gap-0.5">
                   <p className="font-semibold text-sm">{item.product.name}</p>
-                  <div className="text-muted-foreground text-xs">
-                    Quantité: {item.quantity} • Prix: ${item.price}
-                  </div>
+                    <div className="text-muted-foreground text-xs">
+                      Quantity: {item.quantity} • Price: ${item.price}
+                    </div>
                 </div>
               </div>
             );
@@ -114,7 +114,7 @@ export const columns: ColumnDef<any>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Date de commande"
+  title="Order Date"
       />
     ),
     cell: ({ row }) => <div className="w-full">{formatDate(row.getValue('createdAt'))}</div>,

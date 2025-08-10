@@ -6,7 +6,7 @@ import {
   VerificationEmailTemplate,
 
 } from '@/features/auth/components/organisms/email-templates';
-import InvoiceStripeTemplate from '@/features/auth/components/organisms/email-templates/invoice-stripe';
+import { OrderStatusUpdateEmail, OrderConfirmationEmail } from '@/features/orders/components/organisms/email-templates';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -86,6 +86,92 @@ export const sendChangeEmailVerification = async ({ email, verificationUrl }: {
     return info;
   } catch (error) {
     console.error('Error sending email:', error);
+    throw error;
+  }
+};
+
+interface OrderEmailData {
+  customerName: string;
+  customerEmail: string;
+  orderId: string;
+  status: string;
+  trackingUrl?: string;
+  orderItems: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+    size?: string;
+  }>;
+  total: number;
+}
+
+export const sendOrderStatusUpdateEmail = async (orderData: OrderEmailData) => {
+  const statusSubjects = {
+    processing: "Your order is being prepared",
+    shipped: "Your order has been shipped",
+    delivered: "Your order has been delivered",
+    cancelled: "Your order has been cancelled",
+    payment_failed: "Payment failed for your order"
+  };
+
+  const subject = statusSubjects[orderData.status as keyof typeof statusSubjects] || "Order Status Update";
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: orderData.customerEmail,
+    subject: `${subject} - Order #${orderData.orderId}`,
+    html: await render(
+      OrderStatusUpdateEmail({
+        customerName: orderData.customerName,
+        orderId: orderData.orderId,
+        status: orderData.status,
+        trackingUrl: orderData.trackingUrl,
+        orderItems: orderData.orderItems,
+        total: orderData.total
+      })
+    ),
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Order status email sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending order status email:', error);
+    throw error;
+  }
+};
+
+export const sendOrderConfirmationEmail = async (orderData: OrderEmailData & { 
+  shippingAddress?: {
+    fullName: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  } 
+}) => {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: orderData.customerEmail,
+    subject: `Order Confirmation - Thank you for your purchase! #${orderData.orderId}`,
+    html: await render(
+      OrderConfirmationEmail({
+        customerName: orderData.customerName,
+        orderId: orderData.orderId,
+        orderItems: orderData.orderItems,
+        total: orderData.total,
+        shippingAddress: orderData.shippingAddress
+      })
+    ),
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Order confirmation email sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending order confirmation email:', error);
     throw error;
   }
 };

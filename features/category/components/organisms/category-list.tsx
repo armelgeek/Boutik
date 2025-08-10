@@ -17,9 +17,9 @@ export default function CategoriesList() {
             <div className="h-8 bg-gray-200 rounded animate-pulse mx-auto w-64 mb-4"></div>
             <div className="h-4 bg-gray-200 rounded animate-pulse mx-auto w-96"></div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-square bg-gray-200 rounded-2xl animate-pulse"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-48 bg-gray-200 rounded-xl animate-pulse"></div>
             ))}
           </div>
         </div>
@@ -51,54 +51,62 @@ export default function CategoriesList() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {/* Categories Horizontal Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ 
                 duration: 0.6, 
                 delay: index * 0.1,
                 ease: "easeOut"
               }}
-              whileHover={{ y: -8 }}
+              whileHover={{ scale: 1.03 }}
               className="group"
             >
               <Link href={`/collection?category=${category.id}`}>
-                <div className="relative overflow-hidden rounded-2xl bg-white shadow-lg shadow-gray-200/50 border border-gray-100 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-orange-200/30 group-hover:border-orange-200">
-                  <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="relative overflow-hidden rounded-xl h-48 bg-white shadow-md border border-gray-100 transition-all duration-300 group-hover:shadow-lg group-hover:border-orange-200">
+                  {/* Background Image */}
+                  <div className="absolute inset-0">
                     {category.image ? (
                       <Image
                         src={category.image}
                         alt={category.name}
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-50">
-                        <div className="w-16 h-16 bg-orange-200 rounded-full flex items-center justify-center">
-                          <span className="text-orange-600 font-bold text-xl">
-                            {category.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
+                      <div className="w-full h-full bg-gradient-to-br from-orange-100 via-orange-50 to-gray-50">
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-transparent"></div>
                       </div>
                     )}
                     
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    <div className="absolute top-4 right-4 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-                      <ArrowRight className="w-4 h-4 text-gray-700" />
+                    {/* Overlay gradient for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 h-full flex flex-col justify-center p-6">
+                    <div className="mb-2">
+                      <h3 className="text-2xl font-bold text-white drop-shadow-lg mb-1">
+                        {category.name}
+                      </h3>
+                      <p className="text-white/90 text-sm drop-shadow">
+                        Discover our collection
+                      </p>
+                    </div>
+
+                    {/* Hover arrow */}
+                    <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="text-white text-sm font-medium mr-2">Shop now</span>
+                      <ArrowRight className="w-4 h-4 text-white transform group-hover:translate-x-1 transition-transform duration-300" />
                     </div>
                   </div>
 
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-300 mb-2">
-                      {category.name}
-                    </h3>
-                    
-                  </div>
+                  {/* Bottom accent line */}
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-400 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                 </div>
               </Link>

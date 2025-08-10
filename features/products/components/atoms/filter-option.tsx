@@ -34,7 +34,7 @@ const FilterOption: React.FC<FilterOptionProps> = ({
       <div
         onClick={collapsible ? () => setShowFilter(!showFilter) : undefined}
         onKeyDown={collapsible ? handleKeyDown : undefined}
-        className={`my-2 flex items-center justify-between select-none ${collapsible ? 'cursor-pointer hover:bg-orange-50 rounded-lg transition-colors' : ''}`}
+        className={`my-2 flex items-center bg-white py-3 px-2 justify-between select-none ${collapsible ? 'cursor-pointer hover:bg-orange-50 rounded-lg transition-colors' : ''}`}
         role={collapsible ? "button" : undefined}
         tabIndex={collapsible ? 0 : undefined}
         aria-expanded={collapsible ? showFilter : undefined}
@@ -64,8 +64,8 @@ const FilterOption: React.FC<FilterOptionProps> = ({
       </div>
       <div
         className={`transition-all duration-300 ease-in-out origin-top ${showFilter
-          ? 'max-h-screen opacity-100'
-          : 'max-h-0 overflow-hidden opacity-0 sm:max-h-screen sm:opacity-100'
+          ? 'opacity-100'
+          : 'pacity-0 sm:max-h-screen sm:opacity-100'
         }`}
         aria-hidden={!showFilter}
       >

@@ -1,12 +1,14 @@
 import FilterCheckbox from "../atoms/filter-checkbox";
 import { useCategories } from "@/features/category/hooks/use-categories";
+import { useProductFilter } from "../../hooks/use-filter";
 
 const CategoryFilter: React.FC<{
   showFilter: boolean;
   toggleCategory: (category: string) => void;
 }> = ({ showFilter, toggleCategory }) => {
   const { categories, isLoading } = useCategories();
-
+  const { category: selectedCategories } = useProductFilter();
+  
   if (isLoading) {
     return (
       <div className={`border border-gray-100 bg-white rounded-xl px-5 py-4 mt-3 shadow-sm ${showFilter ? '' : 'hidden'} sm:block`}>
@@ -29,6 +31,7 @@ const CategoryFilter: React.FC<{
             key={category.value}
             value={category.value}
             label={category.label}
+            checked={selectedCategories?.includes(category.value) || false}
             onChange={() => toggleCategory(category.value)}
             className="hover:bg-orange-50 focus-within:ring-2 focus-within:ring-orange-400/70 rounded transition-colors px-2 -mx-2"
           />

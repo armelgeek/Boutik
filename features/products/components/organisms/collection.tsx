@@ -23,6 +23,7 @@ const Collection = () => {
   const [showFilter, setShowFilter] = useState(false);
 
   const handleToggleCategory = (category: string) => {
+    console.log('Toggling category:', category);
     toggleCategory((prev) => {
       if (!prev) return [category];
       return prev.includes(category)
@@ -43,8 +44,8 @@ const Collection = () => {
   return (
     <section className="pt-12 pb-16 px-2 md:px-0">
       <div className="flex sm:flex-row flex-col gap-4 sm:gap-10">
-        <aside className="w-full sm:w-72 mb-6 sm:mb-0">
-          <FilterOption showFilter={showFilter} setShowFilter={setShowFilter} className="w-full sm:w-72 rounded-xl shadow-sm border border-gray-100 bg-white p-4 sticky top-24">
+        <aside className="w-full sm:w-72 mb-6">
+          <FilterOption showFilter={showFilter} setShowFilter={setShowFilter} className="w-full sm:w-72 rounded-xl shadow-sm  p-4">
             <CategoryFilter showFilter={showFilter} toggleCategory={handleToggleCategory} />
             <SubCategoryFilter showFilter={showFilter} toggleSubCategory={handleToggleSubCategoryChange} />
             <PriceFilter showFilter={showFilter} onPriceChange={onPriceChange} />

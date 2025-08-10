@@ -2,6 +2,8 @@ import { db } from "@/drizzle/db";
 import { orders } from "@/drizzle/schema";
 import stripe from "@/shared/lib/config/stripe";
 import { and, eq } from "drizzle-orm";
+import { sendOrderStatusUpdateEmail } from "@/shared/lib/config/email";
+import { getOrderWithDetails } from "./get-order-details.use-case";
 
 export async function cancelOrder({
     orderId,
@@ -52,6 +54,34 @@ export async function cancelOrder({
             })
             .where(eq(orders.id, orderId))
             .returning();
+
+        // Envoyer l'email de notification de cancellation
+        try {
+            const orderDetails = await getOrderWithDetails(orderId);
+            
+            if (orderDetails && orderDetails.user.email) {
+                const orderItems = orderDetails.items.map(item => ({
+                    name: item.product.name,
+                    quantity: item.quantity,
+                    price: item.price,
+                    size: item.size
+                }));
+
+                await sendOrderStatusUpdateEmail({
+                    customerName: orderDetails.user.name,
+                    customerEmail: orderDetails.user.email,
+                    orderId: orderDetails.id,
+                    status: 'cancelled',
+                    orderItems: orderItems,
+                    total: orderDetails.total
+                });
+
+                console.log(`Order cancellation email sent for order ${orderId} to ${orderDetails.user.email}`);
+            }
+        } catch (emailError) {
+            console.error('Failed to send cancellation email:', emailError);
+            // Ne pas faire échouer la cancellation si l'email échoue
+        }
 
         return updatedOrder;
     } catch (error) {

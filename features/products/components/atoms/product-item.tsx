@@ -49,13 +49,10 @@ const ProductItem = ({
     }
   }
 
-  // Fonction pour obtenir le nom de la catégorie principale
   const getCategoryName = (categoryId?: string) => {
-    // Priorité : categoryName passé en prop, puis category object de l'API, puis fallback
     if (categoryName) return categoryName;
     if (category?.name) return category.name;
     
-    // Fallback pour des catégories connues par ID
     const categories: Record<string, string> = {
       'men': 'Men',
       'women': 'Women', 
@@ -66,18 +63,14 @@ const ProductItem = ({
     return categoryId ? categories[categoryId] : undefined;
   };
 
-  // Fonction pour obtenir le nom de la sous-catégorie
   const getSubCategoryName = (subCategoryId?: string) => {
-    // Priorité : subCategoryName passé en prop, puis recherche dans subcategory array
     if (subCategoryName) return subCategoryName;
     
-    // Rechercher une sous-catégorie différente de la catégorie principale dans la hiérarchie
     if (subcategory && subcategory.length > 1) {
       const subCat = subcategory.find(cat => cat.id !== category?.id && cat.parentId);
       if (subCat) return subCat.name;
     }
     
-    // Fallback pour des sous-catégories connues par ID
     const subCategories: Record<string, string> = {
       'shirts': 'Shirts',
       'pants': 'Pants',
@@ -100,18 +93,15 @@ const ProductItem = ({
     setSelectedSize(availableSizes[0]);
   }
 
-  // Générer des données fictives variées basées sur l'ID du produit
   const hasDiscount = true;
   const discount = hasDiscount ? 30 : null;
-  const originalPrice = hasDiscount && price ? Math.round(price / 0.7) : null; // 30% de réduction
+  const originalPrice = hasDiscount && price ? Math.round(price / 0.7) : null;
   
-  // Rating variant entre 3.8 et 4.9
   const rating = id ? 3.8 + (parseInt(id.slice(-2), 16) % 11) * 0.1 : 4.2;
-  // Nombre d'avis variant entre 12 et 2.5k
   const reviewCount = id ? 12 + (parseInt(id.slice(-3), 16) % 250) * 10 : 206;
 
   return (
-    <div className="group relative bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
+    <div className="group relative bg-white  shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
       {discount && (
         <div className="absolute top-3 right-3 z-10">
           <span className="bg-orange-400 text-white text-xs font-bold px-2 py-1 rounded-md">
@@ -132,7 +122,12 @@ const ProductItem = ({
 
       <div className="p-4">
         <Link href={`/product/${slug || ''}`} className="block">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{name || 'Unnamed product'}</h3>
+          <h3 title={name} className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-orange-600 transition-colors duration-200">
+            {(name || 'Unnamed product').length > 20 
+              ? `${(name || 'Unnamed product').substring(0, 20)}...` 
+              : (name || 'Unnamed product')
+            }
+          </h3>
         </Link>
 
         {(displayCategoryName || displaySubCategoryName) && (
@@ -210,7 +205,6 @@ const ProductItem = ({
           </div>
         )}
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-2">
           <Button
             onClick={(e) => {

@@ -15,9 +15,9 @@ type StatusButtonProps = {
     updatedAt: string;
 };
 const STATUS_LABELS: Record<OrderStatus, string> = {
-    processing: 'En cours de préparation',
-    shipped: 'Expédiée',
-    delivered: 'Livrée',
+    processing: 'Processing',
+    shipped: 'Shipped',
+    delivered: 'Delivered',
 };
 const STATUS_ICONS: Record<OrderStatus, JSX.Element> = {
     processing: <Package className="text-yellow-500" />,
@@ -54,13 +54,13 @@ export const StatusButton = ({ currentStatus, orderId, updatedAt }: StatusButton
                 className="transition-all duration-300"
             >
                 {isUpdating && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
-                Passer à : {STATUS_LABELS[nextStatus]}
+                Next: {STATUS_LABELS[nextStatus]}
             </Button>
         </div>
     ) : (
         <p className="flex items-center gap-2 text-green-700">
             {STATUS_ICONS[status]}
-            {STATUS_LABELS[status]} le {formatDate(new Date(updatedAt))}
+            {STATUS_LABELS[status]} on {formatDate(new Date(updatedAt))}
         </p>
     );
 };

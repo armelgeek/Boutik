@@ -81,23 +81,23 @@ export default function AppSidebar({ session }: { session: Session }) {
       <SidebarContent className='overflow-x-hidden'>
         
         <SidebarGroup>
-        <SidebarGroupLabel>Boutique</SidebarGroupLabel>
+  <SidebarGroupLabel>Shop</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                tooltip={'Aller à la boutique'}
+                tooltip={'Go to shop'}
                 isActive={pathname === "/collection"}
               >
                 <Link href={'/collection'}>
                   <Store className="text-blue-500" />
-                  <span>Aller à la boutique</span>
+                  <span>Go to shop</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
           
-          <SidebarGroupLabel>Aperçu</SidebarGroupLabel>
+          <SidebarGroupLabel>Overview</SidebarGroupLabel>
           <SidebarMenu>
             {navItems.map((item) => {
               const Icon = item.icon ? Icons[item.icon] : Icons.logo;
@@ -156,17 +156,17 @@ export default function AppSidebar({ session }: { session: Session }) {
           </SidebarMenu>
           
           
-          <SidebarGroupLabel>Commandes</SidebarGroupLabel>
+          <SidebarGroupLabel>Orders</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                tooltip={'Commandes'}
+                tooltip={'Orders'}
                 isActive={pathname === "/d/master/orders"}
               >
                 <Link href={'/d/master/orders'}>
                   <ShoppingBasket />
-                  <span>Commandes</span>
+                  <span>Orders</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -237,14 +237,14 @@ export default function AppSidebar({ session }: { session: Session }) {
                 <DropdownMenuGroup>
                   <Link href="/compte" passHref>
                     <DropdownMenuItem>
-                      <User2Icon /> Mon profil
+                      <User2Icon /> My profile
                     </DropdownMenuItem>
                   </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut />
-                  Déconnexion
+                  Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -12,7 +12,8 @@ export const useSubCategories = () => {
       return response?.data.map((category) => ({
         value: category.id,
         label: category.name,
-      })) as SelectOption[];
+        parentId: category.parent_id,
+      })) as (SelectOption & { parentId: string })[];
     },
   });
 

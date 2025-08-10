@@ -6,9 +6,11 @@ import Stripe from 'stripe';
 
 import { db } from '@/drizzle/db';
 import { orders } from '@/drizzle/schema';
+import { sendOrderStatusUpdateEmail } from '@/shared/lib/config/email';
+import { getOrderWithDetails } from '@/features/orders/domain/use-cases/get-order-details.use-case';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-04-10',
+  apiVersion: '2025-02-24.acacia',
 });
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -51,7 +53,33 @@ export async function POST(request: NextRequest) {
             .where(eq(orders.id, orderId));
 
         console.log(`Order ${orderId} updated with payment intent ${paymentIntentId}`);
-        //TODO: send mail
+        
+        // Envoyer l'email de confirmation de paiement
+        try {
+          const orderDetails = await getOrderWithDetails(orderId);
+          
+          if (orderDetails && orderDetails.user.email) {
+            const orderItems = orderDetails.items.map(item => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.price,
+              size: item.size
+            }));
+
+            await sendOrderStatusUpdateEmail({
+              customerName: orderDetails.user.name,
+              customerEmail: orderDetails.user.email,
+              orderId: orderDetails.id,
+              status: 'processing',
+              orderItems: orderItems,
+              total: orderDetails.total
+            });
+
+            console.log(`Payment confirmation email sent for order ${orderId} to ${orderDetails.user.email}`);
+          }
+        } catch (emailError) {
+          console.error('Failed to send payment confirmation email:', emailError);
+        }
       }
 
       break;
@@ -69,8 +97,34 @@ export async function POST(request: NextRequest) {
             updatedAt: new Date(),
           })
           .where(eq(orders.id, paymentIntent.metadata.orderId));
+          
+        // Envoyer l'email de notification d'échec de paiement
+        try {
+          const orderDetails = await getOrderWithDetails(paymentIntent.metadata.orderId);
+          
+          if (orderDetails && orderDetails.user.email) {
+            const orderItems = orderDetails.items.map(item => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.price,
+              size: item.size
+            }));
+
+            await sendOrderStatusUpdateEmail({
+              customerName: orderDetails.user.name,
+              customerEmail: orderDetails.user.email,
+              orderId: orderDetails.id,
+              status: 'payment_failed',
+              orderItems: orderItems,
+              total: orderDetails.total
+            });
+
+            console.log(`Payment failed email sent for order ${paymentIntent.metadata.orderId} to ${orderDetails.user.email}`);
+          }
+        } catch (emailError) {
+          console.error('Failed to send payment failed email:', emailError);
+        }
       }
-        //TODO: send mail
       break;
     }
 
@@ -97,8 +151,34 @@ export async function POST(request: NextRequest) {
               updatedAt: new Date(),
             })
             .where(eq(orders.id, order.id));
+            
+          // Envoyer l'email de notification de remboursement
+          try {
+            const orderDetails = await getOrderWithDetails(order.id);
+            
+            if (orderDetails && orderDetails.user.email) {
+              const orderItems = orderDetails.items.map(item => ({
+                name: item.product.name,
+                quantity: item.quantity,
+                price: item.price,
+                size: item.size
+              }));
+
+              await sendOrderStatusUpdateEmail({
+                customerName: orderDetails.user.name,
+                customerEmail: orderDetails.user.email,
+                orderId: orderDetails.id,
+                status: 'cancelled', // Use cancelled status for refund emails
+                orderItems: orderItems,
+                total: orderDetails.total
+              });
+
+              console.log(`Refund email sent for order ${order.id} to ${orderDetails.user.email}`);
+            }
+          } catch (emailError) {
+            console.error('Failed to send refund email:', emailError);
+          }
         }
-          //TODO: send mail
       }
       break;
     }

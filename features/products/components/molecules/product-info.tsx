@@ -24,6 +24,9 @@ const ProductInfo = ({ productId }: { productId: string }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
   const [quantity, setQuantity] = useState(1);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (productsData) {
@@ -42,10 +45,10 @@ const ProductInfo = ({ productId }: { productId: string }) => {
       }
       return;
     }
-    
+
     setIsAdding(true);
     addToCart(productsData?.id || "", size);
-    
+
     setTimeout(() => {
       setIsAdding(false);
     }, 1500);
@@ -71,7 +74,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
   }
 
   return productsData ? (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -95,15 +98,15 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                 priority
               />
             </motion.div>
-            
+
             <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <button 
+              <button
                 className="bg-white/90 backdrop-blur-sm hover:bg-white p-3 rounded-full shadow-lg transition-all duration-200"
                 aria-label="Add to wishlist"
               >
                 <Heart size={18} className="text-gray-700 hover:text-orange-500 transition-colors" />
               </button>
-              <button 
+              <button
                 className="bg-white/90 backdrop-blur-sm hover:bg-white p-3 rounded-full shadow-lg transition-all duration-200"
                 aria-label="Share product"
               >
@@ -114,14 +117,13 @@ const ProductInfo = ({ productId }: { productId: string }) => {
 
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
             {productsData.images && productsData.images.map((item, index) => (
-              <button 
+              <button
                 key={index}
                 onClick={() => setImage(item)}
-                className={`relative flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-300 ${
-                  image === item 
-                    ? "border-orange-500 ring-2 ring-orange-200" 
+                className={`relative flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-300 ${image === item
+                    ? "border-orange-500 ring-2 ring-orange-200"
                     : "border-gray-200 hover:border-gray-300"
-                }`}
+                  }`}
               >
                 <Image
                   src={item}
@@ -146,7 +148,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
               <p className="text-gray-500 text-sm font-medium tracking-wide">
                 SKU: {productId.slice(-8).toUpperCase()}
               </p>
-              
+
               {/* Category Tags */}
               {(productsData.category || productsData.subcategory) && (
                 <div className="flex flex-wrap items-center gap-2">
@@ -156,7 +158,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                       {productsData.category.name}
                     </span>
                   )}
-                  
+
                   {/* Hiérarchie complète des catégories */}
                   {productsData.subcategory && productsData.subcategory.length > 0 && (
                     <div className="flex items-center gap-1">
@@ -182,13 +184,13 @@ const ProductInfo = ({ productId }: { productId: string }) => {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <Image 
-                    key={i} 
-                    src={i < 4 ? assets.star_icon : assets.star_dull_icon} 
-                    alt="" 
+                  <Image
+                    key={i}
+                    src={i < 4 ? assets.star_icon : assets.star_dull_icon}
+                    alt=""
                     width={16}
                     height={16}
-                    className="w-4 h-4" 
+                    className="w-4 h-4"
                   />
                 ))}
               </div>
@@ -234,11 +236,10 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                   <button
                     key={index}
                     onClick={() => setSize(item)}
-                    className={`h-12 rounded-lg flex items-center justify-center text-sm font-medium transition-all duration-200 ${
-                      item === size 
-                        ? 'bg-orange-500 text-white shadow-lg shadow-orange-200' 
+                    className={`h-12 rounded-lg flex items-center justify-center text-sm font-medium transition-all duration-200 ${item === size
+                        ? 'bg-orange-500 text-white shadow-lg shadow-orange-200'
                         : 'bg-gray-50 hover:bg-gray-100 text-gray-900 border border-gray-200 hover:border-gray-300'
-                    }`}
+                      }`}
                   >
                     {item}
                   </button>
@@ -254,7 +255,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-900">Quantity</h3>
             <div className="flex items-center">
-              <button 
+              <button
                 onClick={decreaseQuantity}
                 className="flex justify-center items-center w-12 h-12 rounded-l-lg border border-gray-300 hover:bg-gray-50 transition-colors"
               >
@@ -263,7 +264,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
               <div className="flex justify-center items-center w-16 h-12 border-t border-b border-gray-300 bg-white">
                 <span className="font-medium text-gray-900">{quantity}</span>
               </div>
-              <button 
+              <button
                 onClick={increaseQuantity}
                 className="flex justify-center items-center w-12 h-12 rounded-r-lg border border-gray-300 hover:bg-gray-50 transition-colors"
               >
@@ -277,11 +278,10 @@ const ProductInfo = ({ productId }: { productId: string }) => {
             <button
               onClick={handleAddToCart}
               disabled={isAdding}
-              className={`relative w-full h-14 flex items-center justify-center gap-3 rounded-lg font-medium text-lg transition-all duration-300 ${
-                isAdding 
-                  ? 'bg-green-500 text-white' 
+              className={`relative w-full h-14 flex items-center justify-center gap-3 rounded-lg font-medium text-lg transition-all duration-300 ${isAdding
+                  ? 'bg-green-500 text-white'
                   : 'bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white shadow-lg hover:shadow-xl'
-              }`}
+                }`}
             >
               {isAdding ? (
                 <motion.div
@@ -290,7 +290,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                   className="flex items-center gap-3"
                 >
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <path d="M4 12l6 6L20 6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M4 12l6 6L20 6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   Added to Cart
                 </motion.div>
@@ -301,7 +301,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                 </>
               )}
             </button>
-            
+
             <button className="w-full h-12 border-2 border-gray-300 hover:border-gray-400 rounded-lg font-medium text-gray-700 transition-colors">
               Add to Wishlist
             </button>
@@ -318,7 +318,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                 <p className="text-gray-600 text-sm">On orders above {currency}50</p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
                 <Shield size={16} className="text-orange-600" />
@@ -328,7 +328,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                 <p className="text-gray-600 text-sm">100% original & verified</p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
                 <RefreshCw size={16} className="text-orange-600" />
@@ -352,14 +352,13 @@ const ProductInfo = ({ productId }: { productId: string }) => {
               { id: "details", label: "Details & Care" },
               { id: "reviews", label: "Reviews (122)" }
             ].map((tab) => (
-              <button 
+              <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 ${
-                  activeTab === tab.id 
-                    ? "text-orange-600 bg-white border-b-2 border-orange-500" 
+                className={`flex-1 px-6 py-4 text-sm font-medium transition-all duration-200 ${activeTab === tab.id
+                    ? "text-orange-600 bg-white border-b-2 border-orange-500"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>
@@ -379,7 +378,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                 </p>
               </motion.div>
             )}
-            
+
             {activeTab === "details" && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -409,7 +408,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                     </ul>
                   </div>
                 </div>
-                
+
                 <div className="space-y-6">
                   <div>
                     <h3 className="font-semibold text-gray-900 text-lg mb-3">Care Instructions</h3>
@@ -435,7 +434,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                 </div>
               </motion.div>
             )}
-            
+
             {activeTab === "reviews" && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -451,7 +450,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
                     Write a Review
                   </button>
                 </div>
-                
+
                 <div className="bg-gray-50 rounded-xl p-8 text-center">
                   <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -491,7 +490,7 @@ const ProductInfo = ({ productId }: { productId: string }) => {
         <p className="text-gray-600 max-w-md">
           The product you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
-        <button 
+        <button
           onClick={() => window.history.back()}
           className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-lg font-medium text-white transition-colors"
         >

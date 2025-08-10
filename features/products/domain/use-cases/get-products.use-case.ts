@@ -1,5 +1,5 @@
 import 'server-only';
-import { sql, and, inArray } from 'drizzle-orm';
+import { sql, and, inArray, or } from 'drizzle-orm';
 import { db } from '@/drizzle/db';
 import { products } from '@/drizzle/schema/products';
 import { categories } from '@/drizzle/schema/categories';
@@ -70,17 +70,34 @@ export async function getProducts(filter: Filter): Promise<PaginatedProductWithC
     );
   }
 
-  if (hasCategory) {
-    if (hasSubCategory && filter.subCategory) {
-      conditions.push(inArray(products.category_id, filter.subCategory));
-    } else if (filter.category) {
+  if (hasCategory || hasSubCategory) {
+    const categoryConditions = [];
+    
+    // Si des catégories principales sont sélectionnées
+    if (hasCategory && filter.category) {
       const allCategoryPromises = filter.category.map(getAllSubcategoryIds);
       const nestedCategoryIds = await Promise.all(allCategoryPromises);
       const uniqueCategoryIds = [...new Set(nestedCategoryIds.flat())];
       
-      conditions.push(
+      categoryConditions.push(
         inArray(products.category_id, uniqueCategoryIds)
       );
+    }
+    
+    // Si des sous-catégories sont sélectionnées
+    if (hasSubCategory && filter.subCategory) {
+      categoryConditions.push(
+        inArray(products.sub_category_id, filter.subCategory)
+      );
+    }
+    
+    if (categoryConditions.length > 0) {
+      // Utiliser OR si on a à la fois des catégories et des sous-catégories
+      if (categoryConditions.length > 1) {
+        conditions.push(or(...categoryConditions));
+      } else {
+        conditions.push(categoryConditions[0]);
+      }
     }
   }
 
@@ -127,6 +144,7 @@ export async function getProducts(filter: Filter): Promise<PaginatedProductWithC
       sizes: products.sizes,
       description: products.description,
       category_id: products.category_id,
+      sub_category_id: products.sub_category_id,
       date: products.date,
       bestseller: products.bestseller,
       stripeProductId: products.stripeProductId,
