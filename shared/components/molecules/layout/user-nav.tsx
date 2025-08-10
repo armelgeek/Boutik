@@ -1,5 +1,5 @@
 'use client';
-import { authClient } from '@/auth-client';
+import { authClient, useSession } from '@/auth-client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,17 +12,20 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Session } from 'better-auth';
 import { User2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-export function UserNav({ session }: { session: Session }) {
+export function UserNav() {
   const router = useRouter();
+  const session = useSession();
   const handleSignOut = async () => {
     await authClient.signOut({
-      fetchOptions: { onSuccess: () => router.push('/login') },
+      fetchOptions: { onSuccess: () => {
+        router.push('/login');
+      } },
     });
+      router.refresh(); 
   };
   if (session) {
     return (
@@ -31,12 +34,12 @@ export function UserNav({ session }: { session: Session }) {
           <Button variant="ghost" className="relative h-9 w-9 rounded-full focus-visible:ring-2 focus-visible:ring-orange-400/70">
             <Avatar className="h-9 w-9">
               <AvatarImage
-                src={session.user?.image ?? ''}
-                alt={session.user?.name ?? 'User avatar'}
+                src={session.data?.user?.image ?? ''}
+                alt={session.data?.user?.name ?? 'User avatar'}
                 className="h-9 w-9 rounded-full object-cover"
               />
               <AvatarFallback className="bg-orange-100 text-orange-600 font-bold">
-                {session.user?.name?.[0]?.toUpperCase() ?? <User2Icon size={18} />}
+                {session.data?.user?.name?.[0]?.toUpperCase() ?? <User2Icon size={18} />}
               </AvatarFallback>
             </Avatar>
           </Button>
@@ -45,10 +48,10 @@ export function UserNav({ session }: { session: Session }) {
           <DropdownMenuLabel className="font-normal pb-2">
             <div className="flex flex-col space-y-1">
               <span className="text-base font-semibold text-gray-900 truncate">
-                {session.user?.name}
+                {session.data?.user?.name}
               </span>
               <span className="text-xs text-gray-500 truncate">
-                {session.user?.email}
+                {session.data?.user?.email}
               </span>
             </div>
           </DropdownMenuLabel>

@@ -21,6 +21,7 @@ const useLogin = () => {
           },
           onSuccess: () => {
             router.push('/');
+            router.refresh(); 
           },
           onError: () => {
             setIsLoading(false);
