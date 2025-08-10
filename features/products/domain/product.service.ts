@@ -1,11 +1,11 @@
 import { serializeSearchParams } from '../config/product.param';
 import { API_ENDPOINTS, API_URL } from '@/shared/lib/config/api';
 import type { Filter } from '@/shared/lib/types/filter';
-import { PaginatedProduct, Product, ProductPayload } from '../config/product.type';
+import {PaginatedProductWithCategory, Product, ProductWithCategory, ProductPayload } from '../config/product.type';
 
 export interface ProductService {
-  list(filter: Filter): Promise<PaginatedProduct>;
-  detail(slug: string): Promise<Product>;
+  list(filter: Filter): Promise<PaginatedProductWithCategory>;
+  detail(slug: string): Promise<ProductWithCategory>;
   related(categoryId: string, subCategoryId?: string): Promise<Product[]>;
   create(payload: ProductPayload): Promise<Product>;
   update(slug: string, payload: ProductPayload): Promise<{ message: string }>;
@@ -21,21 +21,21 @@ export class ProductServiceImpl implements ProductService {
     return response.json();
   }
 
-  async list(filter: Filter): Promise<PaginatedProduct> {
+  async list(filter: Filter): Promise<PaginatedProductWithCategory> {
     const cleanFilter = Object.fromEntries(
-      Object.entries(filter).filter(([_, value]) => value !== null && value !== undefined)
+      Object.entries(filter).filter(([, value]) => value !== null && value !== undefined)
     );
     
     const serialize = serializeSearchParams(cleanFilter);
     const endpoint = API_ENDPOINTS.products.list(serialize);
-    return this.fetchData<PaginatedProduct>(`${API_URL}${endpoint}`, {
+    return this.fetchData<PaginatedProductWithCategory>(`${API_URL}${endpoint}`, {
       headers: { 'Content-Type': 'application/json' },
       method: 'GET',
     });
   }
 
-  async detail(slug: string): Promise<Product> {
-    return this.fetchData<Product>(`${API_URL}${API_ENDPOINTS.products.detail(slug)}`, {
+  async detail(slug: string): Promise<ProductWithCategory> {
+    return this.fetchData<ProductWithCategory>(`${API_URL}${API_ENDPOINTS.products.detail(slug)}`, {
       headers: { 'Content-Type': 'application/json' },
       method: 'GET',
       cache: 'no-store'  // Pour toujours avoir les données les plus récentes

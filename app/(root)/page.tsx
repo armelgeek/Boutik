@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import DealCountdown from '@/components/ui/deal';
+import CategoriesList from '@/features/category/components/organisms/category-list';
 import OurPolicies from '@/features/home/atoms/our-policies';
 import BestSeller from '@/features/products/components/organisms/best-seller';
 import LatestCollection from '@/features/products/components/organisms/latest-collection';
@@ -9,6 +10,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <CategoriesList/>
       <LatestCollection />
       <BestSeller />
       <div className='flex justify-center items-center my-8'>

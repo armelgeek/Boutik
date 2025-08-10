@@ -7,10 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { resetPasswordSchema } from '@/features/auth/config/reset-password.schema';
-import { ResetPasswordPayload } from '@/core/domain/types/reset-password.type';
 import { useFormHandler } from '@/shared/hooks/use-form-handler';
 import useResetPassword from '@/features/auth/hooks/useResetPassword';
 import { cn } from '@/shared/lib/utils';
+import { ResetPasswordPayload } from "../../config/reset-password.type";
 
 
 function ResetPasswordFormNoSuspense({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {

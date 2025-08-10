@@ -1,16 +1,29 @@
-const Heading = ({ text1, text2 , className,  children}: { text1: string; text2?: string, className?: string, children?: React.ReactNode }) => {
+import React from "react";
+
+const Heading = ({ text1, text2, className, children }: { text1: string; text2?: string; className?: string; children?: React.ReactNode }) => {
   return (
-     <div className={`${className ? className : 'text-center'} text-3xl`}>
-        <div className="inline-flex items-center gap-2 mb-3 uppercase">
-        <p className="text-orange-500">
-            {text1} <span className="font-medium text-gray-700">{text2}</span>
-        </p>
-        <p className="bg-gray-700 w-8 sm:w-12 h-[1px] sm:h-[2px]"></p>
+    <div className={`text-3xl font-bold mb-6 ${className ? className : 'text-center'} `}> 
+      <div className="inline-flex flex-col items-center gap-2 mb-3">
+        <div className="flex items-center gap-3">
+          <span className="text-orange-500 uppercase tracking-wide drop-shadow-sm">
+            {text1}
+          </span>
+          {text2 && (
+            <span className="font-semibold text-gray-700 uppercase tracking-tight animate-fade-in">
+              {text2}
+            </span>
+          )}
         </div>
-        <p className="m-auto w-3/4 text-gray-600 text-xs sm:text-sm md:text-base">
-            {children}
+        {/* Animated gradient underline */}
+        <span className="block h-1 w-16 sm:w-24 rounded-full bg-gradient-to-r from-orange-400 via-orange-500 to-yellow-400 animate-gradient-x" />
+      </div>
+      {children && (
+        <p className="m-auto w-3/4 text-gray-600 text-xs sm:text-sm md:text-base font-normal mt-2">
+          {children}
         </p>
-   </div>
+      )}
+    </div>
   );
 };
+
 export default Heading;

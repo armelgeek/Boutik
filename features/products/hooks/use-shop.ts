@@ -2,12 +2,12 @@
 
 import { useContext } from 'react';
 import { ShopContext } from '@/features/home/context/ShopContext';
-import { Product } from '../config/product.type';
+import { Product, ProductWithCategory } from '../config/product.type';
 import { Order } from '../config/order.type';
 
 export interface ShopContextType {
-  products: Product[];
-  setProducts: (products: Product[]) => void;
+  products: (Product | ProductWithCategory)[];
+  setProducts: (products: (Product | ProductWithCategory)[]) => void;
   currency: string;
   delivery_fee: number;
   search: string;

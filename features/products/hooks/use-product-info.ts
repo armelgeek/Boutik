@@ -1,30 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useShop } from "./use-shop";
-import { Product } from "@/features/products/config/product.type";
+import { ProductWithCategory } from "@/features/products/config/product.type";
 import { productService } from "../domain/product.service";
 
 const useProductInfo = ({ productId }: { productId: string | undefined }) => {
   const { currency, addToCart } = useShop();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [productsData, setProductsData] = useState<Product>({
-    id: '',
-    name: '',
-    slug: '',
-    price: 0,
-    images: [],
-    description: '',
-    category_id: '',
-    sub_category_id: '',
-    sizes: [],
-    bestseller: false,
-    date: new Date()
-  });
+  const [productsData, setProductsData] = useState<ProductWithCategory | null>(null);
   const [image, setImage] = useState('');
-  const [size, setSize] = useState('');
+  const [size, setSize] = useState('M'); // Default size
 
-  const fetchProductsData = async () => {
+  const fetchProductsData = useCallback(async () => {
+    if (!productId) return;
+    
     try {
       setIsLoading(true);
       setError(null);
@@ -42,11 +32,11 @@ const useProductInfo = ({ productId }: { productId: string | undefined }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [productId]);
 
   useEffect(() => {
     fetchProductsData();
-  }, [productId]); 
+  }, [fetchProductsData]); 
 
   return {
     currency,

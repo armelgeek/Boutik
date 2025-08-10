@@ -1,6 +1,5 @@
 import React from "react";
-import { assets } from "@/assets/assets";
-import Image from "next/image";
+import { Filter } from "lucide-react";
 
 interface FilterOptionProps {
   showFilter: boolean;
@@ -35,28 +34,39 @@ const FilterOption: React.FC<FilterOptionProps> = ({
       <div
         onClick={collapsible ? () => setShowFilter(!showFilter) : undefined}
         onKeyDown={collapsible ? handleKeyDown : undefined}
-        className={`my-2 flex items-center justify-between ${collapsible ? 'cursor-pointer' : ''}`}
+        className={`my-2 flex items-center justify-between select-none ${collapsible ? 'cursor-pointer hover:bg-orange-50 rounded-lg transition-colors' : ''}`}
         role={collapsible ? "button" : undefined}
         tabIndex={collapsible ? 0 : undefined}
         aria-expanded={collapsible ? showFilter : undefined}
       >
         <div className="flex items-center gap-2">
-          <p className="font-medium text-lg uppercase">{title}</p>
-
+          <Filter className={`w-5 h-5 text-orange-500 ${iconClassName}`} />
+          <span className="font-semibold text-lg uppercase tracking-wide">
+            {title}
+          </span>
           {badgeCount !== undefined && badgeCount > 0 && (
-            <span className="inline-flex justify-center items-center bg-blue-100 px-2 py-0.5 rounded-full font-medium text-blue-800 text-xs">
+            <span className="inline-flex justify-center items-center bg-orange-100 px-2 py-0.5 rounded-full font-semibold text-orange-700 text-xs ml-1">
               {badgeCount}
             </span>
           )}
         </div>
-
+        {collapsible && (
+          <svg
+            className={`w-4 h-4 ml-2 transition-transform duration-300 ${showFilter ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        )}
       </div>
-
       <div
         className={`transition-all duration-300 ease-in-out origin-top ${showFilter
-            ? 'max-h-screen opacity-100'
-            : 'max-h-0 overflow-hidden opacity-0 sm:max-h-screen sm:opacity-100'
-          }`}
+          ? 'max-h-screen opacity-100'
+          : 'max-h-0 overflow-hidden opacity-0 sm:max-h-screen sm:opacity-100'
+        }`}
         aria-hidden={!showFilter}
       >
         {children}

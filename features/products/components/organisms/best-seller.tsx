@@ -6,6 +6,7 @@ import ProductsSkeleton from '../molecules/products-skeleton';
 
 const BestSeller = () => {
   const { data,isLoading } = useBestSeller();
+  console.log('data',data);
   return (
     <div className="my-10">
         <Heading text1={'BEST'} text2={'SELLERS'}>

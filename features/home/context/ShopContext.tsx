@@ -3,7 +3,7 @@ import { createContext, useState } from 'react';
 import { useCart } from "@/features/cart/hooks/use-cart";
 import { ShopContextType } from '@/features/products/hooks/use-shop';
 import { Order } from '@/features/products/config/order.type';
-import { Product } from '@/features/products/config/product.type';
+import { Product, ProductWithCategory } from '@/features/products/config/product.type';
 
 export const ShopContext = createContext<ShopContextType | null>(null);
 
@@ -13,7 +13,7 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [search, setSearch] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<(Product | ProductWithCategory)[]>([]);
   const { items: cartItems, addItem, removeItem, updateQuantity, getCartCount, getCartAmount } = useCart();
 
   const addOrder = (): void => {
@@ -24,6 +24,8 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
         status: 'pending', 
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        total: item.price * quantity,
+        invoiceUrl: '',
         items: [{
           id: itemId,
           quantity,
@@ -41,8 +43,9 @@ const ShopContextProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log('New order created:', newOrder);
   };
 
-  const addToCart = (itemId: string, size: string): void => {
-    const product: Partial<Product> = products?.find(p => p.id === itemId) || {};
+  const addToCart = (itemId: string | undefined, size: string): void => {
+    if (!itemId) return;
+    const product = products?.find(p => p.id === itemId) || {};
     if (product) {
       addItem(itemId, size, product);
     }

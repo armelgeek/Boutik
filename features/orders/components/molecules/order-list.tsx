@@ -1,12 +1,13 @@
 "use client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/shared/lib/utils/index";
 import dayjs from "dayjs";
 import { useOrders } from "@/features/orders/hooks/use-orders";
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Package, Calendar, CreditCard, Hash, ExternalLink } from "lucide-react";
 import { CancelOrderDialog } from "./cancel-order-dialog";
 
 function OrdersList() {
@@ -25,121 +26,182 @@ function OrdersList() {
     }));
   };
 
-  if (isLoading) return <div className="flex justify-center py-8">Loading orders...</div>;
-  if (!orders || orders.length === 0) return <div>There is no order.</div>;
+  if (isLoading) return (
+    <div className="flex justify-center items-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+    </div>
+  );
+  
+  if (!orders || orders.length === 0) return (
+    <div className="text-center py-12">
+      <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+      <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
+      <p className="text-gray-500">When you place orders, they&apos;ll appear here.</p>
+    </div>
+  );
 
   return (
     <>
-      <div className="gap-y-5 grid">
+      <div className="space-y-6">
         {orders.map((order) => (
-          <Card key={order.id}>
-            <CardHeader className="flex flex-row justify-between items-center bg-zinc-100 px-6 py-3">
-              <div>
-                <p className="font-medium text-xs">Order Placed</p>
-                <p className="text-sm">
-                  {dayjs(order.created_at).format("MMMM DD, YYYY")}
-                </p>
-              </div>
-
-              <div>
-                <p className="font-medium text-xs">Total</p>
-                <p className="text-sm">{formatPrice(order.total)}</p>
-              </div>
-
-              <div>
-                <p className="font-medium text-xs">Order</p>
-                <p className="text-sm">#{order.id}</p>
-              </div>
-              {order.status.toLowerCase() !== 'delivered' &&
-                order.status.toLowerCase() !== 'cancelled' && (
-                  <CancelOrderDialog
-                    orderId={order.id}
-                    onCancelled={() => {
-                     
-                    }}
-                  />
-                )}
-              
-            </CardHeader>
-
-            <CardContent className="py-3">
-              <div className="gap-8 grid grid-cols-12 py-3">
-                <div className="flex flex-col gap-5 col-span-12 md:col-span-8">
-                  {order.items.map((item) => (
-                    <div className="flex items-center gap-5" key={item.id}>
-                      <div className="relative">
-                        <img
-                          width={80}
-                          height={80}
-                          src={item.product.images[0] ?? null}
-                          alt={item.product.name}
-                          className="w-[80px] h-[80px] object-cover"
-                        />
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        <Link
-                          href={`/product/${item.product.id}`}
-                          className="text-blue-600"
-                        >
-                          {item.product.name} ( x {item.quantity})
-                        </Link>
-                        <p className="line-clamp-2 leading-tight tracking-tighter">
-                          {item.product.description}
-                        </p>
-                        <p>{formatPrice(item.product.price)}</p>
-                      </div>
+          <Card key={order.id} className="overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="bg-gray-50/50 border-b border-gray-100 px-6 py-4">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <div className="flex flex-wrap gap-6">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <div>
+                      <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Order Placed</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {dayjs(order.created_at).format("MMMM DD, YYYY")}
+                      </p>
                     </div>
-                  )
-                  )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="h-4 w-4 text-gray-500" />
+                    <div>
+                      <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Total</p>
+                      <p className="text-sm font-semibold text-gray-900">{formatPrice(order.total)}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Hash className="h-4 w-4 text-gray-500" />
+                    <div>
+                      <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Order ID</p>
+                      <p className="text-sm font-medium text-gray-900">#{String(order.id).slice(-8)}</p>
+                    </div>
+                  </div>
                 </div>
 
-                <section className="flex flex-col gap-3 col-span-12 md:col-span-4 w-full">
-                  Order Status: {order.status}
-                </section>
+                <div className="flex items-center gap-3">
+                  <Badge 
+                    variant={
+                      order.status.toLowerCase() === 'delivered' ? 'default' :
+                      order.status.toLowerCase() === 'cancelled' ? 'destructive' :
+                      order.status.toLowerCase() === 'processing' ? 'secondary' : 'outline'
+                    }
+                    className="capitalize"
+                  >
+                    {order.status}
+                  </Badge>
+                  
+                  {order.status.toLowerCase() !== 'delivered' &&
+                    order.status.toLowerCase() !== 'cancelled' && (
+                      <CancelOrderDialog
+                        orderId={order.id}
+                        onCancelled={() => {
+                         
+                        }}
+                      />
+                    )}
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                {order.items.map((item) => (
+                  <div className="flex items-start gap-4 p-4 bg-gray-50/50 rounded-lg border border-gray-100" key={item.id}>
+                    <div className="flex-shrink-0">
+                      <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                        {item.product.images && item.product.images.length > 0 ? (
+                          <img
+                            width={64}
+                            height={64}
+                            src={Array.isArray(item.product.images) 
+                              ? item.product.images[0]
+                              : String(item.product.images).split(',')[0]?.trim()
+                            }
+                            alt={item.product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Package className="h-6 w-6 text-gray-400" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 pr-4">
+                          <Link
+                            href={`/product/${item.product.id}`}
+                            className="inline-flex items-center gap-1 text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors"
+                          >
+                            {item.product.name}
+                            <ExternalLink className="h-3 w-3" />
+                          </Link>
+                          
+                          <p className="mt-1 text-sm text-gray-600 line-clamp-2">
+                            {item.product.description}
+                          </p>
+                          
+                          <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
+                            <span>Qty: {item.quantity}</span>
+                            <span>•</span>
+                            <span className="font-medium text-gray-900">{formatPrice(item.product.price)}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="text-right">
+                          <p className="text-sm font-semibold text-gray-900">
+                            {formatPrice(item.product.price * item.quantity)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="flex justify-between items-center bg-white mt-5 px-4 sm:px-6 py-3 border-gray-200 border-t">
-        <div className="sm:hidden flex flex-1 justify-between">
-          <Button
-            variant="outline"
-            onClick={() => handlePageChange(pagination.page - 1)}
-            disabled={pagination.page <= 1}
-            className="inline-flex relative items-center px-4 py-2 font-medium text-sm"
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => handlePageChange(pagination.page + 1)}
-            disabled={pagination.page >= meta.totalPages}
-            className="inline-flex relative items-center ml-3 px-4 py-2 font-medium text-sm"
-          >
-            Next
-          </Button>
-        </div>
-        {meta.totalPages > 1 && (
+      {meta.totalPages > 1 && (
+        <div className="flex justify-between items-center bg-white mt-8 px-6 py-4 border border-gray-200 rounded-lg shadow-sm">
+          <div className="sm:hidden flex flex-1 justify-between">
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(pagination.page - 1)}
+              disabled={pagination.page <= 1}
+              className="inline-flex relative items-center px-4 py-2 font-medium text-sm hover:bg-gray-50"
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(pagination.page + 1)}
+              disabled={pagination.page >= meta.totalPages}
+              className="inline-flex relative items-center px-4 py-2 font-medium text-sm hover:bg-gray-50"
+            >
+              Next
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+          
           <div className="hidden sm:flex sm:flex-1 sm:justify-between sm:items-center">
             <div>
-              <p className="text-gray-700 text-sm">
-                Showing page <span className="font-medium">{pagination.page}</span> of{" "}
-                <span className="font-medium">{meta.totalPages}</span>
+              <p className="text-gray-600 text-sm">
+                Showing page <span className="font-semibold text-gray-900">{pagination.page}</span> of{" "}
+                <span className="font-semibold text-gray-900">{meta.totalPages}</span>
               </p>
             </div>
             <div>
-              <nav className="inline-flex isolate -space-x-px shadow-sm rounded-md" aria-label="Pagination">
+              <nav className="inline-flex isolate -space-x-px shadow-sm rounded-lg border border-gray-200" aria-label="Pagination">
                 <Button
                   variant="outline"
                   onClick={() => handlePageChange(pagination.page - 1)}
                   disabled={pagination.page <= 1}
-                  className="inline-flex relative items-center px-2 py-2 rounded-l-md"
+                  className="inline-flex relative items-center px-3 py-2 rounded-l-lg border-r-0 hover:bg-gray-50 disabled:bg-gray-50 disabled:text-gray-400"
                 >
                   <span className="sr-only">Previous</span>
-                  <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+                  <ChevronLeft className="w-4 h-4" aria-hidden="true" />
                 </Button>
 
                 {[...Array(meta.totalPages)].map((_, i) => {
@@ -157,7 +219,7 @@ function OrdersList() {
                     return (
                       <span
                         key={`ellipsis-${pageNumber}`}
-                        className="inline-flex relative items-center px-4 py-2 focus:outline-offset-0 ring-1 ring-gray-300 ring-inset font-medium text-gray-700 text-sm"
+                        className="inline-flex relative items-center px-4 py-2 border border-gray-300 bg-white font-medium text-gray-500 text-sm"
                       >
                         ...
                       </span>
@@ -169,9 +231,9 @@ function OrdersList() {
                       key={pageNumber}
                       variant={pagination.page === pageNumber ? "default" : "outline"}
                       onClick={() => handlePageChange(pageNumber)}
-                      className={`relative inline-flex items-center px-4 py-2 text-sm font-medium ${pagination.page === pageNumber
-                        ? "bg-blue-600 text-white"
-                        : "text-gray-900"
+                      className={`relative inline-flex items-center px-4 py-2 text-sm font-medium border-r-0 ${pagination.page === pageNumber
+                        ? "bg-orange-500 text-white border-orange-500 hover:bg-orange-600"
+                        : "bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
                         }`}
                     >
                       {pageNumber}
@@ -183,17 +245,16 @@ function OrdersList() {
                   variant="outline"
                   onClick={() => handlePageChange(pagination.page + 1)}
                   disabled={pagination.page >= meta.totalPages}
-                  className="inline-flex relative items-center px-2 py-2 rounded-r-md"
+                  className="inline-flex relative items-center px-3 py-2 rounded-r-lg hover:bg-gray-50 disabled:bg-gray-50 disabled:text-gray-400"
                 >
                   <span className="sr-only">Next</span>
-                  <ChevronRight className="w-5 h-5" aria-hidden="true" />
+                  <ChevronRight className="w-4 h-4" aria-hidden="true" />
                 </Button>
               </nav>
             </div>
           </div>
-        )}
-
-      </div>
+        </div>
+      )}
     </>
   );
 }

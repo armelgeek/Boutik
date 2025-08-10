@@ -5,17 +5,8 @@ import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-export type DisplayCartItem = {
-    id: string;
-    size: string;
-    quantity: number;
-    name: string;
-    price: number;
-    image: string[];
-};
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-04-10',
+    apiVersion: '2025-02-24.acacia',
 });
 
 export async function POST(request: NextRequest) {
@@ -38,7 +29,7 @@ export async function POST(request: NextRequest) {
                 id: item.id,
                 name: item.name,
                 price: item.price,
-                image: item.image,
+                image: Array.isArray(item.image) ? item.image[0] : item.image, // Prendre la première image
                 size,
                 quantity
             }))
@@ -57,14 +48,23 @@ export async function POST(request: NextRequest) {
 
         const orderId = order.id;
 
-        const itemsData = Object.entries(cartItems).map(([, { id, quantity }]) => ({
-            price: id,
-            quantity,
-        }))
+        // Create line items with direct price data instead of Stripe product IDs
+        const lineItems = cartItems.map((item) => ({
+            price_data: {
+                currency: 'eur', // ou 'usd' selon votre devise
+                product_data: {
+                    name: `${item.name} - Size: ${item.size}`,
+                    images: item.image ? [item.image] : [], // Utiliser l'image unique
+                },
+                unit_amount: Math.round(item.price * 100), // Prix en centimes
+            },
+            quantity: item.quantity,
+        }));
+
         const session = await stripe.checkout.sessions.create({
             mode: 'payment',
             payment_method_types: ['card'],
-            line_items: itemsData,
+            line_items: lineItems,
             success_url: `${request.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${request.headers.get('origin')}/place-order`,
             metadata: {

@@ -36,12 +36,13 @@ const ProductSort: React.FC<ProductSortProps> = ({ sortBy, sortDir, onSort }) =>
     <select
       onChange={handleChange}
       value={getValue()}
-      className="bg-white px-2 py-1 border border-gray-300 rounded-md text-sm"
+      className="bg-white px-3 py-2 border border-gray-200 rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400/70 transition-all hover:border-orange-400"
+      aria-label="Sort products"
     >
-      <option value="name_asc">Nom (A-Z)</option>
-      <option value="name_desc">Nom (Z-A)</option>
-      <option value="price_asc">Prix (croissant)</option>
-      <option value="price_desc">Prix (décroissant)</option>
+      <option value="name_asc">Name (A-Z)</option>
+      <option value="name_desc">Name (Z-A)</option>
+      <option value="price_asc">Price (Low to High)</option>
+      <option value="price_desc">Price (High to Low)</option>
     </select>
   );
 };

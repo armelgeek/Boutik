@@ -1,9 +1,10 @@
 import 'server-only';
-import { sql, and, like, inArray } from 'drizzle-orm';
+import { sql, and, inArray } from 'drizzle-orm';
 import { db } from '@/drizzle/db';
 import { products } from '@/drizzle/schema/products';
 import { categories } from '@/drizzle/schema/categories';
 import type { Filter } from '@/shared/lib/types/filter';
+import type { PaginatedProductWithCategory } from '@/features/products/config/product.type';
 import { calculatePagination } from '@/shared/lib/utils/calculate-pagination';
 import { createPagination } from '@/shared/lib/utils/create-pagination';
 
@@ -30,7 +31,7 @@ async function getAllSubcategoryIds(categoryId?: string): Promise<string[]> {
 
 async function getCategoryWithParents(categoryId: string) {
   const result = [];
-  let currentId = categoryId;
+  let currentId: string | null = categoryId;
 
   while (currentId) {
     const category = await db
@@ -38,6 +39,7 @@ async function getCategoryWithParents(categoryId: string) {
         id: categories.id,
         name: categories.name,
         slug: categories.slug,
+        image: categories.image,
         parentId: categories.parent_id
       })
       .from(categories)
@@ -47,16 +49,15 @@ async function getCategoryWithParents(categoryId: string) {
     if (category.length === 0) break;
     
     result.unshift(category[0]);
-    currentId = category[0].parentId;
+    currentId = category[0].parentId || null;
   }
 
   return result;
 }
 
-export async function getProducts(filter: Filter) {
+export async function getProducts(filter: Filter): Promise<PaginatedProductWithCategory> {
   const conditions = [];
 
-  // Vérifier si les filtres sont non vides
   const hasSearch = filter.search && filter.search.trim() !== '';
   const hasCategory = filter.category && Array.isArray(filter.category) && filter.category.length > 0;
   const hasSubCategory = filter.subCategory && Array.isArray(filter.subCategory) && filter.subCategory.length > 0;
@@ -70,9 +71,9 @@ export async function getProducts(filter: Filter) {
   }
 
   if (hasCategory) {
-    if (hasSubCategory) {
+    if (hasSubCategory && filter.subCategory) {
       conditions.push(inArray(products.category_id, filter.subCategory));
-    } else {
+    } else if (filter.category) {
       const allCategoryPromises = filter.category.map(getAllSubcategoryIds);
       const nestedCategoryIds = await Promise.all(allCategoryPromises);
       const uniqueCategoryIds = [...new Set(nestedCategoryIds.flat())];
@@ -125,17 +126,22 @@ export async function getProducts(filter: Filter) {
       images: products.images,
       sizes: products.sizes,
       description: products.description,
-      categoryId: products.category_id,
+      category_id: products.category_id,
+      sub_category_id: products.sub_category_id,
+      date: products.date,
       bestseller: products.bestseller,
+      stripeProductId: products.stripeProductId,
       category: sql<{
         id: string;
         name: string;
         slug: string;
-        parentId?: string;
+        image?: string | null;
+        parentId?: string | null;
       }>`json_build_object(
         'id', ${categories}.id,
         'name', ${categories}.name,
         'slug', ${categories}.slug,
+        'image', ${categories}.image,
         'parentId', ${categories}.parent_id
       )`,
     })
@@ -149,9 +155,9 @@ export async function getProducts(filter: Filter) {
   // Enrichir les données avec les catégories parentes
   const data = await Promise.all(
     basicData.map(async (product) => {
-      if (!product.categoryId) return product;
+      if (!product.category_id) return product;
 
-      const categoryHierarchy = await getCategoryWithParents(product.categoryId);
+      const categoryHierarchy = await getCategoryWithParents(product.category_id);
       return {
         ...product,
         subcategory: categoryHierarchy

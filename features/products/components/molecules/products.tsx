@@ -1,7 +1,7 @@
-import { Product } from '@/features/products/config/product.type';
 import ProductItem from '../atoms/product-item';
 
-const Products = ({ products, withSidebar = false }: { products: Partial<Product>[], withSidebar?: boolean }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Products = ({ products, withSidebar = false }: { products: any[], withSidebar?: boolean }) => {
   if (products.length === 0) {
     return (
       <div className="flex justify-center items-center h-[400px] text-gray-500">
@@ -12,7 +12,7 @@ const Products = ({ products, withSidebar = false }: { products: Partial<Product
       </div>
     );
   }
-
+  console.log('Products:', products);
   return (
     <div className={`gap-4 grid grid-cols-1 ${withSidebar ? `sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3`: `sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`}  mt-5`}>
       {products.map((product, idx) => (
@@ -24,6 +24,11 @@ const Products = ({ products, withSidebar = false }: { products: Partial<Product
             name={product.name}
             price={product.price}
             description={product.description}
+            sizes={product.sizes}
+            category_id={product.category_id}
+            sub_category_id={product.sub_category_id}
+            category={product.category}
+            subcategory={product.subcategory}
           />
         </div>
       ))}

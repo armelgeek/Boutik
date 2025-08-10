@@ -1,18 +1,33 @@
 'use client';
-import { assets } from "@/assets/assets"
-import { useCart } from "@/features/products/hooks/use-cart"
-import Image from "next/image"
-import Link from "next/link"
+import { assets } from "@/assets/assets";
+import { useCart } from "@/features/products/hooks/use-cart";
+import Image from "next/image";
+import Link from "next/link";
 
 const CartMenu = () => {
-    const { getCartCount } = useCart()
-    return (
-     <Link href="/cart" className="relative ">
-          <Image src={assets.cart_icon} alt="" className="w-5 min-w-5 " />
-          <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
-            {getCartCount()}
-          </p>
-        </Link>   
-    )
-}
+  const { getCartCount } = useCart();
+  const count = getCartCount();
+  return (
+    <Link
+      href="/cart"
+      className="relative flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70 rounded-lg group"
+      aria-label="View cart"
+    >
+      <Image
+        src={assets.cart_icon}
+        alt="Cart"
+        className="group-hover:scale-110 transition-transform duration-150"
+        width={24}
+        height={24}
+        priority
+      />
+      {count > 0 && (
+        <span className="absolute -right-1.5 -bottom-1.5 w-5 h-5 flex items-center justify-center bg-orange-500 text-white rounded-full text-[10px] font-bold shadow-md border-2 border-white animate-bounce-in">
+          {count}
+        </span>
+      )}
+    </Link>
+  );
+};
+
 export default CartMenu;

@@ -16,8 +16,8 @@ import { Session } from 'better-auth';
 import { User2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
 export function UserNav({ session }: { session: Session }) {
-  
   const router = useRouter();
   const handleSignOut = async () => {
     await authClient.signOut({
@@ -28,38 +28,41 @@ export function UserNav({ session }: { session: Session }) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
-            <Avatar className='h-8 w-8'>
+          <Button variant="ghost" className="relative h-9 w-9 rounded-full focus-visible:ring-2 focus-visible:ring-orange-400/70">
+            <Avatar className="h-9 w-9">
               <AvatarImage
                 src={session.user?.image ?? ''}
-                alt={session.user?.name ?? ''}
-                className='h-8 w-8 rounded-full'
+                alt={session.user?.name ?? 'User avatar'}
+                className="h-9 w-9 rounded-full object-cover"
               />
-              <AvatarFallback>{session.user?.name?.[0]}</AvatarFallback>
+              <AvatarFallback className="bg-orange-100 text-orange-600 font-bold">
+                {session.user?.name?.[0]?.toUpperCase() ?? <User2Icon size={18} />}
+              </AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className='w-56' align='end' forceMount>
-          <DropdownMenuLabel className='font-normal'>
-            <div className='flex flex-col space-y-1'>
-              <p className='text-sm font-medium leading-none'>
+        <DropdownMenuContent className="w-60 rounded-xl shadow-xl border border-gray-100" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal pb-2">
+            <div className="flex flex-col space-y-1">
+              <span className="text-base font-semibold text-gray-900 truncate">
                 {session.user?.name}
-              </p>
-              <p className='text-xs leading-none text-muted-foreground'>
+              </span>
+              <span className="text-xs text-gray-500 truncate">
                 {session.user?.email}
-              </p>
+              </span>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <Link href="/account" passHref>
-                <DropdownMenuItem>
-                 <User2Icon size={20} />My profile
-                </DropdownMenuItem>
+            <Link href="/account" passHref legacyBehavior>
+              <DropdownMenuItem className="gap-2 focus-visible:ring-2 focus-visible:ring-orange-400/70">
+                <User2Icon size={18} className="text-gray-500" />
+                My profile
+              </DropdownMenuItem>
             </Link>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleSignOut}>
+          <DropdownMenuItem onClick={handleSignOut} className="gap-2 text-red-600 hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-orange-400/70">
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>

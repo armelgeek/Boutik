@@ -2,6 +2,7 @@ import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { ControlledTextInput } from '@/shared/components/molecules/form/ControlledTextInput';
+import { ControlledUpload } from '@/shared/components/molecules/form/ControlledUpload';
 import { useFormHandler } from '@/shared/hooks/use-form-handler';
 
 import { Category, CategoryPayload } from '../../config/category.type';
@@ -20,7 +21,8 @@ export const CategoryForm = ({ initialData = null, onSubmit, categories, onSucce
     schema: CategoryFormSchema,
     initialValues: initialData || {
       name: '',
-      parent_id: null
+      parent_id: null,
+      image: null
     },
     onSubmit,
     onSuccess
@@ -34,6 +36,13 @@ export const CategoryForm = ({ initialData = null, onSubmit, categories, onSucce
             name="name"
             label="Name"
             placeholder="Category Name"
+            control={form.control}
+          />
+
+          <ControlledUpload
+            name="image"
+            label="Category Image"
+            description="Upload an image for this category (optional)"
             control={form.control}
           />
 

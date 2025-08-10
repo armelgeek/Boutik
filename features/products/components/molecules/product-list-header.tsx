@@ -15,10 +15,14 @@ const ProductListHeader: React.FC<ProductListHeaderProps> = ({
   title = 'COLLECTIONS' 
 }) => {
   return (
-    <div className="flex justify-between items-center text-sm sm:text-xl lg:text-2xl mb-4">
-      <Heading text1={'ALL'} text2={title} />
-      <ProductSort sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
-    </div>
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-col sm:flex-row  justify-between items-start gap-2">
+        <Heading text1={'ALL'} text2={title} className="mb-0 text-left" />
+        <div className="w-full sm:w-auto flex justify-end">
+          <ProductSort sortBy={sortBy} sortDir={sortDir} onSort={onSort} />
+        </div>
+      </div>
+   </div>
   );
 };
 

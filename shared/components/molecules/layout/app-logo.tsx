@@ -9,8 +9,12 @@ export function AppLogo() {
   const secondHalf = kAppName.slice(middle);
 
   return (
-    <Link href="/" className="flex items-center gap-3 mr-6">
-      <span className="font-medium font-bold text-2xl truncate">
+    <Link
+      href="/"
+      className="flex items-center gap-3 mr-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70 rounded-lg transition-shadow"
+      aria-label="Homepage"
+    >
+      <span className="font-bold text-2xl tracking-tight truncate drop-shadow-sm select-none">
         <span className="text-orange-600">{firstHalf.toUpperCase()}</span>
         <span className="text-black">{secondHalf.toUpperCase()}</span>
       </span>
