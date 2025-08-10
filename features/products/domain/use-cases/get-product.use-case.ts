@@ -41,7 +41,6 @@ export async function getProduct(slug: string) {
       sizes: products.sizes,
       description: products.description,
       category_id: products.category_id,
-      sub_category_id: products.sub_category_id,
       date: products.date,
       bestseller: products.bestseller,
       stripeProductId: products.stripeProductId,

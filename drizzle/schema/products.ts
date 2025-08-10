@@ -1,6 +1,6 @@
 import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { categories } from "./categories";
-import { subCategories } from "./subCategories";
+
 export const products = pgTable(
     'products',
     {
@@ -11,7 +11,7 @@ export const products = pgTable(
         price: integer('price').notNull(),
         sizes: text('sizes').array(),
         category_id: text('category_id').notNull().references(() => categories.id),
-        sub_category_id: text('sub_category_id').references(() => subCategories.id),
+        sub_category_id: text('sub_category_id'), // Sans contrainte de clé étrangère
         date: timestamp('date').notNull().defaultNow(),
         bestseller: boolean('bestseller').notNull().default(false),
         images: text('images').array(),

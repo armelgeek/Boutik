@@ -3,7 +3,6 @@ import { useQueryState } from 'nuqs';
 import { parseAsArrayOf, parseAsString, parseAsInteger } from 'nuqs/server';
 import { useEffect, useState } from 'react';
 import { useShop } from './use-shop';
-import { ProductWithCategory } from '@/features/products/config/product.type';
 import { productService } from '../domain/product.service';
 
 export const useProductFilter = () => {

@@ -17,8 +17,8 @@ export const ProductFormSchema = createInsertSchema(products, {
   description: true,
   price: true,
   category_id: true,
-  images: true,
   sub_category_id: true,
+  images: true,
   sizes: true,
   bestseller: true
 });

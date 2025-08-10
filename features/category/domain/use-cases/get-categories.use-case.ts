@@ -33,20 +33,24 @@ export async function getCategories(filter: Filter) {
       id: categories.id,
       name: categories.name,
       slug: categories.slug,
-      created_at: categories.createdAt,
-      updated_at: categories.updatedAt,
+      image: categories.image,
+      parent_id: categories.parent_id,
+      createdAt: categories.createdAt,
+      updatedAt: categories.updatedAt,
       parent: sql<{
         id: string;
         name: string;
         slug: string;
-        created_at: Date;
-        updated_at: Date;
+        image?: string | null;
+        createdAt: string;
+        updatedAt: string;
       }>`json_build_object(
         'id', parent.id,
         'name', parent.name,
         'slug', parent.slug,
-        'created_at', parent.created_at,
-        'updated_at', parent.updated_at
+        'image', parent.image,
+        'createdAt', parent.created_at,
+        'updatedAt', parent.updated_at
       )`
     })
     .from(categories)

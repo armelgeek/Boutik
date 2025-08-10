@@ -10,6 +10,7 @@ export async function getHasParentCategories() {
       name: categories.name,
       slug: categories.slug,
       parent_id: categories.parent_id,
+      image: categories.image,
       created_at: categories.createdAt,
       updated_at: categories.updatedAt,
     })
